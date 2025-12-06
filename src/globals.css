@@ -34,6 +34,9 @@
     overflow: hidden;
     position: fixed;
     width: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   #root {
@@ -44,6 +47,23 @@
   /* Désactiver le tap highlight sur iOS */
   a, button, input, select, textarea {
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  /* Activer la sélection de texte uniquement dans les inputs */
+  input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Interactions natives */
+  button, a {
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  button:active, a:active {
+    transform: scale(0.97);
   }
   
   /* Empêcher le zoom sur les inputs sur iOS */
@@ -130,6 +150,48 @@
   
   .mobile-tap {
     @apply active:opacity-70 transition-opacity duration-100;
+  }
+  
+  /* Native card interactions */
+  .native-card {
+    @apply transition-all duration-200;
+  }
+  
+  .native-card:active {
+    @apply scale-[0.98] shadow-md;
+  }
+  
+  /* Native list item */
+  .native-list-item {
+    @apply transition-colors duration-150;
+  }
+  
+  .native-list-item:active {
+    @apply bg-gray-100;
+  }
+  
+  /* Ripple effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  .ripple:active::after {
+    width: 300px;
+    height: 300px;
   }
 
   /* Smooth transitions iOS-like */

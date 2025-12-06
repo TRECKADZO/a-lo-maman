@@ -7,7 +7,7 @@ import { createPageUrl } from '@/utils';
 
 export default function Conditions() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8 pb-safe">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-4xl mx-auto">
         {/* Bouton retour */}
         <Button
@@ -62,12 +62,6 @@ export default function Conditions() {
           </CardContent>
         </Card>
       </div>
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

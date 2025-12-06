@@ -7,7 +7,7 @@ import { createPageUrl } from '@/utils';
 
 export default function Politique() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-4xl mx-auto">
         {/* Bouton retour */}
         <Button
@@ -141,12 +141,6 @@ export default function Politique() {
           </CardContent>
         </Card>
       </div>
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

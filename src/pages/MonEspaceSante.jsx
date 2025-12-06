@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Calendar,
   FileText,
@@ -9,8 +10,11 @@ import {
   MessageSquare,
   Heart,
   Loader2,
+  Bell,
   CheckCircle
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 import MesRendezVousPatient from '@/components/espacesante/MesRendezVousPatient';
 import DocumentsMedicaux from '@/components/espacesante/DocumentsMedicaux';
@@ -106,7 +110,7 @@ export default function MonEspaceSante() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pb-safe">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6 md:mb-8">
@@ -234,10 +238,7 @@ export default function MonEspaceSante() {
         </div>
       </div>
 
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
+      <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -15,6 +15,7 @@ import {
   Loader2,
   Clock,
   CheckCircle,
+  X,
   Edit,
   Trash2,
   AlertCircle
@@ -191,7 +192,7 @@ export default function MesRappels() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -376,12 +377,6 @@ export default function MesRappels() {
           onClose={() => setEditingRappel(null)}
         />
       )}
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

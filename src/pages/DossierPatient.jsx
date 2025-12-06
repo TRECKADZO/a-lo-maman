@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -22,6 +21,9 @@ import {
   Image,
   X,
   AlertCircle,
+  Clock,
+  Mail,
+  Phone,
   Activity
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -297,7 +299,7 @@ export default function DossierPatient() {
   const rdvPasses = rdvPatient.filter(rdv => new Date(rdv.date_rdv) <= new Date() || rdv.statut === 'termine');
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-full bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <Button asChild variant="outline" className="active:scale-95 transition-transform">
@@ -810,12 +812,6 @@ export default function DossierPatient() {
           }}
         />
       )}
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(1rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

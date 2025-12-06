@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { Button } from '@/components/ui/button';
 import { 
   Heart, 
   Baby, 
+  Stethoscope, 
   MessageSquare, 
   Calendar,
   Sparkles,
@@ -275,7 +277,7 @@ export default function IntroSlides() {
         </button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slideInRight {
           from {
             opacity: 0;

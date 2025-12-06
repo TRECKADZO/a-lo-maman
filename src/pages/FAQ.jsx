@@ -13,8 +13,11 @@ import {
   Search,
   HelpCircle,
   Shield,
+  Baby,
+  Calendar,
   MessageSquare,
   CreditCard,
+  Lock,
   Stethoscope,
   Users,
   FileText,
@@ -280,7 +283,7 @@ export default function FAQ() {
   })).filter(category => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-5xl mx-auto">
         {/* Bouton retour */}
         <Button
@@ -398,12 +401,6 @@ export default function FAQ() {
           </CardContent>
         </Card>
       </div>
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

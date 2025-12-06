@@ -11,18 +11,24 @@ import {
   Syringe,
   Activity,
   AlertCircle,
+  Calendar,
   Users,
+  BarChart3,
   Plus,
   Settings,
+  Bell,
+  CheckCircle,
   Clock,
   Award
 } from "lucide-react";
 import { format, differenceInMonths, differenceInDays } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { fr } from "date-fns/locale";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import ComparaisonCroissance from "../components/enfants/ComparaisonCroissance";
+import AlertesConsolidees from "../components/enfants/AlertesConsolidees";
 import VueEnfantResume from "../components/enfants/VueEnfantResume";
 
 export default function TableauBordEnfants() {
@@ -228,7 +234,7 @@ export default function TableauBordEnfants() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -640,12 +646,6 @@ export default function TableauBordEnfants() {
           </TabsContent>
         </Tabs>
       </div>
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

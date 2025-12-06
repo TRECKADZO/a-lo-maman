@@ -9,18 +9,23 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Users,
   Search,
+  User,
   Calendar,
   Loader2,
   Baby,
   MessageSquare,
+  Phone,
+  Mail,
   Clock,
   AlertCircle,
   FileText,
+  Activity,
+  Filter,
   TrendingUp
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { differenceInMonths, format, isToday, isTomorrow } from 'date-fns';
+import { differenceInMonths, differenceInYears, format, isToday, isTomorrow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import AuthGuard from '../components/auth/AuthGuard';
 
@@ -191,7 +196,7 @@ export default function MesPatients() {
 
   return (
     <AuthGuard>
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 pb-safe">
+      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl md:text-4xl font-bold text-gray-900 flex items-center gap-3 mb-2">
@@ -569,12 +574,6 @@ export default function MesPatients() {
           </Tabs>
         </div>
       </div>
-
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(6rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </AuthGuard>
   );
 }

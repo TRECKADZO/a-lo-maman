@@ -1,17 +1,20 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users,
   MessageSquare,
   Plus,
+  Search,
+  Filter,
   TrendingUp,
   Heart,
+  ThumbsUp,
   Shield,
   ArrowLeft,
   Stethoscope,
@@ -138,7 +141,7 @@ export default function Communaute() {
     const Icon = forum?.icon;
 
     return (
-      <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950 pb-safe">
+      <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <Button
@@ -187,11 +190,6 @@ export default function Communaute() {
             </Card>
           )}
         </div>
-        <style jsx>{`
-          .pb-safe {
-            padding-bottom: max(1rem, env(safe-area-inset-bottom));
-          }
-        `}</style>
       </div>
     );
   }
@@ -199,7 +197,7 @@ export default function Communaute() {
   // VUE SPÉCIALISTE
   if (isSpecialist) {
     return (
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950 pb-safe">
+      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
             <div>
@@ -408,19 +406,13 @@ export default function Communaute() {
             <OutilsModeration onClose={() => setShowModeration(false)} />
           )}
         </div>
-        
-        <style jsx>{`
-          .pb-safe {
-            padding-bottom: max(1rem, env(safe-area-inset-bottom));
-          }
-        `}</style>
       </div>
     );
   }
 
   // VUE MAMAN (existante)
   return (
-    <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950 pb-safe">
+    <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <h1 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 break-words">
@@ -667,12 +659,6 @@ export default function Communaute() {
           <ExperienceSharing onClose={() => setShowExperience(false)} defaultCategorie={selectedCategorie} />
         )}
       </div>
-      
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(1rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

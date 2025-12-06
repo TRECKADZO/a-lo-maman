@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Calendar,
   Clock,
@@ -21,6 +22,8 @@ import {
   Phone,
   Video,
   Sparkles,
+  X,
+  CalendarX,
   CalendarClock,
   Copy,
   Zap,
@@ -411,7 +414,7 @@ export default function ConfigurerAgenda() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 pb-safe">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
@@ -767,12 +770,6 @@ export default function ConfigurerAgenda() {
             </Button>
           </div>
         </div>
-
-        <style jsx>{`
-          .pb-safe {
-            padding-bottom: max(6rem, env(safe-area-inset-bottom));
-          }
-        `}</style>
       </div>
     </AuthGuard>
   );

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import {
   Video,
   Phone,
   Briefcase,
+  Home,
   Hospital,
   Globe,
   CreditCard
@@ -198,7 +198,7 @@ export default function Teleconsultation() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 pb-safe">
+    <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -491,12 +491,6 @@ export default function Teleconsultation() {
           />
         )}
       </div>
-      
-      <style jsx>{`
-        .pb-safe {
-          padding-bottom: max(1rem, env(safe-area-inset-bottom));
-        }
-      `}</style>
     </div>
   );
 }

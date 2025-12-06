@@ -12,15 +12,21 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Heart,
   Star,
+  Award,
   Sparkles,
   Image as ImageIcon,
   Upload,
   X,
   Loader2,
+  Info,
+  ThumbsUp,
+  MessageSquare,
   AlertCircle,
   ChevronUp,
   ChevronDown
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 /**
  * Composant pour partager des expériences et témoignages
@@ -644,7 +650,7 @@ ${formData.photos.length > 0 ? `\n📸 **Photos partagées : ${formData.photos.l
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .pb-safe {
           padding-bottom: max(1rem, env(safe-area-inset-bottom));
         }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -15,6 +15,7 @@ import {
   LogOut,
   HeartPulse,
   MessageSquare,
+  Loader2,
   Sparkles,
   FolderOpen,
   BookOpen
@@ -423,7 +424,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="flex-1 flex flex-col lg:hidden h-screen overflow-hidden">
           {/* Header Mobile avec safe area */}
           <header 
-            className="bg-white/80 backdrop-blur-sm border-b px-4 py-3 flex items-center justify-between flex-shrink-0"
+            className="bg-white/80 backdrop-blur-sm border-b px-4 py-3 flex items-center justify-between flex-shrink-0 z-10"
             style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
           >
             <h1 className="text-base md:text-lg font-bold truncate flex-1">{getPageTitle(currentPageName, lang)}</h1>
@@ -432,10 +433,11 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Main Content - Scroll optimisé */}
           <main 
-            className="flex-1 overflow-y-auto mobile-scroll"
+            className="flex-1 overflow-y-auto overflow-x-hidden"
             style={{ 
               WebkitOverflowScrolling: 'touch',
               overscrollBehaviorY: 'contain',
+              touchAction: 'pan-y',
               paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))'
             }}
           >

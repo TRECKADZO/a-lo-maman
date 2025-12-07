@@ -14,6 +14,7 @@ import {
   Stethoscope,
   Syringe,
   TrendingUp,
+  Clock,
   Scale,
   Calculator,
   Sparkles,
@@ -215,7 +216,7 @@ export default function Grossesse() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       {info && (
         <>
           {/* Header compact mobile-first */}
@@ -303,7 +304,7 @@ export default function Grossesse() {
           </div>
 
           {/* Grille des sections - navigation mobile */}
-          <div className="px-4 pb-8">
+          <div className="px-4 pb-32">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">Mes outils</h2>
             <div className="grid grid-cols-4 gap-3">
               {SECTIONS.map((section) => {

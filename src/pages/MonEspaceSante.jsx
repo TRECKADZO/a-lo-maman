@@ -110,7 +110,7 @@ export default function MonEspaceSante() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+    <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6 md:mb-8">

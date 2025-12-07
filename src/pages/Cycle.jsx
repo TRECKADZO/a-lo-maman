@@ -120,7 +120,7 @@ export default function Cycle() {
   const fertileWindow = calculateFertileWindow();
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4 md:p-8">
+    <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4 md:p-8 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex justify-end">
           <Button 

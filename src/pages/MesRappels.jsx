@@ -192,7 +192,7 @@ export default function MesRappels() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

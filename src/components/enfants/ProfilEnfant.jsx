@@ -8,6 +8,7 @@ import {
   Baby,
   Syringe,
   TrendingUp,
+  Calendar,
   AlertCircle,
   Heart,
   Activity,
@@ -46,7 +47,7 @@ export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <Button variant="outline" onClick={onRetour} className="flex items-center gap-2">
         <ArrowLeft className="w-4 h-4" />
         Retour

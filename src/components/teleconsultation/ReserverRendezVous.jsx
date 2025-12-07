@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Calendar as CalendarIcon,
@@ -341,8 +342,8 @@ export default function ReserverRendezVous({ professionnel, onClose, onSuccess }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <Card className="max-w-2xl w-full shadow-2xl my-8">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 md:p-4 overflow-y-auto">
+      <Card className="w-full md:max-w-2xl my-0 md:my-8 shadow-2xl h-full md:h-auto rounded-none md:rounded-lg overflow-y-auto">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Prendre rendez-vous</CardTitle>

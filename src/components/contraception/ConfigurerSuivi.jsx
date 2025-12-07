@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -60,7 +59,8 @@ export default function ConfigurerSuivi({ suiviExistant, onClose }) {
   };
 
   return (
-    <Card className="shadow-2xl border-2 border-rose-200">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 md:p-4 overflow-y-auto">
+      <Card className="w-full md:max-w-2xl my-0 md:my-8 shadow-2xl border-0 md:border-2 border-rose-200 h-full md:h-auto md:max-h-[90vh] overflow-y-auto rounded-none md:rounded-lg">
       <CardHeader className="bg-gradient-to-r from-rose-50 to-pink-50">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl text-rose-700">
@@ -186,5 +186,6 @@ export default function ConfigurerSuivi({ suiviExistant, onClose }) {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 }

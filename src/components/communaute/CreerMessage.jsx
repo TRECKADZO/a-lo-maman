@@ -145,8 +145,8 @@ export default function CreerMessage({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-0 md:p-4 overflow-y-auto">
+      <Card className="w-full md:max-w-2xl my-0 md:my-8 shadow-2xl h-full md:h-auto md:max-h-[90vh] overflow-y-auto rounded-none md:rounded-lg">
         <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50">
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl">Créer un nouveau message</CardTitle>

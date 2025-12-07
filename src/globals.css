@@ -281,9 +281,10 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Forcer le scroll dans les dialogs/modals Radix UI */
+/* Forcer le scroll dans les dialogs/modals Radix UI et Custom */
 [data-radix-dialog-content],
 [data-radix-alert-dialog-content],
+[data-radix-select-content],
 [role="dialog"],
 .radix-dialog-content {
   max-height: 90vh !important;
@@ -292,6 +293,7 @@
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   position: relative !important;
+  touch-action: pan-y !important;
 }
 
 /* Container de scroll pour dialogs */
@@ -326,10 +328,22 @@
 
 /* Contenu scrollable dans les modals */
 .modal-scrollable-content {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
   max-height: calc(90vh - 120px);
   max-height: calc(90dvh - 120px);
+  touch-action: pan-y !important;
+}
+
+/* Fix pour les Cards dans les modals sur mobile */
+@media (max-width: 768px) {
+  .fixed.inset-0 > .w-full {
+    height: 100vh;
+    height: 100dvh;
+    max-height: none !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
 }
 
 /* Animations d'entrée/sortie optimisées */

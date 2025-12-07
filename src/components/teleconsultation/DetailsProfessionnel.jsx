@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +11,7 @@ import {
   Phone,
   Mail,
   Calendar,
+  Loader2,
   CheckCircle,
   Clock,
   MessageSquare,
@@ -110,8 +110,8 @@ export default function DetailsProfessionnel({ professionnel, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <Card className="w-full max-w-4xl my-8 shadow-2xl">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 md:p-4 overflow-y-auto">
+      <Card className="w-full md:max-w-4xl my-0 md:my-8 shadow-2xl h-full md:h-auto rounded-none md:rounded-lg overflow-y-auto">
         {/* En-tête avec retour */}
         <div className="flex items-center gap-4 p-4 md:p-6 pb-2">
           <Button
@@ -207,7 +207,7 @@ export default function DetailsProfessionnel({ professionnel, onClose }) {
           </CardContent>
         </Card>
 
-        <CardContent className="p-4 md:p-6 max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
+        <CardContent className="p-4 md:p-6">
           <Tabs defaultValue="presentation" className="w-full">
             <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1 p-1">
               <TabsTrigger value="presentation" className="text-xs md:text-sm px-2 md:px-4 py-2">Présentation</TabsTrigger>

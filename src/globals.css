@@ -284,21 +284,52 @@
 /* Forcer le scroll dans les dialogs/modals Radix UI */
 [data-radix-dialog-content],
 [data-radix-alert-dialog-content],
-[role="dialog"] {
-  max-height: 90vh;
-  max-height: 90dvh;
+[role="dialog"],
+.radix-dialog-content {
+  max-height: 90vh !important;
+  max-height: 90dvh !important;
   overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  position: relative !important;
+}
+
+/* Container de scroll pour dialogs */
+[data-radix-dialog-content] > *,
+[data-radix-alert-dialog-content] > * {
+  overflow-y: visible;
 }
 
 /* Scroll optimisé pour les modals */
 .dialog-content-scroll {
-  overflow-y: auto;
+  overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   max-height: 85vh;
   max-height: 85dvh;
+  position: relative;
+}
+
+/* Bottom sheets et modals fixes */
+.modal-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  border-radius: 24px 24px 0 0;
+}
+
+/* Contenu scrollable dans les modals */
+.modal-scrollable-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(90vh - 120px);
+  max-height: calc(90dvh - 120px);
 }
 
 /* Animations d'entrée/sortie optimisées */

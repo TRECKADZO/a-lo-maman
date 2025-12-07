@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart,
   Pill,
@@ -22,7 +22,7 @@ import MethodesList from "@/components/contraception/MethodesList";
 import SuiviActif from "@/components/contraception/SuiviActif";
 import ConfigurerSuivi from "@/components/contraception/ConfigurerSuivi";
 import AuthGuard from '../components/auth/AuthGuard';
-import { DashboardSkeleton, StatCardSkeleton } from '@/components/ui/skeleton-loaders';
+import { DashboardSkeleton, StatCardSkeleton, GridSkeleton } from '@/components/ui/skeleton-loaders';
 import { PageTransition, TabTransition, CardTransition } from '@/components/ui/page-transition';
 import { Touchable } from '@/components/ui/native-interactions';
 
@@ -110,8 +110,8 @@ export default function Contraception() {
   return (
     <AuthGuard>
       <PageTransition type="fade">
-        <div className="min-h-full bg-gradient-to-br from-rose-50 via-white to-pink-50">
-          <div className="p-4 md:p-8 space-y-4 md:space-y-6 max-w-7xl mx-auto pb-24 lg:pb-6">
+        <div className="bg-gradient-to-br from-rose-50 via-white to-pink-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+          <div className="p-4 md:p-8 space-y-4 md:space-y-6 max-w-7xl mx-auto">
             {/* Header optimisé mobile */}
             <CardTransition>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">

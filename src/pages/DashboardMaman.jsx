@@ -12,23 +12,26 @@ import {
   Baby,
   Stethoscope,
   HeartPulse,
+  Users,
   TrendingUp,
   Droplet,
   FileText,
   Clock,
   CheckCircle,
   AlertCircle,
+  Pill,
   Activity,
+  Download,
   Eye
 } from 'lucide-react';
-import { format, differenceInWeeks, differenceInDays, isToday, isTomorrow } from 'date-fns';
+import { format, differenceInWeeks, differenceInDays, addDays, isToday, isTomorrow, isPast } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import { DashboardSkeleton } from '@/components/ui/skeleton-loaders';
 import { PageTransition, TabTransition } from '@/components/ui/page-transition';
-// Added as per outline, though not used in JSX
+import { MobilePageContainer } from '@/components/ui/safe-area-view'; // Added as per outline, though not used in JSX
 
 const DashboardWidget = ({ title, icon: Icon, children, link, linkText, color = "pink" }) => (
   <Card className="shadow-lg hover:shadow-xl transition-shadow border-none active:scale-[0.98]">
@@ -181,8 +184,8 @@ export default function DashboardMaman() {
 
   return (
     <PageTransition type="fade">
-      <div className="bg-gradient-to-br from-pink-50 via-white to-purple-50 min-h-full">
-        <div className="p-4 space-y-4 max-w-7xl mx-auto pb-24 lg:pb-6">
+      <div className="bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+        <div className="p-4 space-y-4 max-w-7xl mx-auto">
           
           {/* Bienvenue - Mobile optimized */}
           <Card className="shadow-lg border-none bg-gradient-to-r from-pink-100 to-purple-100 overflow-hidden scale-in">

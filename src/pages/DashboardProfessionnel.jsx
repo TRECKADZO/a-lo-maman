@@ -209,7 +209,7 @@ export default function DashboardProfessionnel() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-teal-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-black min-h-full">
+    <div className="bg-gradient-to-br from-teal-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-black pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="p-4 md:p-6 space-y-6">
         {profilIncomplet && (
           <Alert className="border-orange-500 bg-orange-50">

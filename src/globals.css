@@ -428,12 +428,19 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Disable pull-to-refresh */
-body {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
+/* Prevent body scroll but allow modal scroll */
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Ensure modals can scroll */
+body.modal-open [data-radix-dialog-content],
+body.modal-open [role="dialog"] {
+  overflow-y: auto !important;
+  position: fixed !important;
 }
 
 /* Fade in animation */

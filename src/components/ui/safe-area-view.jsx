@@ -99,30 +99,31 @@ export function BottomSheet({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className={`fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl ${
-              fullHeight ? 'top-[10%]' : ''
+            className={`fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${
+              fullHeight ? 'top-[10%]' : 'max-h-[90vh]'
             } ${className}`}
-            style={{
-              paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)',
-            }}
           >
             {/* Handle */}
-            <div className="flex justify-center pt-3 pb-2">
+            <div className="flex justify-center pt-3 pb-2 flex-shrink-0">
               <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full" />
             </div>
 
             {/* Title */}
             {title && (
-              <div className="px-6 pb-4 border-b dark:border-gray-800">
+              <div className="px-6 pb-4 border-b dark:border-gray-800 flex-shrink-0">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {title}
                 </h3>
               </div>
             )}
 
-            {/* Content */}
-            <div className={`${fullHeight ? 'h-full overflow-y-auto' : ''}`}
-              style={{ WebkitOverflowScrolling: 'touch' }}
+            {/* Content - Scrollable avec padding bottom pour navigation */}
+            <div 
+              className="flex-1 overflow-y-auto"
+              style={{ 
+                WebkitOverflowScrolling: 'touch',
+                paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))'
+              }}
             >
               {children}
             </div>

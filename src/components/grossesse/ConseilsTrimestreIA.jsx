@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Sparkles, Heart, Baby, Apple, Activity, Moon, AlertCircle,
-  Loader2, RefreshCw, Stethoscope, Smile
+  Loader2, RefreshCw, Stethoscope, Pill, Brain, Smile
 } from 'lucide-react';
 
 const CATEGORIES_CONSEILS = [
@@ -170,7 +170,7 @@ Inclus des aliments locaux, des pratiques culturelles positives si pertinent.`,
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-24" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       {/* Header avec message personnalisé */}
       <Card className={`shadow-xl bg-gradient-to-r ${getTrimestreColor()} text-white overflow-hidden`}>
         <CardContent className="p-6">

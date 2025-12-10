@@ -15,26 +15,13 @@ import {
   CheckCircle,
   AlertCircle,
   Download,
-  Upload
+  Globe
 } from "lucide-react";
-import FHIRMapper from "./FHIRMapper";
+import DMPAdapter from "./DMPAdapter";
+import GestionConsentements from "./GestionConsentements";
 import AuthGuard from "../auth/AuthGuard";
 
 export default function InteropDashboard() {
-  const [activeTab, setActiveTab] = useState('fhir');
-
-  const { data: user } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => base44.auth.me(),
-  });
-
-  const { data: profilMaman } = useQuery({
-    queryKey: ['profil_maman', user?.email],
-    queryFn: () => base44.entities.ProfilMaman.filter({ created_by: user?.email }),
-    enabled: !!user,
-  });
-
-  const patientEmail = user?.email;
   const [selectedTab, setSelectedTab] = useState("fhir");
 
   const { data: user } = useQuery({
@@ -81,17 +68,8 @@ export default function InteropDashboard() {
   };
 
   return (
-    <div className="p-4 md:p-8">
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="fhir">Ressources FHIR</TabsTrigger>
-          <TabsTrigger value="dmp">Publication DMP</TabsTrigger>
-          <TabsTrigger value="consentements">Consentements</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="fhir" className="space-y-6 mt-6">
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -171,11 +149,12 @@ export default function InteropDashboard() {
 
           {/* Tabs */}
           <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
               <TabsTrigger value="fhir">HL7 FHIR</TabsTrigger>
               <TabsTrigger value="xds">IHE XDS</TabsTrigger>
               <TabsTrigger value="identifiants">PIX/PDQ</TabsTrigger>
-              <TabsTrigger value="consentements">BPPC</TabsTrigger>
+              <TabsTrigger value="consentements">Consentements</TabsTrigger>
+              <TabsTrigger value="dmp">Publication DMP</TabsTrigger>
               <TabsTrigger value="dicom">DICOM</TabsTrigger>
             </TabsList>
 
@@ -185,10 +164,15 @@ export default function InteropDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="w-5 h-5 text-blue-600" />
-                    Ressources FHIR R4/R5
+                    Ressources FHIR R4 (10 types supportés)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-900">
+                      <strong>Nouvelles ressources :</strong> Condition, Procedure, AdverseEvent pour un suivi clinique complet
+                    </p>
+                  </div>
                   <div className="space-y-3">
                     {fhirResources.length === 0 ? (
                       <p className="text-center py-8 text-gray-500">
@@ -309,38 +293,12 @@ export default function InteropDashboard() {
 
             {/* Consentements BPPC */}
             <TabsContent value="consentements" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-orange-600" />
-                    Consentements (IHE BPPC)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {consentements.length === 0 ? (
-                      <p className="text-center py-8 text-gray-500">
-                        Aucun consentement enregistré
-                      </p>
-                    ) : (
-                      consentements.map((consent) => (
-                        <div key={consent.id} className="p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center justify-between mb-2">
-                            <Badge>{consent.policy_type}</Badge>
-                            <Badge variant={consent.status === 'active' ? 'default' : 'secondary'}>
-                              {consent.status}
-                            </Badge>
-                          </div>
-                          <p className="font-medium">{consent.scope}</p>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Décision: {consent.decision === 'permit' ? '✓ Autorisé' : '✗ Refusé'}
-                          </p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <GestionConsentements patientEmail={user?.email} />
+            </TabsContent>
+
+            {/* Publication DMP */}
+            <TabsContent value="dmp" className="space-y-4">
+              <DMPAdapter patientEmail={user?.email} />
             </TabsContent>
 
             {/* Images DICOM */}
@@ -383,16 +341,5 @@ export default function InteropDashboard() {
         </div>
       </div>
     </AuthGuard>
-        </TabsContent>
-
-        <TabsContent value="dmp" className="space-y-6 mt-6">
-          <DMPAdapter patientEmail={patientEmail} />
-        </TabsContent>
-
-        <TabsContent value="consentements" className="space-y-6 mt-6">
-          <GestionConsentements patientEmail={patientEmail} />
-        </TabsContent>
-      </Tabs>
-    </div>
   );
 }

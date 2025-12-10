@@ -25,6 +25,8 @@ import { fr } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import OnboardingProfessionnel from '../components/onboarding/OnboardingProfessionnel';
+import MetricsCharts from '../components/dashboard-pro/MetricsCharts';
+import AlertesRisqueIA from '../components/dashboard-pro/AlertesRisqueIA';
 
 export default function DashboardProfessionnel() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -82,6 +84,15 @@ export default function DashboardProfessionnel() {
     },
     enabled: !!profilPro,
     initialData: [],
+  });
+
+  const { data: documentsUploaded = [] } = useQuery({
+    queryKey: ['documents_uploaded'],
+    queryFn: async () => {
+      const docs = await base44.entities.DocumentMedical.list();
+      return docs;
+    },
+    enabled: !!profilPro,
   });
 
   const confirmerMutation = useMutation({
@@ -280,6 +291,16 @@ export default function DashboardProfessionnel() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Graphiques interactifs */}
+        <MetricsCharts 
+          patients={mesPatients} 
+          appointments={mesRendezVous}
+          documents={documentsUploaded}
+        />
+
+        {/* Alertes IA */}
+        <AlertesRisqueIA profesionnelEmail={user?.email} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="shadow-lg border-none bg-gradient-to-r from-purple-50 to-indigo-50">

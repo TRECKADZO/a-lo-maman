@@ -447,6 +447,46 @@ const data2 = await response2.json();`}</code>
             </div>
           </CardContent>
         </Card>
+
+        {/* Conformité RGPD/HDS */}
+        <Card className="shadow-lg border-2 border-green-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-green-600" />
+              Conformité RGPD / HDS
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-green-50 rounded-lg">
+                <p className="font-semibold text-green-900 mb-2">✅ RGPD Compliant</p>
+                <ul className="text-xs text-green-800 space-y-1">
+                  <li>• Consentement explicite requis</li>
+                  <li>• Droit à l'oubli supporté</li>
+                  <li>• Export données (portabilité)</li>
+                  <li>• Audit trail complet</li>
+                  <li>• Chiffrement bout-en-bout</li>
+                </ul>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <p className="font-semibold text-blue-900 mb-2">🏥 Préparation HDS</p>
+                <ul className="text-xs text-blue-800 space-y-1">
+                  <li>• Hébergement sécurisé</li>
+                  <li>• Logs 10 ans minimum</li>
+                  <li>• TLS 1.3 en transit</li>
+                  <li>• AES-256 au repos</li>
+                  <li>• Plan de reprise d'activité</li>
+                </ul>
+              </div>
+            </div>
+            <div className="p-3 bg-amber-50 rounded-lg">
+              <p className="text-xs text-amber-800">
+                <strong>Pro Santé Connect :</strong> Authentification sécurisée des professionnels 
+                via carte CPS/CPF + accès DMP avec consentement patient.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

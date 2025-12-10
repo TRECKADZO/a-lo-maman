@@ -24,7 +24,10 @@ import {
   HelpCircle,
   Camera,
   ChevronRight,
-  Settings
+  Settings,
+  BarChart3,
+  Brain,
+  FileImage
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -47,10 +50,16 @@ import ConseilsNutritionActivite from "../components/grossesse/ConseilsNutrition
 import QuestionsMedecin from "../components/grossesse/QuestionsMedecin";
 import CalendrierEtapesGrossesse from "../components/grossesse/CalendrierEtapesGrossesse";
 import JournalPhotosSemaine from "../components/grossesse/JournalPhotosSemaine";
+import GraphiquesInteractifs from "../components/grossesse/GraphiquesInteractifs";
+import PredictionRisquesIA from "../components/grossesse/PredictionRisquesIA";
+import GestionEchographies from "../components/grossesse/GestionEchographies";
 
 // Configuration des sections de la page
 const SECTIONS = [
   { id: 'evolution', label: 'Évolution Bébé', icon: Baby, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-50' },
+  { id: 'graphiques', label: 'Graphiques', icon: BarChart3, color: 'from-blue-500 to-indigo-500', bgColor: 'bg-blue-50' },
+  { id: 'risques_ia', label: 'Risques IA', icon: Brain, color: 'from-purple-500 to-fuchsia-500', bgColor: 'bg-purple-50' },
+  { id: 'echographies', label: 'Échographies', icon: FileImage, color: 'from-cyan-500 to-blue-500', bgColor: 'bg-cyan-50' },
   { id: 'symptomes', label: 'Symptômes', icon: ClipboardList, color: 'from-purple-500 to-violet-500', bgColor: 'bg-purple-50' },
   { id: 'conseils', label: 'Conseils IA', icon: Sparkles, color: 'from-indigo-500 to-blue-500', bgColor: 'bg-indigo-50' },
   { id: 'nutrition', label: 'Nutrition', icon: Apple, color: 'from-green-500 to-emerald-500', bgColor: 'bg-green-50' },
@@ -147,6 +156,11 @@ export default function Grossesse() {
 
   const prochaineConsult = getProchaineConsultation();
 
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
+
   const renderSectionContent = () => {
     if (!activeSection || !info) return null;
 
@@ -154,6 +168,9 @@ export default function Grossesse() {
 
     switch (activeSection) {
       case 'evolution': return <EvolutionBebe {...props} />;
+      case 'graphiques': return <GraphiquesInteractifs grossesse={grossesse} />;
+      case 'risques_ia': return <PredictionRisquesIA grossesse={grossesse} consultations={grossesse.consultations || []} user={user} />;
+      case 'echographies': return <GestionEchographies grossesse={grossesse} />;
       case 'symptomes': return <JournalSymptomes {...props} />;
       case 'conseils': return <ConseilsTrimestreIA {...props} />;
       case 'nutrition': return <ConseilsNutritionActivite {...props} />;

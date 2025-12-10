@@ -12,7 +12,10 @@ import {
   Lock,
   Key,
   BookOpen,
-  Activity
+  Activity,
+  Globe,
+  Webhook,
+  FileJson
 } from 'lucide-react';
 
 export default function APIDocumentation() {
@@ -203,14 +206,22 @@ export default function APIDocumentation() {
 
         {/* Endpoints */}
         <Tabs defaultValue="clinique">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="clinique">
               <Server className="w-4 h-4 mr-2" />
-              API Clinique
+              Clinique
             </TabsTrigger>
             <TabsTrigger value="public">
               <Globe className="w-4 h-4 mr-2" />
-              API Publique
+              Publique
+            </TabsTrigger>
+            <TabsTrigger value="webhooks">
+              <Webhook className="w-4 h-4 mr-2" />
+              Webhooks
+            </TabsTrigger>
+            <TabsTrigger value="fhir">
+              <FileJson className="w-4 h-4 mr-2" />
+              FHIR
             </TabsTrigger>
           </TabsList>
 
@@ -276,6 +287,93 @@ export default function APIDocumentation() {
                 </CardContent>
               </Card>
             ))}
+          </TabsContent>
+
+          <TabsContent value="webhooks" className="space-y-4">
+            <Card className="shadow-lg bg-gradient-to-r from-purple-50 to-pink-50">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3">🔔 Webhooks - Notifications temps réel</h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  Recevez des notifications HTTP instantanées lors d'événements clés (nouveau patient, RDV créé, document uploadé, etc.)
+                </p>
+                <div className="bg-white p-4 rounded-lg">
+                  <p className="font-semibold mb-2">Enregistrer un webhook :</p>
+                  <CodeBlock code={{
+                    endpoint: "webhookManager",
+                    action: "register",
+                    data: {
+                      clinique_id: "clinic_123",
+                      url: "https://your-clinic.com/webhook",
+                      events: ["patient.created", "appointment.created"],
+                      secret: "optional_webhook_secret"
+                    }
+                  }} id="webhook-register" />
+                </div>
+                <div className="mt-4 p-4 bg-amber-100 rounded-lg">
+                  <p className="text-sm font-semibold text-amber-900 mb-2">⚠️ Sécurité webhook :</p>
+                  <ul className="text-xs text-amber-800 space-y-1">
+                    <li>• URL HTTPS obligatoire (TLS 1.3)</li>
+                    <li>• Signature HMAC-SHA256 dans header X-Alomaman-Signature</li>
+                    <li>• Vérifier la signature côté clinique avant traitement</li>
+                    <li>• Secret généré automatiquement si non fourni</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="fhir" className="space-y-4">
+            <Card className="shadow-lg bg-gradient-to-r from-blue-50 to-cyan-50">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3">🏥 FHIR R4 - Interopérabilité</h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  Synchronisation bidirectionnelle avec systèmes FHIR (DMP, SIH, etc.)
+                </p>
+                <div className="bg-white p-4 rounded-lg space-y-4">
+                  <div>
+                    <p className="font-semibold mb-2">Synchroniser données vitales (Observation) :</p>
+                    <CodeBlock code={{
+                      endpoint: "fhirSync",
+                      action: "syncVitals",
+                      data: {
+                        grossesse_id: "grossesse_123",
+                        vitals: {
+                          date: "2025-12-10",
+                          tension_systolique: 120,
+                          tension_diastolique: 80,
+                          poids: 65.5
+                        }
+                      }
+                    }} id="fhir-vitals" />
+                  </div>
+                  <div>
+                    <p className="font-semibold mb-2">Synchroniser mesures croissance bébé :</p>
+                    <CodeBlock code={{
+                      endpoint: "fhirSync",
+                      action: "syncGrowth",
+                      data: {
+                        enfant_id: "enfant_123",
+                        mesure: {
+                          date: "2025-12-10",
+                          poids: 4.2,
+                          taille: 52,
+                          perimetre_cranien: 35
+                        }
+                      }
+                    }} id="fhir-growth" />
+                  </div>
+                </div>
+                <div className="mt-4 p-4 bg-teal-100 rounded-lg">
+                  <p className="text-sm font-semibold text-teal-900 mb-2">✅ Ressources FHIR supportées :</p>
+                  <ul className="text-xs text-teal-800 space-y-1">
+                    <li>• Observation (données vitales, croissance)</li>
+                    <li>• Appointment (rendez-vous)</li>
+                    <li>• Patient (profils anonymisés)</li>
+                    <li>• Compatible DMP via Pro Santé Connect</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 

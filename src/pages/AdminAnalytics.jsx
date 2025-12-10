@@ -11,15 +11,21 @@ import { Progress } from '@/components/ui/progress';
 import {
   BarChart3, Download, FileSpreadsheet, FileText, Users, Baby, Heart,
   Syringe, Activity, TrendingUp, Building2, Microscope, Shield,
-  Stethoscope, MapPin, Calendar, ArrowUpRight, ArrowDownRight,
+  Stethoscope, MapPin, Calendar, PieChart, ArrowUpRight, ArrowDownRight,
   Loader2, Lock, AlertTriangle, CheckCircle2, Clock, Percent, Search,
-  Target, DollarSign, TrendingDown, Pill, AlertOctagon, HeartPulse, Beaker, Wallet, Repeat, UserCheck, Zap, BarChart2, Banknote, Gauge,
-  UserPlus, Bug
+  Target, DollarSign, TrendingDown, Thermometer, Pill, Eye, Filter,
+  Globe, AlertOctagon, HeartPulse, Beaker, Wallet, Repeat, UserCheck,
+  CreditCard, Zap, BarChart2, Banknote, RefreshCw, Gauge,
+  UserPlus, UserMinus, Bug, TrendingUpIcon
 } from 'lucide-react';
-import { format, subMonths, differenceInMonths, differenceInYears, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { format, subMonths, differenceInMonths, differenceInYears, startOfMonth, endOfMonth, subDays, isWithinInterval, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell, Line, AreaChart, Area, Legend, ComposedChart, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell, LineChart as RechartsLineChart, Line, AreaChart, Area, Legend, ComposedChart, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Treemap } from 'recharts';
 import AuthGuard from '@/components/auth/AuthGuard';
+import RapportsDemographiques from '../components/analytics/RapportsDemographiques';
+import RapportsTauxRemplissage from '../components/analytics/RapportsTauxRemplissage';
+import RapportsDocuments from '../components/analytics/RapportsDocuments';
+import RapportsResultatsIA from '../components/analytics/RapportsResultatsIA';
 
 const COLORS = ['#FF6B9D', '#14B8A6', '#8B5CF6', '#F59E0B', '#3B82F6', '#EF4444', '#10B981', '#6366F1'];
 
@@ -1188,40 +1194,60 @@ export default function AdminAnalytics() {
 
         {/* Onglets par partenaire */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Vue globale
+            </TabsTrigger>
+            <TabsTrigger value="rapports_demo" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Démographie
+            </TabsTrigger>
+            <TabsTrigger value="rapports_rdv" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Taux RDV
+            </TabsTrigger>
+            <TabsTrigger value="rapports_docs" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Documents
+            </TabsTrigger>
+            <TabsTrigger value="rapports_ia" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Résultats IA
             </TabsTrigger>
             <TabsTrigger value="sante_publique" className="flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               Santé Publique
             </TabsTrigger>
-            <TabsTrigger value="laboratoires" className="flex items-center gap-2">
-              <Beaker className="w-4 h-4" />
-              Laboratoires
-            </TabsTrigger>
-            <TabsTrigger value="assurances" className="flex items-center gap-2">
-              <Wallet className="w-4 h-4" />
-              Assurances
+            <TabsTrigger value="business" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Business
             </TabsTrigger>
             <TabsTrigger value="professionnels" className="flex items-center gap-2">
               <Stethoscope className="w-4 h-4" />
               Professionnels
             </TabsTrigger>
-            <TabsTrigger value="business" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Business/Investisseurs
-            </TabsTrigger>
-            <TabsTrigger value="pharma" className="flex items-center gap-2">
-              <Pill className="w-4 h-4" />
-              Pharma
-            </TabsTrigger>
-            <TabsTrigger value="developpement" className="flex items-center gap-2">
-              <Baby className="w-4 h-4" />
-              Développement
-            </TabsTrigger>
           </TabsList>
+
+          {/* RAPPORTS DÉMOGRAPHIQUES */}
+          <TabsContent value="rapports_demo">
+            <RapportsDemographiques />
+          </TabsContent>
+
+          {/* RAPPORTS TAUX REMPLISSAGE */}
+          <TabsContent value="rapports_rdv">
+            <RapportsTauxRemplissage />
+          </TabsContent>
+
+          {/* RAPPORTS DOCUMENTS */}
+          <TabsContent value="rapports_docs">
+            <RapportsDocuments />
+          </TabsContent>
+
+          {/* RAPPORTS RÉSULTATS IA */}
+          <TabsContent value="rapports_ia">
+            <RapportsResultatsIA />
+          </TabsContent>
 
           {/* VUE GLOBALE */}
           <TabsContent value="overview" className="space-y-6">

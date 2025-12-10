@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import ParcoursGuideMaman from '../components/onboarding/ParcoursGuideMaman';
+import ConseilsPersonnalises from '../components/ia/ConseilsPersonnalises';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,10 +33,7 @@ import { createPageUrl } from '@/utils';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import { DashboardSkeleton } from '@/components/ui/skeleton-loaders';
 import { PageTransition, TabTransition } from '@/components/ui/page-transition';
-import { MobilePageContainer } from '@/components/ui/safe-area-view';
-import OnboardingMaman from '@/components/onboarding/OnboardingMaman';
-import ConseilsPersonnalisesIA from '@/components/ia/ConseilsPersonnalisesIA';
-import AuthGuard from '@/components/auth/AuthGuard';
+import { MobilePageContainer } from '@/components/ui/safe-area-view'; // Added as per outline, though not used in JSX
 
 const DashboardWidget = ({ title, icon: Icon, children, link, linkText, color = "pink" }) => (
   <Card className="shadow-lg hover:shadow-xl transition-shadow border-none active:scale-[0.98]">
@@ -60,13 +59,14 @@ const DashboardWidget = ({ title, icon: Icon, children, link, linkText, color = 
 
 export default function DashboardMaman() {
   const [vueActive, setVueActive] = useState('apercu');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
   });
 
-  const { data: profilMaman, isLoading: profilLoading, refetch: refetchProfil } = useQuery({
+  const { data: profilMaman, isLoading: profilLoading } = useQuery({
     queryKey: ['profilMaman', user?.email],
     queryFn: async () => {
       if (!user) return null;
@@ -76,14 +76,12 @@ export default function DashboardMaman() {
     enabled: !!user,
   });
 
-  // Onboarding pour nouvelles utilisatrices
-  if (!profilLoading && !profilMaman) {
-    return (
-      <AuthGuard>
-        <OnboardingMaman onComplete={() => refetchProfil()} />
-      </AuthGuard>
-    );
-  }
+  // Afficher onboarding si pas de profil
+  useEffect(() => {
+    if (user && !profilLoading && !profilMaman) {
+      setShowOnboarding(true);
+    }
+  }, [user, profilMaman, profilLoading]);
 
   const { data: grossesse, isLoading: grossesseLoading } = useQuery({
     queryKey: ['grossesse_active'],
@@ -153,6 +151,15 @@ export default function DashboardMaman() {
 
   const isLoading = userLoading || profilLoading || grossesseLoading || enfantsLoading || rdvLoading;
 
+  if (showOnboarding && !profilMaman) {
+    return (
+      <ParcoursGuideMaman
+        onComplete={() => setShowOnboarding(false)}
+        userEmail={user?.email}
+      />
+    );
+  }
+
   if (isLoading) {
     return <DashboardSkeleton />;
   }
@@ -195,10 +202,9 @@ export default function DashboardMaman() {
   };
 
   return (
-    <AuthGuard>
-      <PageTransition type="fade">
-        <div className="bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
-          <div className="p-4 space-y-4 max-w-7xl mx-auto">
+    <PageTransition type="fade">
+      <div className="bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+        <div className="p-4 space-y-4 max-w-7xl mx-auto">
           
           {/* Bienvenue - Mobile optimized */}
           <Card className="shadow-lg border-none bg-gradient-to-r from-pink-100 to-purple-100 overflow-hidden scale-in">
@@ -295,16 +301,15 @@ export default function DashboardMaman() {
             </Card>
           )}
 
-          {/* Conseils Personnalisés IA */}
-          <ConseilsPersonnalisesIA
-            context="dashboard"
-            profilMaman={profilMaman}
+          {/* Widget Rappels */}
+          <RappelsWidget userEmail={user?.email} />
+
+          {/* Conseils personnalisés IA */}
+          <ConseilsPersonnalises 
+            profil={profilMaman}
             grossesse={grossesse}
             enfants={enfants}
           />
-
-          {/* Widget Rappels */}
-          <RappelsWidget userEmail={user?.email} />
 
           {/* Onglets - Mobile optimized */}
           <Tabs value={vueActive} onValueChange={setVueActive}>
@@ -640,9 +645,8 @@ export default function DashboardMaman() {
               </TabTransition>
             </TabsContent>
           </Tabs>
-          </div>
         </div>
-      </PageTransition>
-    </AuthGuard>
+      </div>
+    </PageTransition>
   );
 }

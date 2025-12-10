@@ -22,7 +22,7 @@ import { format, differenceInMonths } from "date-fns";
 import { fr } from "date-fns/locale";
 
 
-import GraphiqueCroissance from "./GraphiqueCroissance";
+import GraphiqueCroissanceEnhanced from "../visualisations/GraphiqueCroissanceEnhanced";
 import JalonsDeveloppement from "./JalonsDeveloppement";
 import AnalyseCroissanceIA from './AnalyseCroissanceIA';
 import HistoriqueMedical from './HistoriqueMedical';
@@ -32,7 +32,6 @@ import EditAllergies from "./modals/EditAllergies";
 import EditInfosGenerales from "./modals/EditInfosGenerales";
 import PartagerCarnet from "./PartagerCarnet";
 import SuiviVaccins from "./SuiviVaccins";
-import CourbesCroissanceEnhanced from '../visualizations/CourbesCroissanceEnhanced';
 
 export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
   const [onglet, setOnglet] = useState("infos");
@@ -239,7 +238,7 @@ export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
 
         {/* Onglet Croissance */}
         <TabsContent value="croissance">
-          <CourbesCroissanceEnhanced enfant={enfant} />
+          <GraphiqueCroissanceEnhanced enfant={enfant} />
         </TabsContent>
 
         {/* Onglet Jalons */}

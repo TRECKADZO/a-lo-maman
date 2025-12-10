@@ -28,8 +28,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    const url = new URL(req.url);
-    const { endpoint, clinique_id, date_debut, date_fin } = await req.json().catch(() => ({}));
+    const { endpoint, clinique_id, date_debut, date_fin } = await req.json();
 
     // Récupérer la clinique de l'utilisateur
     let clinique = null;

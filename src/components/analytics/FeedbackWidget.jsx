@@ -32,11 +32,16 @@ export default function FeedbackWidget() {
       return await base44.entities.UserFeedback.create(data);
     },
     onSuccess: () => {
-      toast.success('Merci pour votre feedback !');
-      setOpen(false);
       resetForm();
+      setOpen(false);
+      setTimeout(() => {
+        toast.success('Merci pour votre feedback !', {
+          description: 'Votre avis a été envoyé avec succès'
+        });
+      }, 100);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Feedback error:', error);
       toast.error('Erreur lors de l\'envoi du feedback');
     }
   });

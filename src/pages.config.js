@@ -47,6 +47,8 @@ import Interoperabilite from './pages/Interoperabilite';
 import Tests from './pages/Tests';
 import ABTesting from './pages/ABTesting';
 import Analytics from './pages/Analytics';
+import PortailClinique from './pages/PortailClinique';
+import OutilsIAPro from './pages/OutilsIAPro';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +102,8 @@ export const PAGES = {
     "Tests": Tests,
     "ABTesting": ABTesting,
     "Analytics": Analytics,
+    "PortailClinique": PortailClinique,
+    "OutilsIAPro": OutilsIAPro,
 }
 
 export const pagesConfig = {

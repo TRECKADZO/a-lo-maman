@@ -50,6 +50,7 @@ import Analytics from './pages/Analytics';
 import PortailClinique from './pages/PortailClinique';
 import OutilsIAPro from './pages/OutilsIAPro';
 import APIDocumentation from './pages/APIDocumentation';
+import InscriptionClinique from './pages/InscriptionClinique';
 import __Layout from './Layout.jsx';
 
 
@@ -106,6 +107,7 @@ export const PAGES = {
     "PortailClinique": PortailClinique,
     "OutilsIAPro": OutilsIAPro,
     "APIDocumentation": APIDocumentation,
+    "InscriptionClinique": InscriptionClinique,
 }
 
 export const pagesConfig = {

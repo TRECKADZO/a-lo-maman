@@ -49,6 +49,7 @@ import ABTesting from './pages/ABTesting';
 import Analytics from './pages/Analytics';
 import PortailClinique from './pages/PortailClinique';
 import OutilsIAPro from './pages/OutilsIAPro';
+import APIDocumentation from './pages/APIDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "Analytics": Analytics,
     "PortailClinique": PortailClinique,
     "OutilsIAPro": OutilsIAPro,
+    "APIDocumentation": APIDocumentation,
 }
 
 export const pagesConfig = {

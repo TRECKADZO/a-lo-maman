@@ -36,6 +36,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import InstallPWA from "@/components/general/InstallPWA";
+import InstallPWADesktop from "@/components/general/InstallPWADesktop";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 import FloatingChatButton from "@/components/chatbot/FloatingChatButton";
 import NotificationToast from "@/components/notifications/NotificationToast";
@@ -493,6 +494,7 @@ export default function Layout({ children, currentPageName }) {
         
         <ABTestProvider>
           <InstallPWA />
+          <InstallPWADesktop />
           <FloatingChatButton />
           <FeedbackWidget />
           <OfflineManager />

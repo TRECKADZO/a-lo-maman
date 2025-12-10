@@ -29,10 +29,13 @@ import { fr } from "date-fns/locale";
 import DetailsProfessionnel from "../components/teleconsultation/DetailsProfessionnel";
 import MesRendezVous from "../components/teleconsultation/MesRendezVous";
 import FiltresAvances from "../components/teleconsultation/FiltresAvances";
+import RechercheCliniques from "../components/teleconsultation/RechercheCliniques";
+import ReserverRDVClinique from "../components/teleconsultation/ReserverRDVClinique";
 
 export default function Teleconsultation() {
-  const [vue, setVue] = useState("recherche"); // "recherche" ou "mes-rdv"
+  const [vue, setVue] = useState("recherche"); // "recherche", "mes-rdv" ou "cliniques"
   const [professionnelSelectionne, setProfessionnelSelectionne] = useState(null);
+  const [cliniqueSelectionnee, setCliniqueSelectionnee] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [specialiteFiltre, setSpecialiteFiltre] = useState("toutes");
   const [regionFiltre, setRegionFiltre] = useState("toutes");
@@ -184,6 +187,19 @@ export default function Teleconsultation() {
     mes_rdv: mesRendezVous.filter(r => r.statut !== 'termine' && r.statut !== 'annule').length
   };
 
+  if (cliniqueSelectionnee) {
+    return (
+      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <ReserverRDVClinique
+            clinique={cliniqueSelectionnee}
+            onBack={() => setCliniqueSelectionnee(null)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   if (professionnelSelectionne) {
     return (
       <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8">
@@ -242,14 +258,18 @@ export default function Teleconsultation() {
 
         {/* Onglets */}
         <Tabs value={vue} onValueChange={setVue}>
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="recherche" className="flex items-center gap-2 py-3">
               <Search className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate text-xs md:text-sm">Trouver un professionnel</span>
+              <span className="truncate text-xs md:text-sm">Professionnels</span>
+            </TabsTrigger>
+            <TabsTrigger value="cliniques" className="flex items-center gap-2 py-3">
+              <Hospital className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate text-xs md:text-sm">Cliniques</span>
             </TabsTrigger>
             <TabsTrigger value="mes-rdv" className="flex items-center gap-2 py-3">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate text-xs md:text-sm">Mes rendez-vous ({stats.mes_rdv})</span>
+              <span className="truncate text-xs md:text-sm">Mes RDV ({stats.mes_rdv})</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -479,6 +499,11 @@ export default function Teleconsultation() {
               )}
             </div>
           </>
+        )}
+
+        {/* Vue Cliniques */}
+        {vue === "cliniques" && (
+          <RechercheCliniques onSelectClinique={setCliniqueSelectionnee} />
         )}
 
         {/* Vue Mes rendez-vous */}

@@ -129,59 +129,72 @@ async function listWebhooks(base44, data) {
 
 // Déclencher un webhook (appelé par d'autres services)
 async function triggerWebhook(base44, data) {
-  const { event, payload, clinique_id } = data;
+  const { event_type, patient_email, ressources_ids, dmp_endpoint, timestamp, clinique_id } = data;
 
-  console.log('[Webhook] Triggering event:', event, { clinique_id });
+  console.log('[Webhook] Triggering event:', event_type, { clinique_id, patient_email });
 
-  // Récupérer les webhooks de la clinique
-  const clinique = await base44.asServiceRole.entities.Clinique.filter({ id: clinique_id });
-  if (!clinique || clinique.length === 0) {
-    console.warn('[Webhook] No clinique found for ID:', clinique_id);
-    return Response.json({ success: true, sent: 0 });
+  // Si clinique_id fourni directement
+  if (clinique_id) {
+    const clinique = await base44.asServiceRole.entities.Clinique.filter({ id: clinique_id });
+    if (clinique && clinique.length > 0) {
+      return await notifyWebhooks(clinique[0], event_type, data);
+    }
   }
 
-  const webhooks = (clinique[0].webhooks || [])
-    .filter(wh => wh.active && wh.events.includes(event));
+  // Sinon, notifier toutes les cliniques avec admin:webhooks scope
+  const cliniques = await base44.asServiceRole.entities.Clinique.filter({
+    api_scopes: { $in: ['admin:webhooks', 'fhir:*'] }
+  });
+
+  const results = await Promise.allSettled(
+    cliniques.map(clinique => notifyWebhooks(clinique, event_type, data))
+  );
+
+  const successful = results.filter(r => r.status === 'fulfilled').length;
+
+  return Response.json({
+    success: true,
+    cliniques_notifiees: successful,
+    total_cliniques: cliniques.length
+  });
+}
+
+async function notifyWebhooks(clinique, event_type, payload) {
+  const webhooks = (clinique.webhooks || [])
+    .filter(wh => wh.active && wh.events.includes(event_type));
 
   if (webhooks.length === 0) {
-    console.log('[Webhook] No active webhooks for event:', event);
-    return Response.json({ success: true, sent: 0 });
+    return { sent: 0 };
   }
 
-  // Envoyer le webhook à chaque URL
   const results = await Promise.allSettled(
-    webhooks.map(webhook => sendWebhook(webhook, event, payload))
+    webhooks.map(webhook => sendWebhook(webhook, event_type, payload))
   );
 
   const successful = results.filter(r => r.status === 'fulfilled').length;
   const failed = results.filter(r => r.status === 'rejected').length;
 
   console.log('[Webhook] Delivery results:', {
-    event,
-    clinique_id,
+    event_type,
+    clinique_id: clinique.id,
     successful,
     failed
   });
 
-  return Response.json({
+  return {
     success: true,
     sent: successful,
-    failed,
-    details: results.map((r, i) => ({
-      url: webhooks[i].url,
-      status: r.status,
-      error: r.status === 'rejected' ? r.reason.message : null
-    }))
-  });
+    failed
+  };
 }
 
 // Envoyer un webhook HTTP POST
-async function sendWebhook(webhook, event, payload) {
+async function sendWebhook(webhook, event_type, payload) {
   const { url, secret } = webhook;
 
   const webhookPayload = {
-    event,
-    timestamp: new Date().toISOString(),
+    event: event_type,
+    timestamp: payload.timestamp || new Date().toISOString(),
     data: payload
   };
 
@@ -193,7 +206,8 @@ async function sendWebhook(webhook, event, payload) {
     headers: {
       'Content-Type': 'application/json',
       'X-Alomaman-Signature': signature,
-      'X-Alomaman-Event': event,
+      'X-Alomaman-Event': event_type,
+      'X-Alomaman-Delivery-Id': crypto.randomUUID(),
       'User-Agent': 'Alomaman-Webhook/1.0'
     },
     body: JSON.stringify(webhookPayload),
@@ -203,7 +217,7 @@ async function sendWebhook(webhook, event, payload) {
     throw new Error(`Webhook delivery failed: ${response.status} ${response.statusText}`);
   }
 
-  console.log('[Webhook] Delivered successfully:', { url, event });
+  console.log('[Webhook] Delivered successfully:', { url, event: event_type });
 
   return response;
 }

@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Building2, Users, TrendingUp, FileText, Settings, Activity } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import AuthGuard from '../components/auth/AuthGuard';
+import GestionAPIKeys from '../components/clinique/GestionAPIKeys';
 
 export default function PortailClinique() {
   const [selectedTab, setSelectedTab] = useState('dashboard');
@@ -243,33 +244,7 @@ export default function PortailClinique() {
             </TabsContent>
 
             <TabsContent value="integration">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Intégration FHIR</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {clinique.api_fhir_enabled ? (
-                    <>
-                      <div className="p-4 bg-green-50 rounded-lg">
-                        <p className="text-green-800 font-semibold">✓ Intégration FHIR Active</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">Endpoint FHIR:</p>
-                        <code className="block p-3 bg-gray-100 rounded text-sm">{clinique.fhir_endpoint}</code>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">Clé API:</p>
-                        <code className="block p-3 bg-gray-100 rounded text-sm">••••••••••••{clinique.api_key?.slice(-4)}</code>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-gray-600 mb-4">Intégration FHIR non activée</p>
-                      <Button>Activer l'intégration</Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <GestionAPIKeys clinique={clinique} />
             </TabsContent>
           </Tabs>
         </div>

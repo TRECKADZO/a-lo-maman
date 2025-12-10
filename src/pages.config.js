@@ -51,6 +51,7 @@ import PortailClinique from './pages/PortailClinique';
 import OutilsIAPro from './pages/OutilsIAPro';
 import APIDocumentation from './pages/APIDocumentation';
 import InscriptionClinique from './pages/InscriptionClinique';
+import ValidationCliniques from './pages/ValidationCliniques';
 import __Layout from './Layout.jsx';
 
 
@@ -108,6 +109,7 @@ export const PAGES = {
     "OutilsIAPro": OutilsIAPro,
     "APIDocumentation": APIDocumentation,
     "InscriptionClinique": InscriptionClinique,
+    "ValidationCliniques": ValidationCliniques,
 }
 
 export const pagesConfig = {

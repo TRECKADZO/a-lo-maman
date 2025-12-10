@@ -44,6 +44,9 @@ import MesDocuments from './pages/MesDocuments';
 import VideoConsultation from './pages/VideoConsultation';
 import Ressources from './pages/Ressources';
 import Interoperabilite from './pages/Interoperabilite';
+import Tests from './pages/Tests';
+import ABTesting from './pages/ABTesting';
+import Analytics from './pages/Analytics';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +97,9 @@ export const PAGES = {
     "VideoConsultation": VideoConsultation,
     "Ressources": Ressources,
     "Interoperabilite": Interoperabilite,
+    "Tests": Tests,
+    "ABTesting": ABTesting,
+    "Analytics": Analytics,
 }
 
 export const pagesConfig = {

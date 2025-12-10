@@ -43,6 +43,10 @@ import AppointmentReminders from "@/components/notifications/AppointmentReminder
 import MessageNotifications from "@/components/notifications/MessageNotifications";
 import RappelsChecker from "@/components/notifications/RappelsChecker";
 import VaccinNotificationService from "@/components/notifications/VaccinNotificationService";
+import ABTestProvider from "@/components/analytics/ABTestProvider";
+import FeedbackWidget from "@/components/analytics/FeedbackWidget";
+import OfflineManager from "@/components/offline/OfflineManager";
+import ServiceWorkerRegistration from "@/components/offline/ServiceWorkerRegistration";
 
 const getNavigationItems = (lang, isSpecialist, isAdmin) => {
     if (isAdmin) {
@@ -487,14 +491,19 @@ export default function Layout({ children, currentPageName }) {
           </footer>
         </main>
         
-        <InstallPWA />
-        <FloatingChatButton />
-        <NotificationToast />
-        <AppointmentReminders />
-        <MessageNotifications />
-        <RappelsChecker />
-        <VaccinNotificationService />
-      </div>
-    </SidebarProvider>
-  );
-}
+        <ABTestProvider>
+          <InstallPWA />
+          <FloatingChatButton />
+          <FeedbackWidget />
+          <OfflineManager />
+          <ServiceWorkerRegistration />
+          <NotificationToast />
+          <AppointmentReminders />
+          <MessageNotifications />
+          <RappelsChecker />
+          <VaccinNotificationService />
+        </ABTestProvider>
+        </div>
+        </SidebarProvider>
+        );
+        }

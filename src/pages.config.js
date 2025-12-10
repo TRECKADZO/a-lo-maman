@@ -43,7 +43,6 @@ import FamilleConnectee from './pages/FamilleConnectee';
 import MesDocuments from './pages/MesDocuments';
 import VideoConsultation from './pages/VideoConsultation';
 import Ressources from './pages/Ressources';
-import AdminInteroperabilite from './pages/AdminInteroperabilite';
 import __Layout from './Layout.jsx';
 
 
@@ -93,7 +92,6 @@ export const PAGES = {
     "MesDocuments": MesDocuments,
     "VideoConsultation": VideoConsultation,
     "Ressources": Ressources,
-    "AdminInteroperabilite": AdminInteroperabilite,
 }
 
 export const pagesConfig = {

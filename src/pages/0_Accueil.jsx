@@ -8,8 +8,11 @@ import {
   Heart,
   Baby,
   Users,
+  Stethoscope,
   Sparkles,
   Shield,
+  Calendar,
+  MessageSquare,
   CheckCircle,
   ArrowRight,
   Star,
@@ -24,10 +27,14 @@ import {
   Brain,
   BookOpen,
   Target,
+  TrendingUp,
   Bell,
   FileText,
   Video,
-  Pill
+  Pill,
+  Building2,
+  FolderOpen,
+  Share2
 } from "lucide-react";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -97,45 +104,45 @@ export default function Accueil() {
       badge: "Nouveau"
     },
     {
-      icon: Brain,
-      titre: "Jalons de Développement",
-      description: "Suivi détaillé moteur, cognitif, langage, social avec indicateurs visuels et conseils",
-      color: "from-purple-500 to-violet-500",
-      badge: "Premium"
+      icon: FolderOpen,
+      titre: "DMP Intelligent",
+      description: "Dossier médical partagé sécurisé avec catégorisation, recherche avancée et autorisations granulaires",
+      color: "from-indigo-500 to-purple-500",
+      badge: "Nouveau"
+    },
+    {
+      icon: Building2,
+      titre: "Portail Cliniques",
+      description: "Recherchez et prenez RDV directement avec des cliniques partenaires certifiées FHIR",
+      color: "from-cyan-500 to-teal-500",
+      badge: "Nouveau"
     },
     {
       icon: Video,
       titre: "Téléconsultations HD",
-      description: "Consultez gynécologues, pédiatres, sages-femmes en vidéo avec ordonnances numériques",
+      description: "Consultez spécialistes en vidéo avec partage documents et ordonnances en temps réel",
       color: "from-teal-500 to-emerald-500",
-      badge: "Populaire"
+      badge: "Amélioré"
+    },
+    {
+      icon: MessageSquare,
+      titre: "Messagerie Temps Réel",
+      description: "Chat sécurisé avec professionnels, partage documents médicaux et réception d'ordonnances",
+      color: "from-orange-500 to-amber-500",
+      badge: "Amélioré"
     },
     {
       icon: Sparkles,
       titre: "Assistant IA Santé 24/7",
       description: "Réponses instantanées validées médicalement, analyse de symptômes et recommandations",
-      color: "from-amber-500 to-orange-500",
+      color: "from-amber-500 to-yellow-500",
       badge: "IA"
     },
     {
-      icon: BookOpen,
-      titre: "Ressources & Activités",
-      description: "Articles experts, activités de stimulation par âge et contenu personnalisé",
-      color: "from-emerald-500 to-green-500",
-      badge: null
-    },
-    {
-      icon: Pill,
-      titre: "Rappels Médicaments",
-      description: "Ne manquez jamais une prise : rappels intelligents avec historique complet",
+      icon: Share2,
+      titre: "Partage Famille Sécurisé",
+      description: "Partagez les carnets avec la famille avec permissions granulaires et traçabilité",
       color: "from-rose-500 to-pink-500",
-      badge: null
-    },
-    {
-      icon: Users,
-      titre: "Communauté & Famille",
-      description: "Échangez avec d'autres mamans et partagez les carnets avec la famille",
-      color: "from-indigo-500 to-blue-500",
       badge: null
     }
   ];
@@ -143,8 +150,8 @@ export default function Accueil() {
   const metriquesImpact = [
     { nombre: "95%", label: "Taux de détection précoce", icon: Target },
     { nombre: "40+", label: "Jalons développement suivis", icon: Brain },
-    { nombre: "24/7", label: "Assistant IA disponible", icon: Sparkles },
-    { nombre: "100%", label: "Données sécurisées", icon: Shield }
+    { nombre: "24/7", label: "Messagerie temps réel", icon: MessageSquare },
+    { nombre: "FHIR", label: "Interopérabilité certifiée", icon: Shield }
   ];
 
   const stats = [
@@ -158,23 +165,23 @@ export default function Accueil() {
     {
       nom: "Aïcha K.",
       role: "Maman de 2 enfants, Abidjan",
-      texte: "Le suivi des jalons de développement m'a permis de détecter un retard de langage chez mon fils. Grâce à A'lo Maman, on a pu intervenir tôt !",
+      texte: "Le DMP sécurisé me permet de partager facilement les documents médicaux de mes enfants avec les spécialistes. La messagerie instantanée est très pratique !",
       note: 5,
       avatar: "👩🏾"
     },
     {
       nom: "Dr. Koné",
-      role: "Pédiatre, Cocody",
-      texte: "Les carnets numériques avec suivi de développement sont exceptionnels. Je peux suivre mes patients à distance et anticiper les problèmes.",
+      role: "Pédiatre, CHU Cocody",
+      texte: "L'intégration FHIR avec notre système hospitalier simplifie énormément le suivi. Je peux recevoir et envoyer des ordonnances directement par chat !",
       note: 5,
       avatar: "👨🏾‍⚕️"
     },
     {
-      nom: "Fatou M.",
-      role: "Future maman, Yamoussoukro",
-      texte: "L'assistant IA répond à toutes mes questions même à 3h du matin. Le suivi semaine par semaine de ma grossesse est vraiment complet !",
+      nom: "Clinique Sainte Marie",
+      role: "Maternité privée, Plateau",
+      texte: "Le portail clinique nous permet de gérer tous nos RDV en un endroit. L'accès aux DMP patients avec leur autorisation facilite le travail.",
       note: 5,
-      avatar: "👩🏿"
+      avatar: "🏥"
     }
   ];
 
@@ -252,9 +259,9 @@ export default function Accueil() {
               </h1>
 
               <p className="text-lg md:text-xl mb-8 text-white/90 leading-relaxed max-w-xl">
-                A'lo Maman accompagne les familles avec un suivi intelligent de grossesse, 
-                des carnets de santé numériques avec <strong>détection précoce des retards</strong>, 
-                et un accès 24/7 à des spécialistes.
+               A'lo Maman accompagne les familles avec un suivi intelligent de grossesse, 
+               des carnets de santé numériques avec <strong>détection précoce des retards</strong>, 
+               un <strong>DMP sécurisé</strong> et un accès instantané à des cliniques et spécialistes certifiés.
               </p>
 
               {/* Boutons CTA */}
@@ -459,8 +466,9 @@ export default function Accueil() {
                   { icon: Target, text: "Détection précoce avant l'âge d'alerte", color: "text-green-600" },
                   { icon: Activity, text: "Scores par domaine avec visualisation", color: "text-blue-600" },
                   { icon: Bell, text: "Alertes automatiques en cas de retard", color: "text-amber-600" },
-                  { icon: BookOpen, text: "Activités de stimulation personnalisées", color: "text-purple-600" },
-                  { icon: FileText, text: "Bilans de développement aux âges clés", color: "text-pink-600" }
+                  { icon: FolderOpen, text: "DMP avec recherche et catégorisation", color: "text-indigo-600" },
+                  { icon: Building2, text: "Prise RDV directe avec cliniques", color: "text-teal-600" },
+                  { icon: MessageSquare, text: "Chat temps réel avec professionnels", color: "text-orange-600" }
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
                     <item.icon className={`w-5 h-5 ${item.color}`} />
@@ -516,8 +524,8 @@ export default function Accueil() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: Lock, title: "Chiffrement AES-256", desc: "Toutes vos données médicales sont chiffrées avec le standard militaire", color: "from-green-500 to-emerald-500", bg: "from-green-50 to-emerald-50" },
-              { icon: Shield, title: "Conformité RGPD", desc: "Respect total des réglementations sur la protection des données", color: "from-blue-500 to-cyan-500", bg: "from-blue-50 to-cyan-50" },
-              { icon: Globe, title: "Vous gardez le contrôle", desc: "Exportez ou supprimez vos données à tout moment", color: "from-purple-500 to-violet-500", bg: "from-purple-50 to-violet-50" }
+              { icon: Shield, title: "Conformité FHIR & RGPD", desc: "Interopérabilité certifiée avec hôpitaux et respect total du RGPD", color: "from-blue-500 to-cyan-500", bg: "from-blue-50 to-cyan-50" },
+              { icon: FileText, title: "Autorisations DMP", desc: "Contrôlez précisément qui accède à vos documents médicaux avec traçabilité", color: "from-purple-500 to-violet-500", bg: "from-purple-50 to-violet-50" }
             ].map((item, i) => (
               <Card key={i} className={`border-none shadow-xl bg-gradient-to-br ${item.bg}`}>
                 <CardContent className="p-8 text-center">
@@ -618,9 +626,9 @@ export default function Accueil() {
                 <h3 className="text-2xl font-bold">A'lo Maman</h3>
               </div>
               <p className="text-gray-400 leading-relaxed">
-                La plateforme IA de santé maternelle et infantile. 
-                Suivi intelligent de grossesse, carnets de santé numériques avec détection précoce des retards, 
-                et accès 24/7 à des spécialistes.
+                La plateforme IA de santé maternelle et infantile certifiée FHIR. 
+                DMP sécurisé, téléconsultations avec partage documents, messagerie temps réel, 
+                recherche de cliniques et détection précoce des retards de développement.
               </p>
             </div>
 

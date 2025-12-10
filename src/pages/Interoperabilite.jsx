@@ -1,11 +1,6 @@
-import React from 'react';
-import AuthGuard from '../components/auth/AuthGuard';
-import DashboardInterop from '../components/interoperabilite/DashboardInterop';
+import React from "react";
+import InteropDashboard from "../components/interop/InteropDashboard";
 
 export default function Interoperabilite() {
-  return (
-    <AuthGuard>
-      <DashboardInterop />
-    </AuthGuard>
-  );
+  return <InteropDashboard />;
 }

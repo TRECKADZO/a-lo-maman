@@ -11,6 +11,7 @@ import AuthGuard from '../components/auth/AuthGuard';
 import GestionAPIKeys from '../components/clinique/GestionAPIKeys';
 import GestionRendezVousClinique from '../components/clinique/GestionRendezVousClinique';
 import ReportingClinique from '../components/clinique/ReportingClinique';
+import ConsultationDMPClinique from '../components/dmp/ConsultationDMPClinique';
 
 export default function PortailClinique() {
   const [selectedTab, setSelectedTab] = useState('dashboard');
@@ -175,10 +176,11 @@ export default function PortailClinique() {
 
           {/* Tabs */}
           <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-7">
               <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               <TabsTrigger value="rdv">Rendez-vous</TabsTrigger>
               <TabsTrigger value="reporting">Reporting</TabsTrigger>
+              <TabsTrigger value="dmp">DMP Patients</TabsTrigger>
               <TabsTrigger value="professionnels">Professionnels</TabsTrigger>
               <TabsTrigger value="rapports">Rapports MSP</TabsTrigger>
               <TabsTrigger value="integration">FHIR</TabsTrigger>
@@ -210,6 +212,10 @@ export default function PortailClinique() {
 
             <TabsContent value="reporting" className="space-y-6">
               <ReportingClinique cliniqueId={clinique?.id} />
+            </TabsContent>
+
+            <TabsContent value="dmp" className="space-y-6">
+              <ConsultationDMPClinique cliniqueId={clinique?.id} />
             </TabsContent>
 
             <TabsContent value="professionnels">

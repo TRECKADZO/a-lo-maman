@@ -92,6 +92,7 @@ export default function MonEspaceSante() {
     { value: 'rendez-vous', label: 'Rendez-vous', icon: Calendar },
     { value: 'documents', label: 'Documents', icon: FileText },
     { value: 'metriques', label: 'Santé', icon: Activity },
+    { value: 'dmp', label: 'Autorisations DMP', icon: Bell },
     { value: 'messagerie', label: 'Messages', icon: MessageSquare }
   ];
 
@@ -103,6 +104,8 @@ export default function MonEspaceSante() {
         return <DocumentsMedicaux userEmail={user?.email} />;
       case 'metriques':
         return <MetriquesSante userEmail={user?.email} userProfile={profilMaman} />;
+      case 'dmp':
+        return <GestionAutorisationsDMP />;
       case 'messagerie':
         return <MessagerieSante userEmail={user?.email} />;
       default:

@@ -358,8 +358,8 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <div className="min-h-screen flex w-full bg-white">
-        {/* Sidebar - Desktop & Mobile */}
-        <Sidebar className="border-r">
+        {/* Sidebar - Desktop cachée, accessible via Menu sur mobile */}
+        <Sidebar className="hidden lg:flex border-r">
           <SidebarHeader className="border-b p-6">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 bg-gradient-to-br ${primaryGradient} rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0`}>

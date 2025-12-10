@@ -20,6 +20,7 @@ import MesRendezVousPatient from '@/components/espacesante/MesRendezVousPatient'
 import DocumentsMedicaux from '@/components/espacesante/DocumentsMedicaux';
 import MetriquesSante from '@/components/espacesante/MetriquesSante';
 import MessagerieSante from '@/components/espacesante/MessagerieSante';
+import GestionAutorisationsDMP from '@/components/dmp/GestionAutorisationsDMP';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import SwipeableTabs from '@/components/navigation/SwipeableTabs';
 

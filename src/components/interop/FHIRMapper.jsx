@@ -808,7 +808,7 @@ export class FHIRMapper {
     };
 
     const serviceTypeCode = appointment.serviceType?.[0]?.coding?.[0]?.code;
-    
+
     return {
       statut: statusMap[appointment.status] || "planifie",
       type_consultation: typeMap[serviceTypeCode] || "cabinet",
@@ -818,6 +818,183 @@ export class FHIRMapper {
       notes_professionnel: appointment.comment || ""
     };
   }
-}
 
-export default FHIRMapper;
+  // ============================================
+  // ALOMAMAN -> FHIR: CONDITION
+  // ============================================
+  static toFHIRCondition(antecedent, patientEmail, grossesse) {
+    return {
+      resourceType: 'Condition',
+      id: uuidv4(),
+      clinicalStatus: {
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+          code: 'active'
+        }]
+      },
+      verificationStatus: {
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+          code: 'confirmed'
+        }]
+      },
+      category: [{
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/condition-category',
+          code: 'problem-list-item',
+          display: 'Problem List Item'
+        }]
+      }],
+      code: {
+        coding: [{
+          system: 'http://snomed.info/sct',
+          display: antecedent
+        }],
+        text: antecedent
+      },
+      subject: {
+        identifier: { value: patientEmail }
+      },
+      onsetDateTime: grossesse?.date_derniere_regle,
+      recordedDate: new Date().toISOString(),
+      note: [{
+        text: `Antécédent signalé dans le cadre du suivi grossesse ID: ${grossesse?.id}`
+      }]
+    };
+  }
+
+  // ============================================
+  // ALOMAMAN -> FHIR: PROCEDURE
+  // ============================================
+  static toFHIRProcedure(consultation, patientEmail) {
+    return {
+      resourceType: 'Procedure',
+      id: uuidv4(),
+      status: 'completed',
+      category: {
+        coding: [{
+          system: 'http://snomed.info/sct',
+          code: '386637004',
+          display: 'Obstetric procedure'
+        }]
+      },
+      code: {
+        coding: [{
+          system: 'http://snomed.info/sct',
+          code: '424619006',
+          display: 'Prenatal visit'
+        }],
+        text: consultation.type_consultation || 'Consultation prénatale'
+      },
+      subject: {
+        identifier: { value: patientEmail }
+      },
+      performedDateTime: consultation.date,
+      performer: consultation.professionnel_id ? [{
+        actor: {
+          reference: `Practitioner/${consultation.professionnel_id}`
+        }
+      }] : [],
+      note: consultation.notes ? [{
+        text: consultation.notes
+      }] : [],
+      outcome: consultation.diagnostic ? {
+        text: consultation.diagnostic
+      } : undefined
+    };
+  }
+
+  // ============================================
+  // ALOMAMAN -> FHIR: ADVERSE EVENT
+  // ============================================
+  static toFHIRAdverseEvent(effetSecondaire, patientEmail, suiviContraceptionId) {
+    return {
+      resourceType: 'AdverseEvent',
+      id: uuidv4(),
+      identifier: [{
+        system: 'urn:oid:alomaman:adverse-event',
+        value: uuidv4()
+      }],
+      actuality: 'actual',
+      category: [{
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/adverse-event-category',
+          code: 'medication-mishap',
+          display: 'Medication Mishap'
+        }]
+      }],
+      event: {
+        coding: [{
+          system: 'http://snomed.info/sct',
+          display: effetSecondaire.type
+        }],
+        text: effetSecondaire.type
+      },
+      subject: {
+        identifier: { value: patientEmail }
+      },
+      date: effetSecondaire.date,
+      seriousness: {
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/adverse-event-seriousness',
+          code: effetSecondaire.severite === 'severe' ? 'serious' : 'non-serious'
+        }]
+      },
+      severity: {
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/adverse-event-severity',
+          code: effetSecondaire.severite === 'severe' ? 'severe' : effetSecondaire.severite === 'modere' ? 'moderate' : 'mild'
+        }]
+      },
+      suspectEntity: [{
+        instance: {
+          display: `Contraception suivie - ID: ${suiviContraceptionId}`
+        }
+      }],
+      resultingCondition: effetSecondaire.description ? [{
+        display: effetSecondaire.description
+      }] : []
+    };
+  }
+
+  // ============================================
+  // FHIR -> ALOMAMAN: Reverse mappings nouvelles ressources
+  // ============================================
+
+  static fromFHIRCondition(fhirCondition) {
+    return {
+      type: 'antecedent',
+      nom: fhirCondition.code?.text || fhirCondition.code?.coding?.[0]?.display,
+      date: fhirCondition.onsetDateTime || fhirCondition.recordedDate,
+      statut: fhirCondition.clinicalStatus?.coding?.[0]?.code,
+      notes: fhirCondition.note?.[0]?.text
+    };
+  }
+
+  static fromFHIRProcedure(fhirProcedure) {
+    return {
+      type_consultation: fhirProcedure.code?.text,
+      date: fhirProcedure.performedDateTime,
+      professionnel_id: fhirProcedure.performer?.[0]?.actor?.reference?.split('/')?.[1],
+      notes: fhirProcedure.note?.[0]?.text,
+      diagnostic: fhirProcedure.outcome?.text
+    };
+  }
+
+  static fromFHIRAdverseEvent(fhirAdverseEvent) {
+    const severityMap = {
+      'severe': 'severe',
+      'moderate': 'modere',
+      'mild': 'leger'
+    };
+
+    return {
+      date: fhirAdverseEvent.date,
+      type: fhirAdverseEvent.event?.text || fhirAdverseEvent.event?.coding?.[0]?.display,
+      severite: severityMap[fhirAdverseEvent.severity?.coding?.[0]?.code] || 'leger',
+      description: fhirAdverseEvent.resultingCondition?.[0]?.display || ''
+    };
+  }
+  }
+
+  export default FHIRMapper;

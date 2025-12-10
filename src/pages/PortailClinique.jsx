@@ -9,6 +9,8 @@ import { Building2, Users, TrendingUp, FileText, Settings, Activity } from 'luci
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import AuthGuard from '../components/auth/AuthGuard';
 import GestionAPIKeys from '../components/clinique/GestionAPIKeys';
+import GestionRendezVousClinique from '../components/clinique/GestionRendezVousClinique';
+import ReportingClinique from '../components/clinique/ReportingClinique';
 
 export default function PortailClinique() {
   const [selectedTab, setSelectedTab] = useState('dashboard');
@@ -173,11 +175,13 @@ export default function PortailClinique() {
 
           {/* Tabs */}
           <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList>
-              <TabsTrigger value="dashboard">Tableau de bord</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsTrigger value="rdv">Rendez-vous</TabsTrigger>
+              <TabsTrigger value="reporting">Reporting</TabsTrigger>
               <TabsTrigger value="professionnels">Professionnels</TabsTrigger>
-              <TabsTrigger value="rapports">Rapports</TabsTrigger>
-              <TabsTrigger value="integration">Intégration FHIR</TabsTrigger>
+              <TabsTrigger value="rapports">Rapports MSP</TabsTrigger>
+              <TabsTrigger value="integration">FHIR</TabsTrigger>
             </TabsList>
 
             <TabsContent value="dashboard" className="space-y-6">
@@ -198,6 +202,14 @@ export default function PortailClinique() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="rdv" className="space-y-6">
+              <GestionRendezVousClinique cliniqueId={clinique?.id} />
+            </TabsContent>
+
+            <TabsContent value="reporting" className="space-y-6">
+              <ReportingClinique cliniqueId={clinique?.id} />
             </TabsContent>
 
             <TabsContent value="professionnels">

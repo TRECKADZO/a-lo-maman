@@ -52,6 +52,7 @@ import OutilsIAPro from './pages/OutilsIAPro';
 import APIDocumentation from './pages/APIDocumentation';
 import InscriptionClinique from './pages/InscriptionClinique';
 import ValidationCliniques from './pages/ValidationCliniques';
+import NotificationsPush from './pages/NotificationsPush';
 import __Layout from './Layout.jsx';
 
 
@@ -110,6 +111,7 @@ export const PAGES = {
     "APIDocumentation": APIDocumentation,
     "InscriptionClinique": InscriptionClinique,
     "ValidationCliniques": ValidationCliniques,
+    "NotificationsPush": NotificationsPush,
 }
 
 export const pagesConfig = {

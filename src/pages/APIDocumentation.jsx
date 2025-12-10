@@ -294,9 +294,9 @@ export default function APIDocumentation() {
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg mb-3">🔔 Webhooks - Notifications temps réel</h3>
                 <p className="text-sm text-gray-700 mb-4">
-                  Recevez des notifications HTTP instantanées lors d'événements clés (nouveau patient, RDV créé, document uploadé, etc.)
+                  Recevez des notifications HTTP instantanées lors d'événements clés FHIR et DMP
                 </p>
-                <div className="bg-white p-4 rounded-lg">
+                <div className="bg-white p-4 rounded-lg mb-4">
                   <p className="font-semibold mb-2">Enregistrer un webhook :</p>
                   <CodeBlock code={{
                     endpoint: "webhookManager",
@@ -304,10 +304,31 @@ export default function APIDocumentation() {
                     data: {
                       clinique_id: "clinic_123",
                       url: "https://your-clinic.com/webhook",
-                      events: ["patient.created", "appointment.created"],
+                      events: [
+                        "fhir.patient.created",
+                        "fhir.appointment.created",
+                        "fhir.observation.created",
+                        "fhir.condition.created",
+                        "fhir.procedure.created",
+                        "dmp.published"
+                      ],
                       secret: "optional_webhook_secret"
                     }
                   }} id="webhook-register" />
+                </div>
+                <div className="bg-white p-4 rounded-lg">
+                  <p className="font-semibold mb-2">Événements disponibles :</p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      'fhir.patient.created', 'fhir.patient.updated',
+                      'fhir.appointment.created', 'fhir.appointment.updated',
+                      'fhir.observation.created', 'fhir.condition.created',
+                      'fhir.procedure.created', 'fhir.adverseevent.created',
+                      'dmp.published', 'patient.consent.updated'
+                    ].map(evt => (
+                      <Badge key={evt} variant="outline" className="text-xs">{evt}</Badge>
+                    ))}
+                  </div>
                 </div>
                 <div className="mt-4 p-4 bg-amber-100 rounded-lg">
                   <p className="text-sm font-semibold text-amber-900 mb-2">⚠️ Sécurité webhook :</p>
@@ -316,6 +337,7 @@ export default function APIDocumentation() {
                     <li>• Signature HMAC-SHA256 dans header X-Alomaman-Signature</li>
                     <li>• Vérifier la signature côté clinique avant traitement</li>
                     <li>• Secret généré automatiquement si non fourni</li>
+                    <li>• Header X-Alomaman-Delivery-Id unique par notification</li>
                   </ul>
                 </div>
               </CardContent>
@@ -481,8 +503,8 @@ const data2 = await response2.json();`}</code>
             </div>
             <div className="p-3 bg-amber-50 rounded-lg">
               <p className="text-xs text-amber-800">
-                <strong>Pro Santé Connect :</strong> Authentification sécurisée des professionnels 
-                via carte CPS/CPF + accès DMP avec consentement patient.
+                <strong>Conformité SSA :</strong> Gestion des consentements conforme POPIA/NDPR. 
+                Support IHE XDS.b pour DMP nationaux. Webhooks temps réel avec signature HMAC.
               </p>
             </div>
           </CardContent>

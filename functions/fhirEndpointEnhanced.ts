@@ -20,7 +20,10 @@ const SUPPORTED_RESOURCES = [
   'Encounter',
   'Observation', 
   'Appointment', 
-  'Immunization'
+  'Immunization',
+  'Condition',
+  'Procedure',
+  'AdverseEvent'
 ];
 
 Deno.serve(async (req) => {
@@ -220,6 +223,23 @@ async function handleCreate(base44, resourceType, fhirResource, clinique) {
     sync_status: 'synced'
   });
 
+  // Déclencher webhook pour notifier systèmes externes
+  try {
+    await base44.asServiceRole.functions.invoke('webhookManager', {
+      action: 'trigger',
+      data: {
+        event_type: `fhir.${resourceType.toLowerCase()}.created`,
+        patient_email: patientEmail,
+        resource_id: saved.fhir_id,
+        resource_type: resourceType,
+        clinique_id: clinique.id,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (webhookError) {
+    console.warn('[FHIR] Webhook notification failed:', webhookError);
+  }
+
   return Response.json(saved.resource_json, {
     status: 201,
     headers: { 
@@ -254,6 +274,23 @@ async function handleUpdate(base44, resourceType, resourceId, fhirResource, clin
     resource_json: fhirResource,
     last_updated: new Date().toISOString()
   });
+
+  // Déclencher webhook pour mise à jour
+  try {
+    await base44.asServiceRole.functions.invoke('webhookManager', {
+      action: 'trigger',
+      data: {
+        event_type: `fhir.${resourceType.toLowerCase()}.updated`,
+        patient_email: existing.patient_email,
+        resource_id: updated.fhir_id,
+        resource_type: resourceType,
+        clinique_id: clinique.id,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (webhookError) {
+    console.warn('[FHIR] Webhook notification failed:', webhookError);
+  }
 
   return Response.json(updated.resource_json, {
     headers: { 
@@ -349,7 +386,10 @@ function getRequiredScope(resourceType, method) {
     'Encounter': `${operation}:encounters`,
     'Observation': `${operation}:observations`,
     'Appointment': `${operation}:appointments`,
-    'Immunization': `${operation}:immunizations`
+    'Immunization': `${operation}:immunizations`,
+    'Condition': `${operation}:observations`,
+    'Procedure': `${operation}:procedures`,
+    'AdverseEvent': `${operation}:observations`
   };
   return scopeMap[resourceType] || 'fhir:*';
 }

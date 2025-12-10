@@ -144,12 +144,23 @@ export default function Teleconsultation() {
 
   const joursSemaineMap = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
 
+  const { data: cliniques = [] } = useQuery({
+    queryKey: ['cliniques_recherche'],
+    queryFn: async () => {
+      const all = await base44.entities.Clinique.list();
+      return all.filter(c => c.statut_validation === 'approuve');
+    },
+  });
+
   const professionnelsFiltres = professionnels.filter(pro => {
+    const cliniquePro = cliniques.find(c => c.professionnels_ids?.includes(pro.id));
+    
     const matchSearch =
       pro.nom_complet?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pro.ville?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pro.specialite?.toLowerCase().includes(searchQuery.toLowerCase()) || // Added specialite to search
-      pro.structure_sante?.toLowerCase().includes(searchQuery.toLowerCase());
+      pro.specialite?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pro.structure_sante?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cliniquePro?.nom?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchSpecialite = specialiteFiltre === "toutes" || pro.specialite === specialiteFiltre;
     const matchRegion = regionFiltre === "toutes" || pro.region === regionFiltre;
@@ -283,7 +294,7 @@ export default function Teleconsultation() {
                 <div className="relative">
                   <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400 flex-shrink-0" />
                   <Input
-                    placeholder="Rechercher par nom, spécialité, ville..."
+                    placeholder="Rechercher par nom, spécialité, ville ou clinique..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 h-12 text-base md:text-lg"
@@ -392,7 +403,11 @@ export default function Teleconsultation() {
 
             {/* Liste des professionnels */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {professionnelsFiltres.map((pro) => (
+              {professionnelsFiltres.map((pro) => {
+                const cliniquePro = cliniques.find(c => c.professionnels_ids?.includes(pro.id));
+                const prochainesDispo = pro.disponibilites?.slice(0, 2) || [];
+                
+                return (
                 <Card
                   key={pro.id}
                   className="shadow-lg hover:shadow-xl transition-all cursor-pointer border-none active:scale-[0.98] overflow-hidden"
@@ -457,6 +472,24 @@ export default function Teleconsultation() {
                           <span className="truncate">{pro.assurances_acceptees.length} assurance(s)</span>
                         </div>
                       )}
+
+                      {cliniquePro && (
+                        <div className="flex items-start gap-2 text-sm text-gray-600">
+                          <Hospital className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span className="truncate">{cliniquePro.nom}</span>
+                        </div>
+                      )}
+
+                      {prochainesDispo.length > 0 && (
+                        <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-xs font-medium text-green-800 mb-1">Disponibilités:</p>
+                          {prochainesDispo.map((dispo, idx) => (
+                            <p key={idx} className="text-xs text-green-700">
+                              {dispo.jour}: {dispo.heure_debut} - {dispo.heure_fin}
+                            </p>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between pt-2 gap-2">
@@ -482,7 +515,8 @@ export default function Teleconsultation() {
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+              );
+              })}
 
               {professionnelsFiltres.length === 0 && !loadingPros && (
                 <Card className="col-span-full shadow-lg">

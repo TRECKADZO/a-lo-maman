@@ -23,15 +23,22 @@ export default function DocumentsMedicaux({ userEmail }) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('tous');
+  const [categorieFilter, setCategorieFilter] = useState('tous');
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['documents_medicaux', userEmail],
     queryFn: async () => {
       if (!userEmail) return [];
-      return await base44.entities.DocumentMedical.filter(
-        { patient_email: userEmail },
-        '-date_document'
-      );
+      const [docsMedical, docsXDS] = await Promise.all([
+        base44.entities.DocumentMedical.filter({ patient_email: userEmail }, '-date_document'),
+        base44.entities.DocumentXDS.filter({ patient_email: userEmail }, '-creation_time')
+      ]);
+      return [...docsMedical, ...docsXDS.map(d => ({
+        ...d,
+        titre: d.title,
+        date_document: d.creation_time,
+        type_document: d.categorie || 'autre'
+      }))];
     },
     enabled: !!userEmail,
   });
@@ -79,12 +86,13 @@ export default function DocumentsMedicaux({ userEmail }) {
 
   const documentsFilters = documents.filter(doc => {
     const matchSearch = !searchQuery || 
-      doc.titre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.titre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doc.description?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchType = typeFilter === 'tous' || doc.type_document === typeFilter;
+    const matchCategorie = categorieFilter === 'tous' || doc.type_document === categorieFilter;
     
-    return matchSearch && matchType;
+    return matchSearch && matchType && matchCategorie;
   });
 
   if (isLoading) {

@@ -27,6 +27,9 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
   const [searchEmail, setSearchEmail] = useState('');
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [dateFilter, setDateFilter] = useState({ debut: '', fin: '' });
+  const [categorieFilter, setCategorieFilter] = useState('toutes');
   const queryClient = useQueryClient();
 
   const { data: clinique } = useQuery({
@@ -70,6 +73,20 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
     enabled: !!selectedPatient,
   });
 
+  const documentsFiltres = documentsPatient.filter(doc => {
+    const matchKeyword = !searchKeyword || 
+      doc.title?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      doc.mots_cles?.some(mot => mot.toLowerCase().includes(searchKeyword.toLowerCase()));
+    
+    const matchCategorie = categorieFilter === 'toutes' || doc.categorie === categorieFilter;
+    
+    const docDate = new Date(doc.creation_time);
+    const matchDateDebut = !dateFilter.debut || docDate >= new Date(dateFilter.debut);
+    const matchDateFin = !dateFilter.fin || docDate <= new Date(dateFilter.fin);
+    
+    return matchKeyword && matchCategorie && matchDateDebut && matchDateFin;
+  });
+
   const { data: consentements = [] } = useQuery({
     queryKey: ['consentements_patient', selectedPatient],
     queryFn: () => base44.entities.ConsentementBPPC.filter({ 
@@ -81,14 +98,14 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
   const demanderAccesMutation = useMutation({
     mutationFn: async ({ patientEmail }) => {
       await base44.entities.Notification.create({
-        user_email: patientEmail,
-        type: 'demande_acces_dmp',
+        destinataire_email: patientEmail,
+        type: 'dmp_demande_acces',
         titre: 'Demande d\'accès DMP',
         message: `${clinique.nom} demande l'accès à votre DMP`,
-        priority: 'haute',
-        lien: '/pages/MonEspaceSante',
+        priorite: 'haute',
+        action_page: 'MonEspaceSante',
         metadata: { clinique_id: cliniqueId },
-        lu: false
+        icone: 'FileText'
       });
     },
     onSuccess: () => {
@@ -102,14 +119,14 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
       const doc = await base44.entities.DocumentXDS.filter({ id: documentId }).then(r => r[0]);
       
       await base44.entities.Notification.create({
-        user_email: doc.patient_email,
-        type: 'consultation_dmp',
+        destinataire_email: doc.patient_email,
+        type: 'dmp_consultation',
         titre: 'Consultation DMP',
         message: `${clinique.nom} a consulté le document "${doc.title}"`,
-        priority: 'moyenne',
-        lien: '/pages/Interoperabilite',
+        priorite: 'normale',
+        action_page: 'Interoperabilite',
         metadata: { document_id: documentId, clinique_id: cliniqueId },
-        lu: false
+        icone: 'Eye'
       });
       
       return doc;
@@ -128,12 +145,31 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
     );
   };
 
-  const getDocumentIcon = (classCode) => {
-    if (classCode?.includes('11369-6')) return '📋';
-    if (classCode?.includes('34133-9')) return '📊';
-    if (classCode?.includes('18842-5')) return '💊';
-    return '📄';
+  const getDocumentIcon = (categorie) => {
+    const icons = {
+      'analyse_biologique': '🔬',
+      'compte_rendu': '📋',
+      'ordonnance': '💊',
+      'imagerie': '🩻',
+      'certificat': '📜',
+      'vaccination': '💉',
+      'consultation': '🩺',
+      'autre': '📄'
+    };
+    return icons[categorie] || '📄';
   };
+
+  const categories = [
+    { value: 'toutes', label: 'Toutes' },
+    { value: 'analyse_biologique', label: 'Analyses' },
+    { value: 'compte_rendu', label: 'Comptes rendus' },
+    { value: 'ordonnance', label: 'Ordonnances' },
+    { value: 'imagerie', label: 'Imagerie' },
+    { value: 'certificat', label: 'Certificats' },
+    { value: 'vaccination', label: 'Vaccinations' },
+    { value: 'consultation', label: 'Consultations' },
+    { value: 'autre', label: 'Autres' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -218,20 +254,69 @@ export default function ConsultationDMPClinique({ cliniqueId }) {
           </DialogHeader>
 
           <div className="space-y-4">
-            {documentsPatient.length === 0 ? (
+            {/* Filtres de recherche */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Rechercher par titre ou mots-clés..."
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <select
+                  value={categorieFilter}
+                  onChange={(e) => setCategorieFilter(e.target.value)}
+                  className="px-3 py-2 border rounded-lg bg-white text-sm"
+                >
+                  {categories.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+                
+                <Input
+                  type="date"
+                  placeholder="Date début"
+                  value={dateFilter.debut}
+                  onChange={(e) => setDateFilter({ ...dateFilter, debut: e.target.value })}
+                  className="text-sm"
+                />
+                
+                <Input
+                  type="date"
+                  placeholder="Date fin"
+                  value={dateFilter.fin}
+                  onChange={(e) => setDateFilter({ ...dateFilter, fin: e.target.value })}
+                  className="text-sm"
+                />
+              </div>
+              
+              <div className="text-xs text-gray-600">
+                {documentsFiltres.length} document(s) trouvé(s) sur {documentsPatient.length}
+              </div>
+            </div>
+
+            {documentsFiltres.length === 0 ? (
               <p className="text-center text-gray-500 py-8">Aucun document dans le DMP</p>
             ) : (
               <div className="grid gap-3">
-                {documentsPatient.map((doc) => (
+                {documentsFiltres.map((doc) => (
                   <Card key={doc.id} className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3">
-                          <div className="text-3xl">{getDocumentIcon(doc.class_code)}</div>
+                          <div className="text-3xl">{getDocumentIcon(doc.categorie)}</div>
                           <div className="flex-1">
                             <h4 className="font-semibold mb-1">{doc.title}</h4>
                             <div className="flex flex-wrap gap-2 mb-2">
-                              <Badge variant="outline">{doc.format_code}</Badge>
+                              {doc.categorie && (
+                                <Badge variant="outline">
+                                  {categories.find(c => c.value === doc.categorie)?.label}
+                                </Badge>
+                              )}
                               <Badge className="bg-blue-100 text-blue-800">
                                 {doc.practice_setting_code}
                               </Badge>

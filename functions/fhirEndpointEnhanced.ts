@@ -4,6 +4,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
  * FHIR R4 Endpoint - Enhanced
  * Support: Patient, Practitioner, Organization, Encounter, Observation, Appointment, Immunization
  * Sécurisé avec vérification de rôles et scopes
+ * 
+ * Endpoints:
+ * - GET    /fhir/{resourceType}/{id}         - Read resource
+ * - GET    /fhir/{resourceType}?params       - Search resources
+ * - POST   /fhir/{resourceType}              - Create resource
+ * - PUT    /fhir/{resourceType}/{id}         - Update resource
+ * - DELETE /fhir/{resourceType}/{id}         - Delete resource (soft)
  */
 
 const SUPPORTED_RESOURCES = [
@@ -37,14 +44,23 @@ Deno.serve(async (req) => {
 
     // Vérifier la clé API et récupérer la clinique associée
     const cliniques = await base44.asServiceRole.entities.Clinique.filter({
-      api_key: apiKey
+      api_key: apiKey,
+      api_fhir_enabled: true
     });
 
     if (cliniques.length === 0) {
-      return fhirError('security', 'Invalid API key', 401);
+      return fhirError('security', 'Invalid API key or FHIR not enabled', 401);
     }
 
     const clinique = cliniques[0];
+
+    // Vérifier les scopes pour cette opération
+    const requiredScope = getRequiredScope(resourceType, method);
+    const cliniqueScopes = clinique.api_scopes || [];
+    
+    if (!cliniqueScopes.includes(requiredScope) && !cliniqueScopes.includes('fhir:*')) {
+      return fhirError('forbidden', `Missing required scope: ${requiredScope}`, 403);
+    }
 
     // Log de l'accès (audit trail)
     console.log('[FHIR] Access:', {
@@ -319,4 +335,21 @@ function fhirError(code, diagnostics, httpStatus) {
       diagnostics
     }]
   }, { status: httpStatus });
+}
+
+// ============================================
+// HELPER: Déterminer le scope requis
+// ============================================
+function getRequiredScope(resourceType, method) {
+  const operation = method === 'GET' ? 'read' : 'write';
+  const scopeMap = {
+    'Patient': `${operation}:patients`,
+    'Practitioner': `${operation}:practitioners`,
+    'Organization': `${operation}:organizations`,
+    'Encounter': `${operation}:encounters`,
+    'Observation': `${operation}:observations`,
+    'Appointment': `${operation}:appointments`,
+    'Immunization': `${operation}:immunizations`
+  };
+  return scopeMap[resourceType] || 'fhir:*';
 }

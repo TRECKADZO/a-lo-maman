@@ -21,6 +21,20 @@ import FHIRMapper from "./FHIRMapper";
 import AuthGuard from "../auth/AuthGuard";
 
 export default function InteropDashboard() {
+  const [activeTab, setActiveTab] = useState('fhir');
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  const { data: profilMaman } = useQuery({
+    queryKey: ['profil_maman', user?.email],
+    queryFn: () => base44.entities.ProfilMaman.filter({ created_by: user?.email }),
+    enabled: !!user,
+  });
+
+  const patientEmail = user?.email;
   const [selectedTab, setSelectedTab] = useState("fhir");
 
   const { data: user } = useQuery({
@@ -67,6 +81,15 @@ export default function InteropDashboard() {
   };
 
   return (
+    <div className="p-4 md:p-8">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="fhir">Ressources FHIR</TabsTrigger>
+          <TabsTrigger value="dmp">Publication DMP</TabsTrigger>
+          <TabsTrigger value="consentements">Consentements</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="fhir" className="space-y-6 mt-6">
     <AuthGuard>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
@@ -360,5 +383,16 @@ export default function InteropDashboard() {
         </div>
       </div>
     </AuthGuard>
+        </TabsContent>
+
+        <TabsContent value="dmp" className="space-y-6 mt-6">
+          <DMPAdapter patientEmail={patientEmail} />
+        </TabsContent>
+
+        <TabsContent value="consentements" className="space-y-6 mt-6">
+          <GestionConsentements patientEmail={patientEmail} />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

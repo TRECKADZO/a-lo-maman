@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Star, Bug, Lightbulb, Heart } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function FeedbackWidget() {
   const [open, setOpen] = useState(false);
@@ -48,9 +48,16 @@ export default function FeedbackWidget() {
     setDescription('');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e?.preventDefault();
+    
     if (!user) {
       toast.error('Veuillez vous connecter');
+      return;
+    }
+
+    if (!title || !description) {
+      toast.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
 
@@ -99,7 +106,9 @@ export default function FeedbackWidget() {
         <div className="space-y-4">
           {/* Type de feedback */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Type de feedback</label>
+            <label className="text-sm font-medium mb-2 block">
+              Type de feedback <span className="text-red-500">*</span>
+            </label>
             <div className="grid grid-cols-2 gap-2">
               {feedbackTypes.map(type => {
                 const Icon = type.icon;
@@ -145,22 +154,28 @@ export default function FeedbackWidget() {
 
           {/* Title */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Titre</label>
+            <label className="text-sm font-medium mb-2 block">
+              Titre <span className="text-red-500">*</span>
+            </label>
             <Input
               placeholder="Résumé en quelques mots"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className={!title && title !== '' ? 'border-red-300' : ''}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Description</label>
+            <label className="text-sm font-medium mb-2 block">
+              Description <span className="text-red-500">*</span>
+            </label>
             <Textarea
               placeholder="Décrivez votre suggestion ou problème en détail..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
+              className={!description && description !== '' ? 'border-red-300' : ''}
             />
           </div>
 

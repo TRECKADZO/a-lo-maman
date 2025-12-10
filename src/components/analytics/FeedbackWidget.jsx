@@ -81,7 +81,10 @@ export default function FeedbackWidget() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="fixed bottom-20 right-4 md:bottom-6 md:right-6 rounded-full shadow-lg z-40"
+          className="fixed right-4 md:bottom-6 md:right-6 rounded-full shadow-lg z-40"
+          style={{
+            bottom: 'calc(10rem + env(safe-area-inset-bottom))'
+          }}
           size="lg"
         >
           <MessageSquare className="w-5 h-5 mr-2" />

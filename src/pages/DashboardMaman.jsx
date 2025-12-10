@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import ParcoursGuideMaman from '../components/onboarding/ParcoursGuideMaman';
+import ConseilsPersonnalises from '../components/ia/ConseilsPersonnalises';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -57,6 +59,7 @@ const DashboardWidget = ({ title, icon: Icon, children, link, linkText, color = 
 
 export default function DashboardMaman() {
   const [vueActive, setVueActive] = useState('apercu');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
@@ -72,6 +75,13 @@ export default function DashboardMaman() {
     },
     enabled: !!user,
   });
+
+  // Afficher onboarding si pas de profil
+  useEffect(() => {
+    if (user && !profilLoading && !profilMaman) {
+      setShowOnboarding(true);
+    }
+  }, [user, profilMaman, profilLoading]);
 
   const { data: grossesse, isLoading: grossesseLoading } = useQuery({
     queryKey: ['grossesse_active'],
@@ -140,6 +150,15 @@ export default function DashboardMaman() {
   });
 
   const isLoading = userLoading || profilLoading || grossesseLoading || enfantsLoading || rdvLoading;
+
+  if (showOnboarding && !profilMaman) {
+    return (
+      <ParcoursGuideMaman
+        onComplete={() => setShowOnboarding(false)}
+        userEmail={user?.email}
+      />
+    );
+  }
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -284,6 +303,13 @@ export default function DashboardMaman() {
 
           {/* Widget Rappels */}
           <RappelsWidget userEmail={user?.email} />
+
+          {/* Conseils personnalisés IA */}
+          <ConseilsPersonnalises 
+            profil={profilMaman}
+            grossesse={grossesse}
+            enfants={enfants}
+          />
 
           {/* Onglets - Mobile optimized */}
           <Tabs value={vueActive} onValueChange={setVueActive}>

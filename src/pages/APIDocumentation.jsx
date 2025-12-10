@@ -288,34 +288,46 @@ export default function APIDocumentation() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <CodeBlock
-              code={{
-                "// API Clinique (authentifié)": "",
-                "const response = await fetch('/functions/apiClinique', {": "",
-                "  method: 'POST',": "",
-                "  headers: { 'Content-Type': 'application/json' },": "",
-                "  body: JSON.stringify({": "",
-                "    endpoint: 'stats',": "",
-                "    clinique_id: 'abc123'": "",
-                "  })": "",
-                "});": "",
-                "const data = await response.json();": "",
-                "": "",
-                "// API Publique (avec clé)": "",
-                "const response2 = await fetch('/functions/apiPublic', {": "",
-                "  method: 'POST',": "",
-                "  headers: {": "",
-                "    'Content-Type': 'application/json',": "",
-                "    'X-API-Key': 'your_api_key'": "",
-                "  },": "",
-                "  body: JSON.stringify({": "",
-                "    endpoint: 'statistiques-region',": "",
-                "    region: 'Abidjan'": "",
-                "  })": "",
-                "});": ""
-              }}
-              id="example"
-            />
+            <div className="relative">
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+                <code>{`// API Clinique (authentifié)
+const response = await fetch('${baseUrl}/functions/apiClinique', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    endpoint: 'stats',
+    clinique_id: 'abc123'
+  })
+});
+const data = await response.json();
+
+// API Publique (avec clé)
+const response2 = await fetch('${baseUrl}/functions/apiPublic', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'your_api_key'
+  },
+  body: JSON.stringify({
+    endpoint: 'statistiques-region',
+    region: 'Abidjan'
+  })
+});
+const data2 = await response2.json();`}</code>
+              </pre>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute top-2 right-2 text-white hover:bg-gray-800"
+                onClick={() => copyToClipboard(`// Exemples d'utilisation des APIs A'lo Maman`, 'example-code')}
+              >
+                {copiedEndpoint === 'example-code' ? (
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

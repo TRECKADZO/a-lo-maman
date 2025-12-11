@@ -16,7 +16,7 @@ import {
   Target, DollarSign, TrendingDown, Thermometer, Pill, Eye, Filter,
   Globe, AlertOctagon, HeartPulse, Beaker, Wallet, Repeat, UserCheck,
   CreditCard, Zap, BarChart2, Banknote, RefreshCw, Gauge,
-  UserPlus, UserMinus, Bug, TrendingUpIcon
+  UserPlus, UserMinus, Bug, TrendingUpIcon, Brain
 } from 'lucide-react';
 import { format, subMonths, differenceInMonths, differenceInYears, startOfMonth, endOfMonth, subDays, isWithinInterval, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -48,7 +48,7 @@ export default function AdminAnalytics() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin_analytics', periodeAnalyse, regionFiltre],
     queryFn: async () => {
-      const [users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications] = await Promise.all([
+      const [users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques] = await Promise.all([
         base44.entities.User.list().catch(() => []),
         base44.entities.ProfilMaman.list().catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
@@ -61,14 +61,18 @@ export default function AdminAnalytics() {
         base44.entities.RappelMedicament.list().catch(() => []),
         base44.entities.DonneesVitales.list().catch(() => []),
         base44.entities.Notification.list().catch(() => []),
+        base44.entities.AnalyseRisque.list().catch(() => []),
+        base44.entities.DocumentXDS.list().catch(() => []),
+        base44.entities.Conversation.list().catch(() => []),
+        base44.entities.Clinique.list().catch(() => []),
       ]);
 
-      return { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications };
+      return { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques };
     },
     enabled: user?.role === 'admin',
   });
 
-  const { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications } = stats || {};
+  const { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques } = stats || {};
   
   const isAdmin = user?.role === 'admin';
 
@@ -1072,6 +1076,110 @@ export default function AdminAnalytics() {
       }
     };
   }, [unitEconomics, metriquesBusiness, metriquesAssurancesAvancees]);
+
+  // ============ MÉTRIQUES IA & AUTOMATISATION ============
+
+  const metriquesIA = useMemo(() => {
+    // Analyses de risque IA effectuées
+    const totalAnalysesIA = analysesRisque?.length || 0;
+    const analysesParType = analysesRisque?.reduce((acc, a) => {
+      acc[a.type_analyse] = (acc[a.type_analyse] || 0) + 1;
+      return acc;
+    }, {}) || {};
+    
+    // Taux de validation par professionnels
+    const tauxValidation = totalAnalysesIA > 0
+      ? Math.round((analysesRisque.filter(a => a.valide_par_professionnel).length / totalAnalysesIA) * 100)
+      : 0;
+    
+    // Distribution niveaux de risque
+    const risquesParNiveau = analysesRisque?.reduce((acc, a) => {
+      acc[a.niveau_risque] = (acc[a.niveau_risque] || 0) + 1;
+      return acc;
+    }, {}) || {};
+    
+    // Score de confiance moyen du modèle
+    const confianceMoyenne = analysesRisque?.length > 0
+      ? Math.round((analysesRisque.reduce((sum, a) => sum + (a.confiance_score || 0), 0) / analysesRisque.length) * 100)
+      : 0;
+    
+    // ROI de l'IA (détections précoces évitant hospitalisations)
+    const detectionsPrecoces = analysesRisque?.filter(a => 
+      a.niveau_risque === 'eleve' || a.niveau_risque === 'critique'
+    ).length || 0;
+    const coutEviteParDetection = 150000; // FCFA
+    const roiIA = detectionsPrecoces * coutEviteParDetection;
+    
+    // Temps gagné par automatisation
+    const tempsGagneHeures = totalAnalysesIA * 0.5; // 30 min par analyse
+    
+    return {
+      totalAnalysesIA,
+      analysesParType: Object.entries(analysesParType).map(([type, count]) => ({ type: type.replace(/_/g, ' '), count })),
+      tauxValidation,
+      risquesParNiveau,
+      confianceMoyenne,
+      detectionsPrecoces,
+      roiIA,
+      tempsGagneHeures: Math.round(tempsGagneHeures)
+    };
+  }, [analysesRisque]);
+
+  // Métriques DMP & Interopérabilité
+  const metriquesDMP = useMemo(() => {
+    const documentsTotal = documentsXDS?.length || 0;
+    const documentsParCategorie = documentsXDS?.reduce((acc, d) => {
+      acc[d.categorie] = (acc[d.categorie] || 0) + 1;
+      return acc;
+    }, {}) || {};
+    
+    const patientsAvecDMP = new Set(documentsXDS?.map(d => d.patient_email)).size;
+    const documentsParPatient = documentsTotal / (patientsAvecDMP || 1);
+    
+    const cliniquesFHIR = cliniques?.filter(c => c.api_fhir_enabled).length || 0;
+    const tauxInteroperabilite = cliniques?.length > 0 
+      ? Math.round((cliniquesFHIR / cliniques.length) * 100)
+      : 0;
+    
+    // Valeur data: plus de documents = plus de valeur pour IA
+    const valeurDataEstimee = documentsTotal * 500; // 500 FCFA par document structuré
+    
+    return {
+      documentsTotal,
+      documentsParCategorie: Object.entries(documentsParCategorie).map(([cat, count]) => ({ categorie: cat, count })),
+      patientsAvecDMP,
+      documentsParPatient: documentsParPatient.toFixed(1),
+      cliniquesFHIR,
+      tauxInteroperabilite,
+      valeurDataEstimee
+    };
+  }, [documentsXDS, cliniques]);
+
+  // Métriques d'engagement messaging (télémédecine asynchrone)
+  const metriquesMessaging = useMemo(() => {
+    const conversationsActives = conversations?.filter(c => 
+      c.dernier_message_date && 
+      new Date(c.dernier_message_date) >= subDays(new Date(), 30)
+    ).length || 0;
+    
+    const messagesTotal = conversations?.reduce((sum, c) => sum + (c.nombre_messages || 0), 0) || 0;
+    const tempsReponseMoyen = 4.2; // heures - estimation
+    
+    const tauxReponse = conversations?.length > 0
+      ? Math.round((conversations.filter(c => (c.nombre_messages || 0) >= 2).length / conversations.length) * 100)
+      : 0;
+    
+    // Valeur: télémédecine asynchrone réduit coûts vs synchrone
+    const economiesVsTeleSync = conversationsActives * 10000; // 10K FCFA économisé/conversation
+    
+    return {
+      conversationsActives,
+      messagesTotal,
+      tempsReponseMoyen,
+      tauxReponse,
+      economiesVsTeleSync
+    };
+  }, [conversations]);
 
   // ============ MÉTRIQUES SANTÉ PUBLIQUE AVANCÉES ============
 

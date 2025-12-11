@@ -2857,6 +2857,41 @@ export default function AdminAnalytics() {
               </CardContent>
             </Card>
 
+            {/* Prédicteurs de Risque pour Assurances */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-red-500" />
+                  Prédicteurs de Risque Actuariel
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {metriquesAssurancesAvancees.predicteursRisque.map((pred, idx) => (
+                    <div key={idx} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{pred.facteur}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <Progress value={pred.risque} className="flex-1 h-2" />
+                          <span className="text-sm font-bold w-12">{pred.risque.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                      <Badge className={pred.niveau === 'Élevé' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                        {pred.niveau}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm font-semibold text-blue-900 mb-2">Score de Risque Global Pondéré</p>
+                  <div className="flex items-center gap-4">
+                    <Progress value={metriquesAssurancesAvancees.scoreRisqueGlobal} className="flex-1 h-4" />
+                    <span className="text-3xl font-bold text-blue-600">{metriquesAssurancesAvancees.scoreRisqueGlobal}/100</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Métriques détaillées */}
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="shadow-xl">

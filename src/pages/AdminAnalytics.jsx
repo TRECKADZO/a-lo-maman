@@ -1974,6 +1974,99 @@ export default function AdminAnalytics() {
                 </p>
               </CardContent>
             </Card>
+
+            {/* Métriques IA & Data Assets */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-purple-500" />
+                  Valeur des Actifs Data & IA
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-purple-50 rounded-lg text-center">
+                    <p className="text-sm text-gray-600 mb-2">Analyses IA</p>
+                    <p className="text-2xl font-bold text-purple-600">{metriquesIA.totalAnalysesIA}</p>
+                    <p className="text-xs text-gray-500 mt-1">Prédictions générées</p>
+                  </div>
+                  <div className="p-4 bg-blue-50 rounded-lg text-center">
+                    <p className="text-sm text-gray-600 mb-2">Documents DMP</p>
+                    <p className="text-2xl font-bold text-blue-600">{metriquesDMP.documentsTotal}</p>
+                    <p className="text-xs text-gray-500 mt-1">Structurés FHIR/XDS</p>
+                  </div>
+                  <div className="p-4 bg-green-50 rounded-lg text-center">
+                    <p className="text-sm text-gray-600 mb-2">ROI IA</p>
+                    <p className="text-2xl font-bold text-green-600">{(metriquesIA.roiIA / 1000000).toFixed(1)}M</p>
+                    <p className="text-xs text-gray-500 mt-1">FCFA économisés</p>
+                  </div>
+                  <div className="p-4 bg-amber-50 rounded-lg text-center">
+                    <p className="text-sm text-gray-600 mb-2">Valeur Data</p>
+                    <p className="text-2xl font-bold text-amber-600">{(metriquesDMP.valeurDataEstimee / 1000000).toFixed(1)}M</p>
+                    <p className="text-xs text-gray-500 mt-1">FCFA (dataset structuré)</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-semibold text-indigo-900 mb-3">Actifs Data Premium</h4>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-700">• <strong>{grossesses?.length}</strong> parcours grossesse complets</p>
+                      <p className="text-gray-700">• <strong>{enfants?.length}</strong> suivis pédiatriques longitudinaux</p>
+                      <p className="text-gray-700">• <strong>{(donneesVitales?.length || 0).toLocaleString()}</strong> mesures vitales horodatées</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-700">• <strong>{metriquesDMP.documentsTotal}</strong> documents médicaux normalisés</p>
+                      <p className="text-gray-700">• <strong>{metriquesDMP.cliniquesFHIR}</strong> cliniques FHIR intégrées</p>
+                      <p className="text-gray-700">• <strong>{metriquesMessaging.conversationsActives}</strong> conversations télémédecine</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-indigo-700 mt-3 italic">
+                    💎 Ces données structurées représentent un actif stratégique majeur pour la recherche clinique, 
+                    le développement de modèles IA, et les partenariats pharma/assurances.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Télémédecine Asynchrone ROI */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-orange-500" />
+                  Télémédecine Asynchrone - Efficacité & ROI
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-orange-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Conversations actives</p>
+                    <p className="text-2xl font-bold text-orange-600">{metriquesMessaging.conversationsActives}</p>
+                  </div>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Temps réponse moyen</p>
+                    <p className="text-2xl font-bold text-blue-600">{metriquesMessaging.tempsReponseMoyen}h</p>
+                  </div>
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Taux réponse</p>
+                    <p className="text-2xl font-bold text-green-600">{metriquesMessaging.tauxReponse}%</p>
+                  </div>
+                  <div className="p-4 bg-purple-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Économies vs Sync</p>
+                    <p className="text-2xl font-bold text-purple-600">{(metriquesMessaging.economiesVsTeleSync / 1000000).toFixed(1)}M</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mt-4 p-3 bg-gray-50 rounded">
+                  💰 La télémédecine asynchrone permet de scaler sans augmenter proportionnellement les coûts professionnels, 
+                  offrant une marge opérationnelle supérieure de 40% vs consultations synchrones.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* RAPPORTS DÉMOGRAPHIQUES */}
+          <TabsContent value="rapports_demo">
+            <RapportsDemographiques />
           </TabsContent>
 
           {/* RAPPORTS DÉMOGRAPHIQUES */}

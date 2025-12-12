@@ -117,18 +117,30 @@ export default function FeedbackWidget() {
             <div className="grid grid-cols-2 gap-2">
               {feedbackTypes.map(type => {
                 const Icon = type.icon;
+                const isSelected = feedbackType === type.value;
+                
+                const colorClasses = {
+                  bug: isSelected ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300 hover:bg-red-50/50',
+                  improvement: isSelected ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200 hover:border-yellow-300 hover:bg-yellow-50/50',
+                  feature_request: isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50',
+                  compliment: isSelected ? 'border-pink-500 bg-pink-50' : 'border-gray-200 hover:border-pink-300 hover:bg-pink-50/50'
+                };
+                
+                const iconColors = {
+                  bug: isSelected ? 'text-red-600' : 'text-gray-600',
+                  improvement: isSelected ? 'text-yellow-600' : 'text-gray-600',
+                  feature_request: isSelected ? 'text-blue-600' : 'text-gray-600',
+                  compliment: isSelected ? 'text-pink-600' : 'text-gray-600'
+                };
+                
                 return (
                   <button
                     key={type.value}
                     onClick={() => setFeedbackType(type.value)}
-                    className={`p-3 rounded-lg border-2 transition-all ${
-                      feedbackType === type.value
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`p-3 rounded-lg border-2 transition-all ${colorClasses[type.value]}`}
                   >
-                    <Icon className="w-5 h-5 mx-auto mb-1" />
-                    <p className="text-xs font-medium">{type.label}</p>
+                    <Icon className={`w-5 h-5 mx-auto mb-1 ${iconColors[type.value]}`} />
+                    <p className={`text-xs font-medium ${isSelected ? iconColors[type.value] : 'text-gray-700'}`}>{type.label}</p>
                   </button>
                 );
               })}

@@ -40,6 +40,7 @@ import InstallPWADesktop from "@/components/general/InstallPWADesktop";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 import FloatingChatButton from "@/components/chatbot/FloatingChatButton";
 import NotificationToast from "@/components/notifications/NotificationToast";
+import LiveChatWidget from "@/components/support/LiveChatWidget";
 import AppointmentReminders from "@/components/notifications/AppointmentReminders";
 import MessageNotifications from "@/components/notifications/MessageNotifications";
 import RappelsChecker from "@/components/notifications/RappelsChecker";
@@ -504,6 +505,7 @@ export default function Layout({ children, currentPageName }) {
           <InstallPWA />
           <InstallPWADesktop />
           <FloatingChatButton />
+          <LiveChatWidget />
           <FeedbackWidget />
           <OfflineManager />
           <ServiceWorkerRegistration />

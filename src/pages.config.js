@@ -54,6 +54,7 @@ import InscriptionClinique from './pages/InscriptionClinique';
 import ValidationCliniques from './pages/ValidationCliniques';
 import NotificationsPush from './pages/NotificationsPush';
 import AdminFeedback from './pages/AdminFeedback';
+import AdminLiveChat from './pages/AdminLiveChat';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "ValidationCliniques": ValidationCliniques,
     "NotificationsPush": NotificationsPush,
     "AdminFeedback": AdminFeedback,
+    "AdminLiveChat": AdminLiveChat,
 }
 
 export const pagesConfig = {

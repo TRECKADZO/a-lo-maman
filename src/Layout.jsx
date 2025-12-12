@@ -270,8 +270,16 @@ export default function Layout({ children, currentPageName }) {
 
     setMeta('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
     setMeta('theme-color', themeColor);
+
+    // PWA meta tags pour mode standalone
     setMeta('apple-mobile-web-app-capable', 'yes');
+    setMeta('mobile-web-app-capable', 'yes');
     setMeta('apple-mobile-web-app-status-bar-style', 'black-translucent');
+    setMeta('apple-mobile-web-app-title', "A'lo Maman");
+
+    // Meta tags pour masquer l'interface du navigateur
+    setMeta('apple-touch-fullscreen', 'yes');
+    setMeta('format-detection', 'telephone=no');
   }, [theme, isSpecialist]);
 
   const handleLogout = async () => {

@@ -55,6 +55,7 @@ import ValidationCliniques from './pages/ValidationCliniques';
 import NotificationsPush from './pages/NotificationsPush';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminLiveChat from './pages/AdminLiveChat';
+import Support from './pages/Support';
 import __Layout from './Layout.jsx';
 
 
@@ -116,6 +117,7 @@ export const PAGES = {
     "NotificationsPush": NotificationsPush,
     "AdminFeedback": AdminFeedback,
     "AdminLiveChat": AdminLiveChat,
+    "Support": Support,
 }
 
 export const pagesConfig = {

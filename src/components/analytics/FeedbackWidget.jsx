@@ -197,6 +197,7 @@ export default function FeedbackWidget() {
           </div>
 
           <Button
+            type="button"
             onClick={handleSubmit}
             disabled={!title || !description || submitFeedback.isPending}
             className="w-full"

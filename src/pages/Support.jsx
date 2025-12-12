@@ -67,12 +67,59 @@ export default function SupportPage() {
   });
 
   const createChat = useMutation({
-    mutationFn: (data) => base44.entities.SupportChat.create(data),
+    mutationFn: async (data) => {
+      const chat = await base44.entities.SupportChat.create(data);
+      
+      // Notifier tous les admins qu'un nouveau chat a été créé
+      if (user) {
+        const admins = await base44.entities.User.filter({ role: 'admin' }).catch(() => []);
+        
+        for (const admin of admins) {
+          await base44.entities.Notification.create({
+            destinataire_email: admin.email,
+            type: 'message_nouveau',
+            titre: '🆕 Nouveau chat support',
+            message: `${user.full_name || user.email} a démarré une conversation`,
+            action_page: 'AdminLiveChat',
+            action_params: { chatId: chat.id },
+            priorite: 'haute',
+            icone: 'MessageCircle'
+          }).catch(() => {});
+        }
+      }
+      
+      return chat;
+    },
     onSuccess: () => queryClient.invalidateQueries(['support_chats']),
   });
 
   const updateChat = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.SupportChat.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      await base44.entities.SupportChat.update(id, data);
+      
+      // Notifier les admins quand l'utilisateur envoie un message
+      if (data.messages && user) {
+        const lastMessage = data.messages[data.messages.length - 1];
+        if (lastMessage.sender === 'user') {
+          // Récupérer tous les admins
+          const admins = await base44.entities.User.filter({ role: 'admin' }).catch(() => []);
+          
+          // Créer une notification pour chaque admin
+          for (const admin of admins) {
+            await base44.entities.Notification.create({
+              destinataire_email: admin.email,
+              type: 'message_nouveau',
+              titre: '💬 Nouveau message support',
+              message: `${user.full_name || user.email} a envoyé un message`,
+              action_page: 'AdminLiveChat',
+              action_params: { chatId: id },
+              priorite: 'haute',
+              icone: 'MessageCircle'
+            }).catch(() => {});
+          }
+        }
+      }
+    },
     onSuccess: () => queryClient.invalidateQueries(['support_chats']),
   });
 

@@ -13,6 +13,8 @@ import {
   CheckCircle, ArrowRight, Sparkles, Users
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Checkbox } from '@/components/ui/checkbox';
+import { createPageUrl } from '@/utils';
 
 export default function ParcoursGuideMaman({ onComplete, userEmail }) {
   const [etape, setEtape] = useState(1);
@@ -25,7 +27,8 @@ export default function ParcoursGuideMaman({ onComplete, userEmail }) {
     est_enceinte: null,
     date_derniere_regle: null,
     a_enfants: null,
-    interets: []
+    interets: [],
+    acceptConditions: false
   });
 
   const queryClient = useQueryClient();
@@ -121,7 +124,7 @@ export default function ParcoursGuideMaman({ onComplete, userEmail }) {
       case 2: return data.nom_complet && data.date_naissance && data.ville;
       case 3: return data.est_enceinte !== null;
       case 4: return data.interets.length > 0;
-      case 5: return true;
+      case 5: return data.acceptConditions;
       default: return false;
     }
   };
@@ -310,13 +313,15 @@ export default function ParcoursGuideMaman({ onComplete, userEmail }) {
                     </div>
                   )}
 
-                  {/* Étape 5: Notifications */}
+                  {/* Étape 5: Notifications & Conditions */}
                   {etape === 5 && (
-                    <div className="space-y-6 text-center">
-                      <div className="text-6xl mb-4">🔔</div>
-                      <p className="text-gray-700">
-                        Recevez des rappels personnalisés pour :
-                      </p>
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="text-6xl mb-4">🔔</div>
+                        <p className="text-gray-700">
+                          Recevez des rappels personnalisés pour :
+                        </p>
+                      </div>
                       <div className="grid grid-cols-2 gap-3 text-left">
                         <div className="p-4 bg-green-50 rounded-lg">
                           <CheckCircle className="w-5 h-5 text-green-600 mb-2" />
@@ -334,6 +339,30 @@ export default function ParcoursGuideMaman({ onComplete, userEmail }) {
                           <CheckCircle className="w-5 h-5 text-pink-600 mb-2" />
                           <p className="text-sm font-medium">Jalons bébé</p>
                         </div>
+                      </div>
+
+                      {/* Conditions */}
+                      <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+                        <Checkbox
+                          id="conditions"
+                          checked={data.acceptConditions}
+                          onCheckedChange={(checked) => setData({...data, acceptConditions: checked})}
+                        />
+                        <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
+                          J'accepte les{" "}
+                          <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                            conditions d'utilisation
+                          </a>
+                          , la{" "}
+                          <a href={createPageUrl('Politique')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                            politique de confidentialité
+                          </a>
+                          {" "}et les{" "}
+                          <a href="https://alomaman.com/security" className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                            conditions de sécurité
+                          </a>
+                          {" "}*
+                        </label>
                       </div>
                     </div>
                   )}

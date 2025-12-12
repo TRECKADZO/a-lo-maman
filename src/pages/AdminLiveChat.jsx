@@ -19,7 +19,12 @@ import {
   Clock,
   User,
   AlertCircle,
-  Loader2
+  Loader2,
+  Zap,
+  Power,
+  PowerOff,
+  FileText,
+  Paperclip
 } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
@@ -28,7 +33,11 @@ export default function AdminLiveChat() {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [message, setMessage] = useState('');
   const [filterStatus, setFilterStatus] = useState('active');
+  const [isAvailable, setIsAvailable] = useState(false);
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -46,6 +55,26 @@ export default function AdminLiveChat() {
     },
     enabled: user?.role === 'admin',
     refetchInterval: 3000,
+  });
+
+  const { data: quickReplies = [] } = useQuery({
+    queryKey: ['quick_replies'],
+    queryFn: () => base44.entities.QuickReply.filter({ active: true }, 'order'),
+    enabled: user?.role === 'admin',
+  });
+
+  const { data: availability } = useQuery({
+    queryKey: ['admin_availability', user?.email],
+    queryFn: () => base44.entities.AdminAvailability.filter({ admin_email: user.email }),
+    enabled: !!user && user?.role === 'admin',
+  });
+
+  const updateAvailability = useMutation({
+    mutationFn: ({ id, data }) => 
+      id ? base44.entities.AdminAvailability.update(id, data) : base44.entities.AdminAvailability.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['admin_availability']);
+    },
   });
 
   const updateChat = useMutation({
@@ -67,14 +96,55 @@ export default function AdminLiveChat() {
     }
   }, [selectedChat?.messages]);
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || !selectedChat) return;
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !selectedChat) return;
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      const newMessage = {
+        id: Date.now().toString(),
+        sender: 'admin',
+        sender_name: user.full_name || 'Support',
+        message: file.name,
+        attachment: {
+          url: file_url,
+          type: file.type.startsWith('image/') ? 'image' : 'document',
+          name: file.name,
+          size: file.size,
+        },
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+
+      await updateChat.mutateAsync({
+        id: selectedChat.id,
+        data: {
+          messages: [...(selectedChat.messages || []), newMessage],
+          last_message_at: new Date().toISOString(),
+        },
+      });
+      
+      toast.success('Fichier envoyé');
+    } catch (error) {
+      toast.error('Erreur lors de l\'envoi');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleSendMessage = async (customMessage) => {
+    const msgToSend = customMessage || message.trim();
+    if (!msgToSend || !selectedChat) return;
 
     const newMessage = {
       id: Date.now().toString(),
       sender: 'admin',
       sender_name: user.full_name || 'Support',
-      message: message.trim(),
+      message: msgToSend,
       timestamp: new Date().toISOString(),
       read: false,
     };
@@ -85,11 +155,63 @@ export default function AdminLiveChat() {
         messages: [...(selectedChat.messages || []), newMessage],
         last_message_at: new Date().toISOString(),
         assigned_to: user.email,
+        status: selectedChat.status === 'waiting' ? 'active' : selectedChat.status,
       },
     });
 
     setMessage('');
+    setShowQuickReplies(false);
   };
+
+  const toggleAvailability = async () => {
+    const currentAvail = availability?.[0];
+    const newStatus = !isAvailable;
+    
+    if (currentAvail) {
+      await updateAvailability.mutateAsync({
+        id: currentAvail.id,
+        data: {
+          is_available: newStatus,
+          last_updated: new Date().toISOString(),
+        },
+      });
+    } else {
+      await updateAvailability.mutateAsync({
+        data: {
+          admin_email: user.email,
+          admin_name: user.full_name || 'Admin',
+          is_available: newStatus,
+          last_updated: new Date().toISOString(),
+        },
+      });
+    }
+    
+    setIsAvailable(newStatus);
+    toast.success(newStatus ? 'Vous êtes disponible' : 'Vous êtes indisponible');
+  };
+
+  useEffect(() => {
+    if (availability?.[0]) {
+      setIsAvailable(availability[0].is_available);
+    }
+  }, [availability]);
+
+  // Auto-assign waiting chats to available admins
+  useEffect(() => {
+    if (!isAvailable || !user) return;
+    
+    const waitingChats = chats.filter(c => c.status === 'waiting' && !c.assigned_to);
+    if (waitingChats.length > 0) {
+      const firstChat = waitingChats[0];
+      updateChat.mutate({
+        id: firstChat.id,
+        data: {
+          status: 'active',
+          assigned_to: user.email,
+        },
+      });
+    }
+  }, [chats, isAvailable, user]);
 
   const handleStatusChange = async (chatId, newStatus) => {
     await updateChat.mutateAsync({
@@ -146,7 +268,16 @@ export default function AdminLiveChat() {
       <div className="max-w-7xl mx-auto p-6">
         {/* Header & Stats */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-4">Support en Direct</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold">Support en Direct</h1>
+            <Button
+              onClick={toggleAvailability}
+              className={isAvailable ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'}
+            >
+              {isAvailable ? <Power className="w-4 h-4 mr-2" /> : <PowerOff className="w-4 h-4 mr-2" />}
+              {isAvailable ? 'Disponible' : 'Indisponible'}
+            </Button>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <Card>
@@ -299,7 +430,34 @@ export default function AdminLiveChat() {
                         <p className="text-sm font-semibold mb-1">
                           {msg.sender_name}
                         </p>
-                        <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                        
+                        {msg.attachment ? (
+                          <div className="space-y-2">
+                            {msg.attachment.type === 'image' ? (
+                              <img 
+                                src={msg.attachment.url} 
+                                alt={msg.attachment.name}
+                                className="rounded-lg max-w-full cursor-pointer"
+                                onClick={() => window.open(msg.attachment.url, '_blank')}
+                              />
+                            ) : (
+                              <a
+                                href={msg.attachment.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`flex items-center gap-2 p-2 rounded ${
+                                  msg.sender === 'admin' ? 'bg-purple-700' : 'bg-gray-100'
+                                }`}
+                              >
+                                <FileText className="w-4 h-4" />
+                                <span className="text-sm truncate">{msg.attachment.name}</span>
+                              </a>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                        )}
+                        
                         <p
                           className={`text-xs mt-1 ${
                             msg.sender === 'admin' ? 'text-purple-200' : 'text-gray-400'
@@ -313,9 +471,49 @@ export default function AdminLiveChat() {
                   <div ref={messagesEndRef} />
                 </div>
 
+                {/* Quick Replies */}
+                {showQuickReplies && quickReplies.length > 0 && (
+                  <div className="p-3 bg-white border-t max-h-40 overflow-y-auto">
+                    <div className="space-y-2">
+                      {quickReplies.map(reply => (
+                        <button
+                          key={reply.id}
+                          onClick={() => handleSendMessage(reply.message)}
+                          className="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
+                        >
+                          <p className="text-sm font-medium text-purple-600">{reply.label}</p>
+                          <p className="text-xs text-gray-500 truncate">{reply.message}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Input */}
-                <div className="p-4 bg-white border-t">
+                <div className="p-4 bg-white border-t space-y-2">
                   <div className="flex gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*,.pdf,.doc,.docx"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                    >
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setShowQuickReplies(!showQuickReplies)}
+                    >
+                      <Zap className="w-4 h-4" />
+                    </Button>
                     <Input
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -327,8 +525,9 @@ export default function AdminLiveChat() {
                       }}
                       placeholder="Répondre au client..."
                       className="flex-1"
+                      disabled={uploading}
                     />
-                    <Button onClick={handleSendMessage} disabled={!message.trim()}>
+                    <Button onClick={() => handleSendMessage()} disabled={!message.trim() || uploading}>
                       <Send className="w-4 h-4" />
                     </Button>
                   </div>

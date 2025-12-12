@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { MessageCircle, X, Send, Minimize2 } from 'lucide-react';
+import { MessageCircle, X, Send, Minimize2, Paperclip, Image as ImageIcon, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
 
@@ -13,7 +13,9 @@ export default function LiveChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState('');
+  const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -54,6 +56,62 @@ export default function LiveChatWidget() {
     }
   }, [activeChat?.messages, isOpen, isMinimized]);
 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error('Fichier trop volumineux (max 10MB)');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      const newMessage = {
+        id: Date.now().toString(),
+        sender: 'user',
+        sender_name: user.full_name || user.email,
+        message: file.name,
+        attachment: {
+          url: file_url,
+          type: file.type.startsWith('image/') ? 'image' : 'document',
+          name: file.name,
+          size: file.size,
+        },
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+
+      if (activeChat) {
+        await updateChat.mutateAsync({
+          id: activeChat.id,
+          data: {
+            messages: [...(activeChat.messages || []), newMessage],
+            last_message_at: new Date().toISOString(),
+          },
+        });
+      } else {
+        await createChat.mutateAsync({
+          user_email: user.email,
+          user_name: user.full_name || user.email,
+          messages: [newMessage],
+          status: 'waiting',
+          last_message_at: new Date().toISOString(),
+        });
+      }
+      
+      toast.success('Fichier envoyé');
+    } catch (error) {
+      toast.error('Erreur lors de l\'envoi du fichier');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim() || !user) return;
 
@@ -79,7 +137,7 @@ export default function LiveChatWidget() {
         user_email: user.email,
         user_name: user.full_name || user.email,
         messages: [newMessage],
-        status: 'active',
+        status: 'waiting',
         last_message_at: new Date().toISOString(),
       });
     }
@@ -179,7 +237,34 @@ export default function LiveChatWidget() {
                       {msg.sender_name || 'Support'}
                     </p>
                   )}
-                  <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                  
+                  {msg.attachment ? (
+                    <div className="space-y-2">
+                      {msg.attachment.type === 'image' ? (
+                        <img 
+                          src={msg.attachment.url} 
+                          alt={msg.attachment.name}
+                          className="rounded-lg max-w-full cursor-pointer"
+                          onClick={() => window.open(msg.attachment.url, '_blank')}
+                        />
+                      ) : (
+                        <a
+                          href={msg.attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex items-center gap-2 p-2 rounded ${
+                            msg.sender === 'user' ? 'bg-purple-700' : 'bg-gray-100'
+                          }`}
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span className="text-sm truncate">{msg.attachment.name}</span>
+                        </a>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                  )}
+                  
                   <p
                     className={`text-xs mt-1 ${
                       msg.sender === 'user' ? 'text-purple-200' : 'text-gray-400'
@@ -196,17 +281,32 @@ export default function LiveChatWidget() {
           {/* Input */}
           <div className="p-4 bg-white border-t">
             <div className="flex gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,.pdf,.doc,.docx"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={!user || uploading}
+              >
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
+              </Button>
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Écrivez votre message..."
                 className="flex-1"
-                disabled={!user}
+                disabled={!user || uploading}
               />
               <Button
                 onClick={handleSendMessage}
-                disabled={!message.trim() || !user}
+                disabled={!message.trim() || !user || uploading}
                 size="icon"
               >
                 <Send className="w-4 h-4" />

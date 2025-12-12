@@ -49,6 +49,11 @@ export default function AdminFeedback() {
     queryFn: () => base44.auth.me(),
   });
 
+  // Déterminer les permissions basées sur le rôle admin
+  const adminRole = user?.admin_role || 'feedback_viewer';
+  const canEdit = adminRole === 'feedback_manager' || adminRole === 'super_admin';
+  const canDelete = adminRole === 'super_admin';
+
   const { data: feedbacks = [], isLoading } = useQuery({
     queryKey: ['admin_feedbacks'],
     queryFn: () => base44.entities.UserFeedback.list('-created_date'),
@@ -136,8 +141,17 @@ export default function AdminFeedback() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Feedbacks</h1>
-          <p className="text-gray-600">Consultez et gérez les retours utilisateurs</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Feedbacks</h1>
+              <p className="text-gray-600">Consultez et gérez les retours utilisateurs</p>
+            </div>
+            <Badge className="h-fit">
+              {adminRole === 'super_admin' && '🔑 Super Admin'}
+              {adminRole === 'feedback_manager' && '✏️ Gestionnaire'}
+              {adminRole === 'feedback_viewer' && '👁️ Lecteur'}
+            </Badge>
+          </div>
         </div>
 
         {/* Stats */}
@@ -335,70 +349,108 @@ export default function AdminFeedback() {
                   <p className="text-gray-700 whitespace-pre-wrap">{selectedFeedback.description}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Statut</label>
-                    <Select
-                      value={selectedFeedback.status}
-                      onValueChange={(value) =>
-                        updateFeedback.mutate({
-                          id: selectedFeedback.id,
-                          data: { status: value },
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="new">Nouveau</SelectItem>
-                        <SelectItem value="in_review">En révision</SelectItem>
-                        <SelectItem value="planned">Planifié</SelectItem>
-                        <SelectItem value="in_progress">En cours</SelectItem>
-                        <SelectItem value="completed">Terminé</SelectItem>
-                        <SelectItem value="wont_fix">Ne sera pas corrigé</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                {canEdit ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Statut</label>
+                        <Select
+                          value={selectedFeedback.status}
+                          onValueChange={(value) =>
+                            updateFeedback.mutate({
+                              id: selectedFeedback.id,
+                              data: { status: value },
+                            })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="new">Nouveau</SelectItem>
+                            <SelectItem value="in_review">En révision</SelectItem>
+                            <SelectItem value="planned">Planifié</SelectItem>
+                            <SelectItem value="in_progress">En cours</SelectItem>
+                            <SelectItem value="completed">Terminé</SelectItem>
+                            <SelectItem value="wont_fix">Ne sera pas corrigé</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Priorité</label>
-                    <Select
-                      value={selectedFeedback.priority}
-                      onValueChange={(value) =>
-                        updateFeedback.mutate({
-                          id: selectedFeedback.id,
-                          data: { priority: value },
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Faible</SelectItem>
-                        <SelectItem value="medium">Moyenne</SelectItem>
-                        <SelectItem value="high">Haute</SelectItem>
-                        <SelectItem value="critical">Critique</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Priorité</label>
+                        <Select
+                          value={selectedFeedback.priority}
+                          onValueChange={(value) =>
+                            updateFeedback.mutate({
+                              id: selectedFeedback.id,
+                              data: { priority: value },
+                            })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Faible</SelectItem>
+                            <SelectItem value="medium">Moyenne</SelectItem>
+                            <SelectItem value="high">Haute</SelectItem>
+                            <SelectItem value="critical">Critique</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
 
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Notes admin</label>
-                  <Textarea
-                    defaultValue={selectedFeedback.admin_notes}
-                    placeholder="Ajoutez des notes internes..."
-                    onBlur={(e) =>
-                      updateFeedback.mutate({
-                        id: selectedFeedback.id,
-                        data: { admin_notes: e.target.value },
-                      })
-                    }
-                    rows={4}
-                  />
-                </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Notes admin</label>
+                      <Textarea
+                        defaultValue={selectedFeedback.admin_notes}
+                        placeholder="Ajoutez des notes internes..."
+                        onBlur={(e) =>
+                          updateFeedback.mutate({
+                            id: selectedFeedback.id,
+                            data: { admin_notes: e.target.value },
+                          })
+                        }
+                        rows={4}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Statut</label>
+                        <Badge className={statusColors[selectedFeedback.status]}>
+                          {selectedFeedback.status}
+                        </Badge>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Priorité</label>
+                        <Badge className={priorityColors[selectedFeedback.priority]}>
+                          {selectedFeedback.priority}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {selectedFeedback.admin_notes && (
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Notes admin</label>
+                        <p className="text-gray-700 whitespace-pre-wrap p-3 bg-gray-50 rounded-lg">
+                          {selectedFeedback.admin_notes}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-yellow-800">Permissions limitées</p>
+                        <p className="text-xs text-yellow-700">Vous avez un accès en lecture seule. Contactez un super admin pour modifier ce feedback.</p>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="border-t pt-4">
                   <h4 className="font-medium mb-2">Informations utilisateur</h4>
@@ -435,16 +487,18 @@ export default function AdminFeedback() {
                   >
                     Fermer
                   </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      if (confirm('Êtes-vous sûr de vouloir supprimer ce feedback ?')) {
-                        deleteFeedback.mutate(selectedFeedback.id);
-                      }
-                    }}
-                  >
-                    Supprimer
-                  </Button>
+                  {canDelete && (
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        if (confirm('Êtes-vous sûr de vouloir supprimer ce feedback ?')) {
+                          deleteFeedback.mutate(selectedFeedback.id);
+                        }
+                      }}
+                    >
+                      Supprimer
+                    </Button>
+                  )}
                 </div>
               </div>
             </DialogContent>

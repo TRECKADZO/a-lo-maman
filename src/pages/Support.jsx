@@ -20,7 +20,10 @@ import {
   Loader2,
   CheckCircle,
   Clock,
-  HelpCircle
+  HelpCircle,
+  Mic,
+  Play,
+  Pause
 } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
@@ -33,8 +36,12 @@ export default function SupportPage() {
   const [rating, setRating] = useState(0);
   const [feedbackTitle, setFeedbackTitle] = useState('');
   const [feedbackDescription, setFeedbackDescription] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -88,6 +95,92 @@ export default function SupportPage() {
   useEffect(() => {
     if (activeTab === 'chat') scrollToBottom();
   }, [activeChat?.messages, activeTab]);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setAudioBlob(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Envoyer automatiquement l'audio
+        await sendAudioMessage(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      toast.error('Erreur lors de l\'accès au microphone');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const sendAudioMessage = async (blob) => {
+    if (!user) return;
+
+    setUploading(true);
+    try {
+      const audioFile = new File([blob], `audio_${Date.now()}.webm`, { type: 'audio/webm' });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: audioFile });
+      
+      const newMessage = {
+        id: Date.now().toString(),
+        sender: 'user',
+        sender_name: user.full_name || user.email,
+        message: '🎤 Message vocal',
+        attachment: {
+          url: file_url,
+          type: 'audio',
+          name: audioFile.name,
+          size: audioFile.size,
+        },
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+
+      if (activeChat) {
+        await updateChat.mutateAsync({
+          id: activeChat.id,
+          data: {
+            messages: [...(activeChat.messages || []), newMessage],
+            last_message_at: new Date().toISOString(),
+          },
+        });
+      } else {
+        await createChat.mutateAsync({
+          user_email: user.email,
+          user_name: user.full_name || user.email,
+          messages: [newMessage],
+          status: 'waiting',
+          last_message_at: new Date().toISOString(),
+        });
+      }
+      
+      toast.success('Message vocal envoyé');
+      setAudioBlob(null);
+    } catch (error) {
+      toast.error('Erreur lors de l\'envoi');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
@@ -319,6 +412,14 @@ export default function SupportPage() {
                                   className="rounded-lg max-w-full cursor-pointer"
                                   onClick={() => window.open(msg.attachment.url, '_blank')}
                                 />
+                              ) : msg.attachment.type === 'audio' ? (
+                                <div className={`p-2 rounded ${msg.sender === 'user' ? 'bg-purple-700' : 'bg-gray-100'}`}>
+                                  <audio 
+                                    controls 
+                                    src={msg.attachment.url}
+                                    className="w-full max-w-xs"
+                                  />
+                                </div>
                               ) : (
                                 <a
                                   href={msg.attachment.url}
@@ -364,9 +465,18 @@ export default function SupportPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => fileInputRef.current?.click()}
-                        disabled={uploading}
+                        disabled={uploading || isRecording}
                       >
                         {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={isRecording ? stopRecording : startRecording}
+                        disabled={uploading}
+                        className={isRecording ? 'bg-red-100 hover:bg-red-200' : ''}
+                      >
+                        <Mic className={`w-4 h-4 ${isRecording ? 'text-red-600 animate-pulse' : ''}`} />
                       </Button>
                       <Input
                         value={message}
@@ -377,17 +487,23 @@ export default function SupportPage() {
                             handleSendMessage();
                           }
                         }}
-                        placeholder="Écrivez votre message..."
+                        placeholder={isRecording ? "Enregistrement en cours..." : "Écrivez votre message..."}
                         className="flex-1"
-                        disabled={uploading}
+                        disabled={uploading || isRecording}
                       />
                       <Button
                         onClick={handleSendMessage}
-                        disabled={!message.trim() || uploading}
+                        disabled={!message.trim() || uploading || isRecording}
                       >
                         <Send className="w-4 h-4" />
                       </Button>
                     </div>
+                    {isRecording && (
+                      <p className="text-xs text-red-600 mt-2 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                        Appuyez à nouveau sur le micro pour arrêter l'enregistrement
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>

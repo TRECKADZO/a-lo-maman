@@ -18,7 +18,8 @@ import {
   Loader2,
   Sparkles,
   FolderOpen,
-  BookOpen
+  BookOpen,
+  HelpCircle
 } from "lucide-react";
 import {
   Sidebar,
@@ -77,8 +78,9 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
           { title: "Messagerie", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
           { title: "Communauté", url: createPageUrl("Communaute"), icon: Users, color: "text-amber-500" },
           { title: "Famille", url: createPageUrl("FamilleConnectee"), icon: Heart, color: "text-rose-500" },
-        ],
-        en: [
+          { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+          ],
+          en: [
           { title: "Home", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
           { title: "Dashboard", url: createPageUrl("Dashboard"), icon: Sparkles, color: "text-teal-500" },
           { title: "My Schedule", url: createPageUrl("MonAgenda"), icon: Calendar, color: "text-blue-500" },
@@ -86,9 +88,10 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
           { title: "My Patients", url: createPageUrl("MesPatients"), icon: Users, color: "text-purple-500" },
           { title: "Messaging", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
           { title: "Community", url: createPageUrl("Communaute"), icon: Users, color: "text-amber-500" },
-        { title: "Family", url: createPageUrl("FamilleConnectee"), icon: Heart, color: "text-rose-500" },
-        ],
-      };
+          { title: "Family", url: createPageUrl("FamilleConnectee"), icon: Heart, color: "text-rose-500" },
+          { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+          ],
+          };
       return items[lang] || items.fr;
     } else {
     const items = {
@@ -105,9 +108,10 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
         { title: "Communauté", url: createPageUrl("Communaute"), icon: Users, color: "text-amber-500" },
         { title: "Famille", url: createPageUrl("FamilleConnectee"), icon: Heart, color: "text-rose-500" },
         { title: "Documents", url: createPageUrl("MesDocuments"), icon: FolderOpen, color: "text-indigo-500" },
-                      { title: "Ressources", url: createPageUrl("Ressources"), icon: BookOpen, color: "text-emerald-500" },
-                  ],
-                  en: [
+        { title: "Ressources", url: createPageUrl("Ressources"), icon: BookOpen, color: "text-emerald-500" },
+        { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+        ],
+        en: [
         { title: "Home", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
         { title: "Dashboard", url: createPageUrl("Dashboard"), icon: Sparkles, color: "text-purple-500" },
         { title: "My Health Portal", url: createPageUrl("MonEspaceSante"), icon: HeartPulse, color: "text-purple-500" },
@@ -120,9 +124,10 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
         { title: "Community", url: createPageUrl("Communaute"), icon: Users, color: "text-amber-500" },
         { title: "Family", url: createPageUrl("FamilleConnectee"), icon: Heart, color: "text-rose-500" },
         { title: "Documents", url: createPageUrl("MesDocuments"), icon: FolderOpen, color: "text-indigo-500" },
-                      { title: "Resources", url: createPageUrl("Ressources"), icon: BookOpen, color: "text-emerald-500" },
-                    ],
-                  };
+        { title: "Resources", url: createPageUrl("Ressources"), icon: BookOpen, color: "text-emerald-500" },
+        { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+        ],
+        };
                   return items[lang] || items.fr;
   }
 };

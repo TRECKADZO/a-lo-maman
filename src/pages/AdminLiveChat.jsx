@@ -159,6 +159,18 @@ export default function AdminLiveChat() {
       },
     });
 
+    // Notifier l'utilisateur de la réponse
+    await base44.entities.Notification.create({
+      destinataire_email: selectedChat.user_email,
+      type: 'message_reponse',
+      titre: '💬 Nouvelle réponse du support',
+      message: `${user.full_name || 'Support'} a répondu à votre conversation`,
+      action_page: 'Support',
+      action_params: { tab: 'chat' },
+      priorite: 'haute',
+      icone: 'MessageCircle'
+    }).catch(() => {});
+
     setMessage('');
     setShowQuickReplies(false);
   };
@@ -210,6 +222,18 @@ export default function AdminLiveChat() {
           assigned_to: user.email,
         },
       });
+
+      // Notifier l'utilisateur que son chat a été assigné
+      base44.entities.Notification.create({
+        destinataire_email: firstChat.user_email,
+        type: 'message_nouveau',
+        titre: '✅ Prise en charge de votre demande',
+        message: `${user.full_name || 'Un agent'} s'occupe maintenant de votre conversation`,
+        action_page: 'Support',
+        action_params: { tab: 'chat' },
+        priorite: 'haute',
+        icone: 'UserCheck'
+      }).catch(() => {});
     }
   }, [chats, isAvailable, user]);
 

@@ -61,7 +61,32 @@ export default function AdminFeedback() {
   });
 
   const updateFeedback = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.UserFeedback.update(id, data),
+    mutationFn: async ({ id, data, previousFeedback }) => {
+      await base44.entities.UserFeedback.update(id, data);
+      
+      // Notifier l'utilisateur si le statut change
+      if (data.status && previousFeedback && data.status !== previousFeedback.status) {
+        const statusLabels = {
+          new: 'nouveau',
+          in_review: 'en révision',
+          planned: 'planifié',
+          in_progress: 'en cours',
+          completed: 'complété',
+          wont_fix: 'ne sera pas corrigé'
+        };
+
+        await base44.entities.Notification.create({
+          destinataire_email: previousFeedback.user_email,
+          type: 'systeme',
+          titre: '📝 Mise à jour de votre feedback',
+          message: `Le statut de votre feedback "${previousFeedback.title}" est passé à : ${statusLabels[data.status]}`,
+          action_page: 'Support',
+          action_params: { tab: 'history' },
+          priorite: 'normale',
+          icone: 'Bell'
+        }).catch(() => {});
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin_feedbacks']);
       toast.success('Feedback mis à jour');
@@ -360,6 +385,7 @@ export default function AdminFeedback() {
                             updateFeedback.mutate({
                               id: selectedFeedback.id,
                               data: { status: value },
+                              previousFeedback: selectedFeedback,
                             })
                           }
                         >

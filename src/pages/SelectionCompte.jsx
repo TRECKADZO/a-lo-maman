@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Stethoscope, Loader2, User, MapPin, Phone, AlertCircle, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const SPECIALITES = [
   { value: 'gynecologie', label: 'Gynécologie' },
@@ -40,7 +41,8 @@ export default function SelectionCompte() {
     region: '',
     specialite: '',
     nom_complet: '',
-    biographie: ''
+    biographie: '',
+    acceptConditions: false
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -62,6 +64,10 @@ export default function SelectionCompte() {
     try {
       if (!user) {
         throw new Error('Pas d\'utilisateur connecté');
+      }
+
+      if (!formData.acceptConditions) {
+        throw new Error('Vous devez accepter les conditions d\'utilisation');
       }
 
       console.log('👤 User:', user.email);
@@ -391,6 +397,30 @@ export default function SelectionCompte() {
                     </p>
                   </div>
                 )}
+
+                {/* Conditions */}
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                  <Checkbox
+                    id="conditions"
+                    checked={formData.acceptConditions}
+                    onCheckedChange={(checked) => handleChange('acceptConditions', checked)}
+                  />
+                  <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
+                    J'accepte les{" "}
+                    <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                      conditions d'utilisation
+                    </a>
+                    , la{" "}
+                    <a href={createPageUrl('Politique')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                      politique de confidentialité
+                    </a>
+                    {" "}et les{" "}
+                    <a href="https://alomaman.com/security" className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                      conditions de sécurité
+                    </a>
+                    {" "}*
+                  </label>
+                </div>
 
                 <div className="flex gap-3 pt-4">
                   <Button

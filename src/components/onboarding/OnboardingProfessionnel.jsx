@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { createPageUrl } from '@/utils';
 
 const REGIONS_CI = [
   "Abidjan", "Agnéby-Tiassa", "Bafing", "Bagoué", "Bélier", "Béré", 
@@ -99,6 +101,7 @@ export default function OnboardingProfessionnel({ professionnel, onComplete }) {
     biographie: professionnel?.biographie || '',
     domaines_expertise: professionnel?.certifications || [],
     assurances_acceptees: [],
+    acceptConditions: false
   });
 
   const updateProMutation = useMutation({
@@ -146,6 +149,11 @@ export default function OnboardingProfessionnel({ professionnel, onComplete }) {
   };
 
   const handleSubmit = () => {
+    if (!formData.acceptConditions) {
+      alert('Vous devez accepter les conditions d\'utilisation pour continuer');
+      return;
+    }
+    
     updateProMutation.mutate({
       photo: formData.photo,
       ville: formData.ville,
@@ -461,6 +469,30 @@ export default function OnboardingProfessionnel({ professionnel, onComplete }) {
               </AlertDescription>
             </Alert>
 
+            {/* Conditions */}
+            <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+              <Checkbox
+                id="conditions"
+                checked={formData.acceptConditions}
+                onCheckedChange={(checked) => setFormData({ ...formData, acceptConditions: checked })}
+              />
+              <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
+                J'accepte les{" "}
+                <a href={createPageUrl('Conditions')} className="text-teal-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                  conditions d'utilisation
+                </a>
+                , la{" "}
+                <a href={createPageUrl('Politique')} className="text-teal-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                  politique de confidentialité
+                </a>
+                {" "}et les{" "}
+                <a href="https://alomaman.com/security" className="text-teal-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                  conditions de sécurité
+                </a>
+                {" "}*
+              </label>
+            </div>
+
             <div className="flex gap-3">
               <Button
                 onClick={() => setEtape(3)}
@@ -472,7 +504,7 @@ export default function OnboardingProfessionnel({ professionnel, onComplete }) {
               <Button
                 onClick={handleSubmit}
                 className="flex-1 bg-teal-600 hover:bg-teal-700"
-                disabled={updateProMutation.isPending}
+                disabled={updateProMutation.isPending || !formData.acceptConditions}
               >
                 {updateProMutation.isPending ? (
                   <>

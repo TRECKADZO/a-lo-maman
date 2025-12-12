@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -406,13 +405,18 @@ export default function Inscription() {
                     />
                     <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
                       J'accepte les{" "}
-                      <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline" target="_blank">
+                      <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
                         conditions d'utilisation
-                      </a>{" "}
-                      et la{" "}
-                      <a href={createPageUrl('Politique')} className="text-pink-600 hover:underline" target="_blank">
+                      </a>
+                      , la{" "}
+                      <a href={createPageUrl('Politique')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
                         politique de confidentialité
                       </a>
+                      {" "}et les{" "}
+                      <a href="https://alomaman.com/security" className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
+                        conditions de sécurité
+                      </a>
+                      {" "}*
                     </label>
                   </div>
 

@@ -53,9 +53,12 @@ import JournalPhotosSemaine from "../components/grossesse/JournalPhotosSemaine";
 import GraphiquesInteractifs from "../components/grossesse/GraphiquesInteractifs";
 import PredictionRisquesIA from "../components/grossesse/PredictionRisquesIA";
 import GestionEchographies from "../components/grossesse/GestionEchographies";
+import NavigationTrimestres from "../components/grossesse/NavigationTrimestres";
+import ContenuTrimestre from "../components/grossesse/ContenuTrimestre";
 
 // Configuration des sections de la page
 const SECTIONS = [
+  { id: 'trimestres', label: 'Par Trimestre', icon: Calendar, color: 'from-pink-500 to-purple-500', bgColor: 'bg-gradient-to-br from-pink-50 to-purple-50' },
   { id: 'evolution', label: 'Évolution Bébé', icon: Baby, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-50' },
   { id: 'graphiques', label: 'Graphiques', icon: BarChart3, color: 'from-blue-500 to-indigo-500', bgColor: 'bg-blue-50' },
   { id: 'risques_ia', label: 'Risques IA', icon: Brain, color: 'from-purple-500 to-fuchsia-500', bgColor: 'bg-purple-50' },
@@ -65,7 +68,6 @@ const SECTIONS = [
   { id: 'nutrition', label: 'Nutrition', icon: Apple, color: 'from-green-500 to-emerald-500', bgColor: 'bg-green-50' },
   { id: 'poids', label: 'Poids', icon: Scale, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-50' },
   { id: 'photos', label: 'Journal Photo', icon: Camera, color: 'from-pink-500 to-fuchsia-500', bgColor: 'bg-pink-50' },
-  { id: 'calendrier', label: 'Calendrier', icon: Calendar, color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-50' },
   { id: 'questions', label: 'Questions', icon: HelpCircle, color: 'from-teal-500 to-cyan-500', bgColor: 'bg-teal-50' },
   { id: 'rappels', label: 'Rappels', icon: Bell, color: 'from-red-500 to-rose-500', bgColor: 'bg-red-50' },
   { id: 'tension', label: 'Tension', icon: Heart, color: 'from-rose-500 to-pink-500', bgColor: 'bg-rose-50' },
@@ -78,6 +80,7 @@ const SECTIONS = [
 export default function Grossesse() {
   const [showConfigurer, setShowConfigurer] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
+  const [selectedTrimestre, setSelectedTrimestre] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: grossesse, isLoading } = useQuery({
@@ -167,6 +170,19 @@ export default function Grossesse() {
     const props = { grossesse, semainesGrossesse: info.semainesGrossesse, trimestre: info.trimestre };
 
     switch (activeSection) {
+      case 'trimestres': 
+        return selectedTrimestre ? (
+          <ContenuTrimestre 
+            trimestre={selectedTrimestre} 
+            onRetour={() => setSelectedTrimestre(null)}
+            currentWeek={info.semainesGrossesse}
+          />
+        ) : (
+          <NavigationTrimestres 
+            onSelectTrimestre={setSelectedTrimestre}
+            currentWeek={info.semainesGrossesse}
+          />
+        );
       case 'evolution': return <EvolutionBebe {...props} />;
       case 'graphiques': return <GraphiquesInteractifs grossesse={grossesse} />;
       case 'risques_ia': return <PredictionRisquesIA grossesse={grossesse} consultations={grossesse.consultations || []} user={user} />;
@@ -176,7 +192,6 @@ export default function Grossesse() {
       case 'nutrition': return <ConseilsNutritionActivite {...props} />;
       case 'poids': return <SuiviPoidsGrossesse grossesse={grossesse} />;
       case 'photos': return <JournalPhotosSemaine {...props} />;
-      case 'calendrier': return <CalendrierEtapesGrossesse {...props} />;
       case 'questions': return <QuestionsMedecin {...props} />;
       case 'rappels': return <RappelsPrenatals {...props} />;
       case 'tension': return <SuiviTensionArterielle grossesse={grossesse} />;
@@ -347,7 +362,10 @@ export default function Grossesse() {
           {/* Bottom Sheet pour le contenu de chaque section */}
           <BottomSheet
             isOpen={!!activeSection}
-            onClose={() => setActiveSection(null)}
+            onClose={() => {
+              setActiveSection(null);
+              setSelectedTrimestre(null);
+            }}
             title={SECTIONS.find(s => s.id === activeSection)?.label || ''}
             fullHeight
           >

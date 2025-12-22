@@ -1,123 +1,125 @@
-import Contraception from './pages/Contraception';
-import Dashboard from './pages/Dashboard';
-import Intro from './pages/Intro';
-import Inscription from './pages/Inscription';
-import Connexion from './pages/Connexion';
-import Communaute from './pages/Communaute';
-import Enfants from './pages/Enfants';
-import Teleconsultation from './pages/Teleconsultation';
-import Cycle from './pages/Cycle';
-import Grossesse from './pages/Grossesse';
-import DashboardMaman from './pages/DashboardMaman';
-import Conditions from './pages/Conditions';
-import Politique from './pages/Politique';
-import Parametres from './pages/Parametres';
-import Messagerie from './pages/Messagerie';
-import SelectionCompte from './pages/SelectionCompte';
-import DossierPatient from './pages/DossierPatient';
-import AssistantIA from './pages/AssistantIA';
-import DashboardProfessionnel from './pages/DashboardProfessionnel';
-import MonAgenda from './pages/MonAgenda';
-import MesPatients from './pages/MesPatients';
-import IntroSlides from './pages/IntroSlides';
-import GestionDisponibilites from './pages/GestionDisponibilites';
-import GestionRappels from './pages/GestionRappels';
-import Calendrier from './pages/Calendrier';
-import MoniteuringSante from './pages/MoniteuringSante';
-import FileAttenteConsultation from './pages/FileAttenteConsultation';
-import DashboardAnalytics from './pages/DashboardAnalytics';
-import AssistantIAPro from './pages/AssistantIAPro';
-import ProfilProfessionnel from './pages/ProfilProfessionnel';
-import ChatAssistant from './pages/ChatAssistant';
-import FAQ from './pages/FAQ';
-import MesRendezVous from './pages/MesRendezVous';
-import ConfigurerAgenda from './pages/ConfigurerAgenda';
-import MonEspaceSante from './pages/MonEspaceSante';
-import MesRappels from './pages/MesRappels';
-import TableauBordEnfants from './pages/TableauBordEnfants';
-import DiagnosticProfil from './pages/DiagnosticProfil';
 import _0Accueil from './pages/0_Accueil';
-import AdminAnalytics from './pages/AdminAnalytics';
-import ModeleTarifaire from './pages/ModeleTarifaire';
-import FamilleConnectee from './pages/FamilleConnectee';
-import MesDocuments from './pages/MesDocuments';
-import VideoConsultation from './pages/VideoConsultation';
-import Ressources from './pages/Ressources';
-import Interoperabilite from './pages/Interoperabilite';
-import Tests from './pages/Tests';
 import ABTesting from './pages/ABTesting';
-import Analytics from './pages/Analytics';
-import PortailClinique from './pages/PortailClinique';
-import OutilsIAPro from './pages/OutilsIAPro';
 import APIDocumentation from './pages/APIDocumentation';
-import InscriptionClinique from './pages/InscriptionClinique';
-import ValidationCliniques from './pages/ValidationCliniques';
-import NotificationsPush from './pages/NotificationsPush';
+import AdminAnalytics from './pages/AdminAnalytics';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminLiveChat from './pages/AdminLiveChat';
+import Analytics from './pages/Analytics';
+import AssistantIA from './pages/AssistantIA';
+import AssistantIAPro from './pages/AssistantIAPro';
+import Calendrier from './pages/Calendrier';
+import ChatAssistant from './pages/ChatAssistant';
+import Communaute from './pages/Communaute';
+import Conditions from './pages/Conditions';
+import ConfigurerAgenda from './pages/ConfigurerAgenda';
+import Connexion from './pages/Connexion';
+import Contraception from './pages/Contraception';
+import Cycle from './pages/Cycle';
+import Dashboard from './pages/Dashboard';
+import DashboardAnalytics from './pages/DashboardAnalytics';
+import DashboardMaman from './pages/DashboardMaman';
+import DashboardProfessionnel from './pages/DashboardProfessionnel';
+import DiagnosticProfil from './pages/DiagnosticProfil';
+import DossierPatient from './pages/DossierPatient';
+import Enfants from './pages/Enfants';
+import FAQ from './pages/FAQ';
+import FamilleConnectee from './pages/FamilleConnectee';
+import FileAttenteConsultation from './pages/FileAttenteConsultation';
+import GestionDisponibilites from './pages/GestionDisponibilites';
+import GestionRappels from './pages/GestionRappels';
+import Grossesse from './pages/Grossesse';
+import Home from './pages/Home';
+import Inscription from './pages/Inscription';
+import InscriptionClinique from './pages/InscriptionClinique';
+import Interoperabilite from './pages/Interoperabilite';
+import Intro from './pages/Intro';
+import IntroSlides from './pages/IntroSlides';
+import MesDocuments from './pages/MesDocuments';
+import MesPatients from './pages/MesPatients';
+import MesRappels from './pages/MesRappels';
+import MesRendezVous from './pages/MesRendezVous';
+import Messagerie from './pages/Messagerie';
+import ModeleTarifaire from './pages/ModeleTarifaire';
+import MonAgenda from './pages/MonAgenda';
+import MonEspaceSante from './pages/MonEspaceSante';
+import MoniteuringSante from './pages/MoniteuringSante';
+import NotificationsPush from './pages/NotificationsPush';
+import OutilsIAPro from './pages/OutilsIAPro';
+import Parametres from './pages/Parametres';
+import Politique from './pages/Politique';
+import PortailClinique from './pages/PortailClinique';
+import ProfilProfessionnel from './pages/ProfilProfessionnel';
+import Ressources from './pages/Ressources';
+import SelectionCompte from './pages/SelectionCompte';
 import Support from './pages/Support';
+import TableauBordEnfants from './pages/TableauBordEnfants';
+import Teleconsultation from './pages/Teleconsultation';
+import Tests from './pages/Tests';
+import ValidationCliniques from './pages/ValidationCliniques';
+import VideoConsultation from './pages/VideoConsultation';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Contraception": Contraception,
-    "Dashboard": Dashboard,
-    "Intro": Intro,
-    "Inscription": Inscription,
-    "Connexion": Connexion,
-    "Communaute": Communaute,
-    "Enfants": Enfants,
-    "Teleconsultation": Teleconsultation,
-    "Cycle": Cycle,
-    "Grossesse": Grossesse,
-    "DashboardMaman": DashboardMaman,
-    "Conditions": Conditions,
-    "Politique": Politique,
-    "Parametres": Parametres,
-    "Messagerie": Messagerie,
-    "SelectionCompte": SelectionCompte,
-    "DossierPatient": DossierPatient,
-    "AssistantIA": AssistantIA,
-    "DashboardProfessionnel": DashboardProfessionnel,
-    "MonAgenda": MonAgenda,
-    "MesPatients": MesPatients,
-    "IntroSlides": IntroSlides,
-    "GestionDisponibilites": GestionDisponibilites,
-    "GestionRappels": GestionRappels,
-    "Calendrier": Calendrier,
-    "MoniteuringSante": MoniteuringSante,
-    "FileAttenteConsultation": FileAttenteConsultation,
-    "DashboardAnalytics": DashboardAnalytics,
-    "AssistantIAPro": AssistantIAPro,
-    "ProfilProfessionnel": ProfilProfessionnel,
-    "ChatAssistant": ChatAssistant,
-    "FAQ": FAQ,
-    "MesRendezVous": MesRendezVous,
-    "ConfigurerAgenda": ConfigurerAgenda,
-    "MonEspaceSante": MonEspaceSante,
-    "MesRappels": MesRappels,
-    "TableauBordEnfants": TableauBordEnfants,
-    "DiagnosticProfil": DiagnosticProfil,
     "0_Accueil": _0Accueil,
-    "AdminAnalytics": AdminAnalytics,
-    "ModeleTarifaire": ModeleTarifaire,
-    "FamilleConnectee": FamilleConnectee,
-    "MesDocuments": MesDocuments,
-    "VideoConsultation": VideoConsultation,
-    "Ressources": Ressources,
-    "Interoperabilite": Interoperabilite,
-    "Tests": Tests,
     "ABTesting": ABTesting,
-    "Analytics": Analytics,
-    "PortailClinique": PortailClinique,
-    "OutilsIAPro": OutilsIAPro,
     "APIDocumentation": APIDocumentation,
-    "InscriptionClinique": InscriptionClinique,
-    "ValidationCliniques": ValidationCliniques,
-    "NotificationsPush": NotificationsPush,
+    "AdminAnalytics": AdminAnalytics,
     "AdminFeedback": AdminFeedback,
     "AdminLiveChat": AdminLiveChat,
+    "Analytics": Analytics,
+    "AssistantIA": AssistantIA,
+    "AssistantIAPro": AssistantIAPro,
+    "Calendrier": Calendrier,
+    "ChatAssistant": ChatAssistant,
+    "Communaute": Communaute,
+    "Conditions": Conditions,
+    "ConfigurerAgenda": ConfigurerAgenda,
+    "Connexion": Connexion,
+    "Contraception": Contraception,
+    "Cycle": Cycle,
+    "Dashboard": Dashboard,
+    "DashboardAnalytics": DashboardAnalytics,
+    "DashboardMaman": DashboardMaman,
+    "DashboardProfessionnel": DashboardProfessionnel,
+    "DiagnosticProfil": DiagnosticProfil,
+    "DossierPatient": DossierPatient,
+    "Enfants": Enfants,
+    "FAQ": FAQ,
+    "FamilleConnectee": FamilleConnectee,
+    "FileAttenteConsultation": FileAttenteConsultation,
+    "GestionDisponibilites": GestionDisponibilites,
+    "GestionRappels": GestionRappels,
+    "Grossesse": Grossesse,
+    "Home": Home,
+    "Inscription": Inscription,
+    "InscriptionClinique": InscriptionClinique,
+    "Interoperabilite": Interoperabilite,
+    "Intro": Intro,
+    "IntroSlides": IntroSlides,
+    "MesDocuments": MesDocuments,
+    "MesPatients": MesPatients,
+    "MesRappels": MesRappels,
+    "MesRendezVous": MesRendezVous,
+    "Messagerie": Messagerie,
+    "ModeleTarifaire": ModeleTarifaire,
+    "MonAgenda": MonAgenda,
+    "MonEspaceSante": MonEspaceSante,
+    "MoniteuringSante": MoniteuringSante,
+    "NotificationsPush": NotificationsPush,
+    "OutilsIAPro": OutilsIAPro,
+    "Parametres": Parametres,
+    "Politique": Politique,
+    "PortailClinique": PortailClinique,
+    "ProfilProfessionnel": ProfilProfessionnel,
+    "Ressources": Ressources,
+    "SelectionCompte": SelectionCompte,
     "Support": Support,
+    "TableauBordEnfants": TableauBordEnfants,
+    "Teleconsultation": Teleconsultation,
+    "Tests": Tests,
+    "ValidationCliniques": ValidationCliniques,
+    "VideoConsultation": VideoConsultation,
 }
 
 export const pagesConfig = {

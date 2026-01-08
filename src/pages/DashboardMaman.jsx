@@ -22,6 +22,7 @@ import WidgetEnfants from '../components/dashboard/WidgetEnfants';
 import PersonnaliserWidgets from '../components/dashboard/PersonnaliserWidgets';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import GenererRapportPDF from '../components/dashboard/GenererRapportPDF';
+import SectionSuiviGrossesse from '../components/dashboard/SectionSuiviGrossesse';
 
 export default function DashboardMaman() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -197,8 +198,13 @@ export default function DashboardMaman() {
             </CardContent>
           </Card>
 
+          {/* Suivi de Grossesse - Section complète */}
+          {(grossesse || widgetsActifs.includes('grossesse')) && (
+            <SectionSuiviGrossesse grossesse={grossesse} userEmail={user?.email} />
+          )}
+
           {/* Grille de widgets personnalisables */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {widgetsActifs.includes('grossesse') && grossesse && (
               <WidgetGrossesse grossesse={grossesse} />
             )}

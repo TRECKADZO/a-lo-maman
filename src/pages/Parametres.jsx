@@ -215,26 +215,16 @@ export default function Parametres() {
     try {
       setExportingFHIR(true);
       
-      // Appeler directement l'URL de la fonction
-      const functionUrl = `/api/functions/exporterFHIR`;
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await base44.auth.getToken()}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de l\'export');
-      }
-
-      // Récupérer le blob JSON
-      const blob = await response.blob();
+      // Utiliser le SDK Base44 pour appeler la fonction
+      const result = await base44.functions.invoke('exporterFHIR', {});
+      
+      // Le résultat est déjà un objet JSON
+      const jsonString = JSON.stringify(result, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/fhir+json' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `export-fhir-${Date.now()}.json`;
+      a.download = `export-fhir-${user?.email}-${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -243,7 +233,7 @@ export default function Parametres() {
       alert('✅ Export FHIR téléchargé avec succès !');
     } catch (error) {
       console.error('Erreur export FHIR:', error);
-      alert('❌ Erreur lors de l\'export FHIR');
+      alert('❌ Erreur lors de l\'export FHIR: ' + (error.message || 'Erreur inconnue'));
     } finally {
       setExportingFHIR(false);
     }

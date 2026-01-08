@@ -11,9 +11,10 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Users, Plus, Settings, UserPlus, Check, X, MessageCircle,
-  Heart, Baby, Calendar, FileText, Shield, Loader2, Mail, 
-  Bell, Trash2
+  Heart, Baby, Calendar, FileText, Shield, Loader2, 
+  Trash2
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { BottomSheet } from '@/components/ui/safe-area-view';
 import MessagerieFilsDiscussion from './MessagerieFilsDiscussion';
 
@@ -37,24 +38,12 @@ const PERMISSIONS = [
 
 export default function FamilleConnectee() {
   const queryClient = useQueryClient();
-  const [showInvite, setShowInvite] = useState(false);
+  const [showCodePartage, setShowCodePartage] = useState(false);
+  const [showJoindre, setShowJoindre] = useState(false);
   const [showSettings, setShowSettings] = useState(null);
   const [showMessages, setShowMessages] = useState(false);
-  const [newMessage, setNewMessage] = useState('');
-  const [inviteData, setInviteData] = useState({
-    email: '',
-    nom: '',
-    relation: 'partenaire',
-    permissions: {
-      grossesse: true,
-      grossesse_details: false,
-      enfants: true,
-      enfants_details: false,
-      rendez_vous: true,
-      documents: false,
-      messagerie: true
-    }
-  });
+  const [codeJoindre, setCodeJoindre] = useState('');
+  const [relationJoindre, setRelationJoindre] = useState('partenaire');
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -84,14 +73,18 @@ export default function FamilleConnectee() {
     enabled: !!user,
   });
 
-  // Créer le groupe famille
+  // Générer code unique
+  const generateCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
+
+  // Créer le groupe famille avec code
   const createFamilleMutation = useMutation({
     mutationFn: async () => {
       if (!user?.email) {
         throw new Error('Utilisateur non connecté');
       }
       
-      // Vérifier d'abord si une famille existe déjà
       const existingFamilles = await base44.entities.FamilleConnectee.filter({
         proprietaire_email: user.email
       });
@@ -100,8 +93,11 @@ export default function FamilleConnectee() {
         return existingFamilles[0];
       }
       
+      const code = generateCode();
+      
       const result = await base44.entities.FamilleConnectee.create({
         proprietaire_email: user.email,
+        code_partage: code,
         membres: [],
         messages_famille: [],
         parametres: {
@@ -121,58 +117,62 @@ export default function FamilleConnectee() {
     }
   });
 
-  // Inviter un membre
-  const inviteMutation = useMutation({
+  // Rejoindre une famille avec code
+  const joinFamilleMutation = useMutation({
     mutationFn: async () => {
+      // Trouver la famille avec ce code
+      const allFamilles = await base44.entities.FamilleConnectee.list();
+      const familleAvecCode = allFamilles.find(f => f.code_partage === codeJoindre.toUpperCase());
+      
+      if (!familleAvecCode) {
+        throw new Error('Code invalide ou famille introuvable');
+      }
+
+      // Vérifier si déjà membre
+      const dejaMembre = familleAvecCode.membres?.some(m => m.email === user.email);
+      if (dejaMembre) {
+        throw new Error('Vous êtes déjà membre de cette famille');
+      }
+
       const newMembre = {
-        email: inviteData.email,
-        nom: inviteData.nom,
-        relation: inviteData.relation,
-        statut: 'invite',
-        date_invitation: new Date().toISOString(),
-        permissions: inviteData.permissions
+        email: user.email,
+        nom: user.full_name,
+        relation: relationJoindre,
+        statut: 'accepte',
+        date_ajout: new Date().toISOString(),
+        permissions: {
+          grossesse: true,
+          grossesse_details: false,
+          enfants: true,
+          enfants_details: false,
+          rendez_vous: true,
+          documents: false,
+          messagerie: true
+        }
       };
 
-      const membres = [...(famille?.membres || []), newMembre];
-      
-      await base44.entities.FamilleConnectee.update(famille.id, { membres });
-
-      // Envoyer notification/email
-      await base44.integrations.Core.SendEmail({
-        to: inviteData.email,
-        subject: `${user.full_name} vous invite à rejoindre sa famille sur A'lo Maman`,
-        body: `Bonjour ${inviteData.nom},\n\n${user.full_name} souhaite vous ajouter à son cercle familial sur A'lo Maman pour partager le suivi de sa grossesse et de ses enfants.\n\nConnectez-vous à l'application pour accepter l'invitation.\n\nÀ bientôt !`
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['famille_connectee'] });
-      setShowInvite(false);
-      setInviteData({
-        email: '', nom: '', relation: 'partenaire',
-        permissions: { grossesse: true, grossesse_details: false, enfants: true, enfants_details: false, rendez_vous: true, documents: false, messagerie: true }
-      });
-    }
-  });
-
-  // Accepter/refuser invitation
-  const respondInvitationMutation = useMutation({
-    mutationFn: async ({ familleId, accept }) => {
-      const fam = await base44.entities.FamilleConnectee.filter({ id: familleId });
-      if (!fam[0]) return;
-
-      const membres = fam[0].membres.map(m => 
-        m.email === user.email 
-          ? { ...m, statut: accept ? 'accepte' : 'refuse', date_reponse: new Date().toISOString() }
-          : m
-      );
-
-      await base44.entities.FamilleConnectee.update(familleId, { membres });
+      const membres = [...(familleAvecCode.membres || []), newMembre];
+      await base44.entities.FamilleConnectee.update(familleAvecCode.id, { membres });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['famille_connectee'] });
       queryClient.invalidateQueries({ queryKey: ['familles_membre'] });
+      setShowJoindre(false);
+      setCodeJoindre('');
+      toast.success('Vous avez rejoint la famille !');
+    },
+    onError: (error) => {
+      toast.error(error.message);
     }
   });
+
+  // Copier le code
+  const handleCopyCode = () => {
+    if (famille?.code_partage) {
+      navigator.clipboard.writeText(famille.code_partage);
+      toast.success('Code copié !');
+    }
+  };
 
   // Mettre à jour permissions
   const updatePermissionsMutation = useMutation({
@@ -222,12 +222,6 @@ export default function FamilleConnectee() {
   });
 
   const membresAcceptes = famille?.membres?.filter(m => m.statut === 'accepte') || [];
-  const membresEnAttente = famille?.membres?.filter(m => m.statut === 'invite') || [];
-
-  // Invitations reçues
-  const invitationsRecues = famillesMembre?.filter(f => 
-    f.membres?.some(m => m.email === user?.email && m.statut === 'invite')
-  ) || [];
 
   if (isLoading) {
     return (
@@ -243,48 +237,6 @@ export default function FamilleConnectee() {
   if (!famille) {
     return (
       <div className="space-y-4">
-        {/* Invitations reçues */}
-        {invitationsRecues.length > 0 && (
-          <Card className="shadow-lg bg-amber-50 border-amber-200">
-            <CardHeader>
-              <CardTitle className="text-sm text-amber-800 flex items-center gap-2">
-                <Bell className="w-4 h-4" />
-                Invitations reçues
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {invitationsRecues.map(f => {
-                const invitation = f.membres?.find(m => m.email === user?.email);
-                return (
-                  <div key={f.id} className="flex items-center justify-between p-3 bg-white rounded-lg">
-                    <div>
-                      <p className="font-medium">{f.proprietaire_email}</p>
-                      <p className="text-xs text-gray-500">
-                        Relation: {RELATIONS.find(r => r.value === invitation?.relation)?.label}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => respondInvitationMutation.mutate({ familleId: f.id, accept: false })}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => respondInvitationMutation.mutate({ familleId: f.id, accept: true })}
-                      >
-                        <Check className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-        )}
-
         <Card className="shadow-xl">
           <CardContent className="p-8 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -295,18 +247,27 @@ export default function FamilleConnectee() {
               Partagez votre suivi de grossesse et le carnet de santé de vos enfants 
               avec votre partenaire et vos proches.
             </p>
-            <Button
-              onClick={() => createFamilleMutation.mutate()}
-              disabled={createFamilleMutation.isPending}
-              className="bg-gradient-to-r from-pink-500 to-rose-500"
-            >
-              {createFamilleMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Plus className="w-4 h-4 mr-2" />
-              )}
-              Créer mon cercle familial
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => createFamilleMutation.mutate()}
+                disabled={createFamilleMutation.isPending}
+                className="bg-gradient-to-r from-pink-500 to-rose-500"
+              >
+                {createFamilleMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Plus className="w-4 h-4 mr-2" />
+                )}
+                Créer mon cercle
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowJoindre(true)}
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Rejoindre un cercle
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -315,7 +276,7 @@ export default function FamilleConnectee() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      {/* Header avec code de partage */}
       <Card className="shadow-xl bg-gradient-to-r from-pink-50 to-purple-50">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
@@ -326,11 +287,19 @@ export default function FamilleConnectee() {
               <div>
                 <h3 className="font-bold">{famille.parametres?.nom_groupe || 'Ma Famille'}</h3>
                 <p className="text-sm text-gray-600">
-                  {membresAcceptes.length} membre(s) connecté(s)
+                  {membresAcceptes.length + 1} membre(s) • Code: <span className="font-mono font-bold text-pink-600">{famille.code_partage}</span>
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCodePartage(true)}
+              >
+                <UserPlus className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Inviter</span>
+              </Button>
               <Button
                 variant="outline"
                 size="icon"
@@ -338,45 +307,10 @@ export default function FamilleConnectee() {
               >
                 <MessageCircle className="w-4 h-4" />
               </Button>
-              <Button
-                size="icon"
-                onClick={() => setShowInvite(true)}
-              >
-                <UserPlus className="w-4 h-4" />
-              </Button>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Invitations en attente */}
-      {membresEnAttente.length > 0 && (
-        <Card className="bg-amber-50 border-amber-200">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-amber-800">
-              ⏳ Invitations en attente ({membresEnAttente.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {membresEnAttente.map((m, i) => (
-              <div key={i} className="flex items-center justify-between p-2 bg-white rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-amber-200 text-amber-800 text-xs">
-                      {m.nom?.[0]?.toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{m.nom}</p>
-                    <p className="text-xs text-gray-500">{m.email}</p>
-                  </div>
-                </div>
-                <Badge variant="outline" className="text-xs">En attente</Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Membres connectés */}
       <Card className="shadow-lg">
@@ -453,40 +387,71 @@ export default function FamilleConnectee() {
         </CardContent>
       </Card>
 
-      {/* Modal invitation */}
+      {/* Modal code de partage */}
       <BottomSheet
-        isOpen={showInvite}
-        onClose={() => setShowInvite(false)}
-        title="Inviter un membre"
-        fullHeight
+        isOpen={showCodePartage}
+        onClose={() => setShowCodePartage(false)}
+        title="Code de partage familial"
+      >
+        <div className="p-6 space-y-6">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-4">
+              Partagez ce code avec vos proches pour qu'ils rejoignent votre cercle familial
+            </p>
+            
+            <div className="p-8 bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl mb-4">
+              <p className="text-xs text-gray-600 mb-2">Code de famille</p>
+              <p className="text-4xl font-mono font-bold text-pink-600 tracking-wider">
+                {famille?.code_partage}
+              </p>
+            </div>
+
+            <Button
+              onClick={handleCopyCode}
+              variant="outline"
+              className="w-full mb-4"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Copier le code
+            </Button>
+
+            <div className="p-4 bg-blue-50 rounded-lg text-left">
+              <p className="text-sm text-blue-900 font-semibold mb-2">📱 Instructions :</p>
+              <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+                <li>Partagez ce code à vos proches (SMS, WhatsApp, etc.)</li>
+                <li>Ils doivent se connecter à A'lo Maman</li>
+                <li>Dans "Famille", cliquer sur "Rejoindre un cercle"</li>
+                <li>Entrer ce code pour rejoindre votre famille</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </BottomSheet>
+
+      {/* Modal rejoindre une famille */}
+      <BottomSheet
+        isOpen={showJoindre}
+        onClose={() => setShowJoindre(false)}
+        title="Rejoindre un cercle familial"
       >
         <div className="p-6 space-y-4">
           <div>
-            <Label>Email *</Label>
+            <Label>Code de famille *</Label>
             <Input
-              type="email"
-              value={inviteData.email}
-              onChange={(e) => setInviteData({...inviteData, email: e.target.value})}
-              placeholder="email@exemple.com"
-              className="mt-1"
+              value={codeJoindre}
+              onChange={(e) => setCodeJoindre(e.target.value.toUpperCase())}
+              placeholder="Ex: ABC123"
+              className="mt-1 font-mono text-lg text-center"
+              maxLength={6}
             />
+            <p className="text-xs text-gray-500 mt-1">Entrez le code partagé par un membre de la famille</p>
           </div>
 
           <div>
-            <Label>Nom / Prénom *</Label>
-            <Input
-              value={inviteData.nom}
-              onChange={(e) => setInviteData({...inviteData, nom: e.target.value})}
-              placeholder="Jean Dupont"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label>Relation</Label>
+            <Label>Votre relation</Label>
             <Select
-              value={inviteData.relation}
-              onValueChange={(v) => setInviteData({...inviteData, relation: v})}
+              value={relationJoindre}
+              onValueChange={setRelationJoindre}
             >
               <SelectTrigger className="mt-1">
                 <SelectValue />
@@ -501,46 +466,17 @@ export default function FamilleConnectee() {
             </Select>
           </div>
 
-          <div>
-            <Label className="mb-3 block">Permissions d'accès</Label>
-            <div className="space-y-3">
-              {PERMISSIONS.map(p => {
-                const Icon = p.icon;
-                return (
-                  <div key={p.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium">{p.label}</p>
-                        <p className="text-xs text-gray-500">{p.desc}</p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={inviteData.permissions[p.id]}
-                      onCheckedChange={(checked) => setInviteData({
-                        ...inviteData,
-                        permissions: { ...inviteData.permissions, [p.id]: checked }
-                      })}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
           <Button
-            onClick={() => inviteMutation.mutate()}
-            disabled={!inviteData.email || !inviteData.nom || inviteMutation.isPending}
+            onClick={() => joinFamilleMutation.mutate()}
+            disabled={!codeJoindre || codeJoindre.length < 6 || joinFamilleMutation.isPending}
             className="w-full bg-gradient-to-r from-pink-500 to-purple-500"
           >
-            {inviteMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+            {joinFamilleMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
             ) : (
-              <>
-                <Mail className="w-4 h-4 mr-2" />
-                Envoyer l'invitation
-              </>
+              <UserPlus className="w-4 h-4 mr-2" />
             )}
+            Rejoindre la famille
           </Button>
         </div>
       </BottomSheet>

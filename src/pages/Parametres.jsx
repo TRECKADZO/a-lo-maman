@@ -211,94 +211,113 @@ export default function Parametres() {
     }
   });
 
-  const handleExportFHIR = async () => {
+  const handleExportPDF = async () => {
     try {
       setExportingFHIR(true);
       
-      // Récupérer toutes les données localement
-      const [grossesses, enfants, rendezVous] = await Promise.all([
+      const jsPDF = (await import('jspdf')).default;
+      const doc = new jsPDF();
+      
+      // Récupérer les données
+      const [grossesses, enfants, rendezVous, documents] = await Promise.all([
         base44.entities.SuiviGrossesse.filter({ created_by: user.email }).catch(() => []),
         base44.entities.EnfantCarnet.filter({ created_by: user.email }).catch(() => []),
-        base44.entities.RendezVous.filter({ created_by: user.email }).catch(() => [])
+        base44.entities.RendezVous.filter({ created_by: user.email }).catch(() => []),
+        base44.entities.DocumentMedical.filter({ created_by: user.email }).catch(() => [])
       ]);
 
-      // Construire le bundle FHIR
-      const bundle = {
-        resourceType: "Bundle",
-        type: "collection",
-        timestamp: new Date().toISOString(),
-        entry: []
-      };
-
-      // Patient Resource
-      if (profilMaman) {
-        bundle.entry.push({
-          fullUrl: `urn:uuid:patient-${user.email}`,
-          resource: {
-            resourceType: "Patient",
-            id: profilMaman.id,
-            name: [{
-              use: "official",
-              text: profilMaman.display_name || user.full_name,
-            }],
-            telecom: profilMaman.telephone ? [{
-              system: "phone",
-              value: profilMaman.telephone
-            }] : [],
-            gender: "female",
-            birthDate: profilMaman.date_naissance || null
-          }
+      let y = 20;
+      
+      // Titre
+      doc.setFontSize(20);
+      doc.text("A'lo Maman - Export de mes données", 20, y);
+      y += 10;
+      
+      doc.setFontSize(10);
+      doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 20, y);
+      y += 15;
+      
+      // Profil
+      doc.setFontSize(16);
+      doc.text('Profil', 20, y);
+      y += 8;
+      doc.setFontSize(11);
+      doc.text(`Nom: ${profilMaman?.display_name || user?.full_name || 'N/A'}`, 25, y);
+      y += 6;
+      doc.text(`Email: ${user?.email || 'N/A'}`, 25, y);
+      y += 6;
+      doc.text(`Téléphone: ${profilMaman?.telephone || 'N/A'}`, 25, y);
+      y += 6;
+      doc.text(`Groupe sanguin: ${profilMaman?.groupe_sanguin || 'N/A'}`, 25, y);
+      y += 10;
+      
+      // Allergies
+      if (profilMaman?.allergies?.length > 0) {
+        doc.setFontSize(14);
+        doc.text('Allergies', 20, y);
+        y += 6;
+        doc.setFontSize(10);
+        profilMaman.allergies.forEach(a => {
+          doc.text(`• ${a}`, 25, y);
+          y += 5;
+        });
+        y += 5;
+      }
+      
+      // Grossesses
+      if (grossesses.length > 0) {
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(16);
+        doc.text('Grossesses', 20, y);
+        y += 8;
+        grossesses.forEach((g, i) => {
+          doc.setFontSize(11);
+          doc.text(`Grossesse #${i+1}`, 25, y);
+          y += 6;
+          doc.setFontSize(10);
+          doc.text(`DPA: ${g.date_accouchement_prevue || 'N/A'}`, 30, y);
+          y += 5;
+          doc.text(`Type: ${g.type_grossesse || 'N/A'}`, 30, y);
+          y += 8;
         });
       }
-
-      // Grossesses
-      grossesses.forEach((grossesse) => {
-        if (grossesse.grossesse_active) {
-          bundle.entry.push({
-            fullUrl: `urn:uuid:pregnancy-${grossesse.id}`,
-            resource: {
-              resourceType: "Observation",
-              status: "final",
-              code: {
-                coding: [{
-                  system: "http://loinc.org",
-                  code: "82810-3",
-                  display: "Pregnancy status"
-                }]
-              },
-              subject: { reference: `urn:uuid:patient-${user.email}` },
-              effectiveDateTime: grossesse.date_derniere_regle
-            }
-          });
-        }
-      });
-
-      // Enfants
-      enfants.forEach((enfant) => {
-        bundle.entry.push({
-          fullUrl: `urn:uuid:child-${enfant.id}`,
-          resource: {
-            resourceType: "Patient",
-            name: [{ text: enfant.nom_complet }],
-            gender: enfant.sexe === "masculin" ? "male" : "female",
-            birthDate: enfant.date_naissance
-          }
-        });
-      });
-
-      // Télécharger
-      const jsonString = JSON.stringify(bundle, null, 2);
-      const blob = new Blob([jsonString], { type: 'application/fhir+json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `export-fhir-alomaman-${Date.now()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
       
-      alert('✅ Export FHIR téléchargé avec succès !');
+      // Enfants
+      if (enfants.length > 0) {
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(16);
+        doc.text('Enfants', 20, y);
+        y += 8;
+        enfants.forEach((e, i) => {
+          doc.setFontSize(11);
+          doc.text(`${e.nom_complet}`, 25, y);
+          y += 6;
+          doc.setFontSize(10);
+          doc.text(`Né(e) le: ${e.date_naissance}`, 30, y);
+          y += 5;
+          doc.text(`Sexe: ${e.sexe}`, 30, y);
+          y += 8;
+        });
+      }
+      
+      // Rendez-vous
+      if (rendezVous.length > 0) {
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(16);
+        doc.text(`Rendez-vous (${rendezVous.length})`, 20, y);
+        y += 8;
+        rendezVous.slice(0, 10).forEach((r) => {
+          doc.setFontSize(10);
+          doc.text(`${r.date_rdv} - ${r.type_consultation || 'Consultation'}`, 25, y);
+          y += 5;
+        });
+      }
+      
+      // Sauvegarder
+      doc.save(`donnees-alomaman-${Date.now()}.pdf`);
+      alert('✅ Export PDF téléchargé avec succès !');
     } catch (error) {
-      console.error('Erreur export FHIR:', error);
+      console.error('Erreur export PDF:', error);
       alert('❌ Erreur: ' + error.message);
     } finally {
       setExportingFHIR(false);
@@ -718,7 +737,7 @@ export default function Parametres() {
                     type="button"
                     variant="outline"
                     className="w-full justify-start border-blue-300 hover:bg-blue-100"
-                    onClick={handleExportFHIR}
+                    onClick={handleExportPDF}
                     disabled={exportingFHIR}
                   >
                     {exportingFHIR ? (
@@ -726,7 +745,7 @@ export default function Parametres() {
                     ) : (
                       <FileText className="w-4 h-4 mr-2" />
                     )}
-                    Export FHIR
+                    Export PDF
                   </Button>
 
                   <Button
@@ -743,8 +762,7 @@ export default function Parametres() {
 
               <Alert className="bg-gray-50 border-gray-200">
                 <AlertDescription className="text-sm text-gray-700">
-                  <strong>Format FHIR :</strong> Standard international d'interopérabilité des données de santé. 
-                  Compatible avec tous les systèmes hospitaliers modernes.
+                  <strong>Format PDF :</strong> Document lisible contenant votre profil, grossesses, enfants et rendez-vous.
                 </AlertDescription>
               </Alert>
             </CardContent>

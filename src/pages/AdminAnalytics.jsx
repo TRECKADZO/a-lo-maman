@@ -16,7 +16,8 @@ import {
   Target, DollarSign, TrendingDown, Thermometer, Pill, Eye, Filter,
   Globe, AlertOctagon, HeartPulse, Beaker, Wallet, Repeat, UserCheck,
   CreditCard, Zap, BarChart2, Banknote, RefreshCw, Gauge,
-  UserPlus, UserMinus, Bug, TrendingUpIcon, Brain
+  UserPlus, UserMinus, Bug, TrendingUpIcon, Brain, MessageSquare, 
+  HelpCircle, FolderOpen, Settings
 } from 'lucide-react';
 import { format, subMonths, differenceInMonths, differenceInYears, startOfMonth, endOfMonth, subDays, isWithinInterval, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';

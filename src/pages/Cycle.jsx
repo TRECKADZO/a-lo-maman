@@ -35,7 +35,7 @@ export default function Cycle() {
     queryFn: async () => {
       const user = await base44.auth.me();
       if (!user) return null;
-      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
+      const profiles = await base44.entities.ProfilMaman.filter({ created_by: user.email });
       return profiles[0] || null;
     },
   });
@@ -49,25 +49,10 @@ export default function Cycle() {
     initialData: [],
   });
 
-  // ✅ GARDIEN DE RÔLE dans useEffect
-  useEffect(() => {
-    if (!profileLoading && userProfile && userProfile.type_compte !== 'maman') {
-      navigate(createPageUrl('Dashboard'), { replace: true });
-    }
-  }, [userProfile, profileLoading, navigate]);
-
   if (profileLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
-      </div>
-    );
-  }
-
-  if (userProfile && userProfile.type_compte !== 'maman') {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
       </div>
     );
   }

@@ -53,7 +53,7 @@ export default function AssistantIA() {
     queryKey: ['userProfile', user?.email],
     queryFn: async () => {
       if (!user) return null;
-      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
+      const profiles = await base44.entities.ProfilMaman.filter({ created_by: user.email });
       return profiles[0] || null;
     },
     enabled: !!user,
@@ -340,12 +340,7 @@ INSTRUCTIONS:
     handleSendMessage(suggestion);
   };
 
-  // Redirection pour les non-mamans
-  useEffect(() => {
-    if (userProfile && userProfile.type_compte !== 'maman') {
-      navigate(createPageUrl('Dashboard'), { replace: true });
-    }
-  }, [userProfile, navigate]);
+  // Plus besoin de redirection - ProfilMaman est spécifique aux mamans
 
   if (profileLoading) {
     return (

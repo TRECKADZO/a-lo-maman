@@ -182,14 +182,14 @@ Deno.serve(async (req) => {
       }
 
       // Vaccinations
-      if (e.vaccinations && e.vaccinations.length > 0) {
+      if (e.vaccins && e.vaccins.length > 0) {
         yPos += 5;
         doc.setFontSize(14);
         doc.text('Vaccinations', 20, yPos);
         yPos += 8;
 
         doc.setFontSize(10);
-        e.vaccinations.forEach((vaccin) => {
+        e.vaccins.forEach((vaccin) => {
           if (yPos > 270) {
             doc.addPage();
             yPos = 20;
@@ -197,11 +197,11 @@ Deno.serve(async (req) => {
           
           doc.text(`• ${vaccin.nom_vaccin}`, 25, yPos);
           yPos += 5;
-          doc.text(`  Date: ${new Date(vaccin.date_vaccination).toLocaleDateString('fr-FR')}`, 30, yPos);
+          doc.text(`  Date: ${new Date(vaccin.date_administration).toLocaleDateString('fr-FR')}`, 30, yPos);
           yPos += 5;
           
-          if (vaccin.lot) {
-            doc.text(`  Lot: ${vaccin.lot}`, 30, yPos);
+          if (vaccin.lot_vaccin) {
+            doc.text(`  Lot: ${vaccin.lot_vaccin}`, 30, yPos);
             yPos += 5;
           }
           
@@ -210,7 +210,7 @@ Deno.serve(async (req) => {
       }
 
       // Croissance
-      if (e.croissance && e.croissance.length > 0) {
+      if (e.mesures_croissance && e.mesures_croissance.length > 0) {
         yPos += 5;
         if (yPos > 250) {
           doc.addPage();
@@ -222,17 +222,17 @@ Deno.serve(async (req) => {
         yPos += 8;
 
         doc.setFontSize(10);
-        e.croissance.slice(-10).forEach((mesure) => {
-          doc.text(`• ${new Date(mesure.date_mesure).toLocaleDateString('fr-FR')}`, 25, yPos);
+        e.mesures_croissance.slice(-10).forEach((mesure) => {
+          doc.text(`• ${new Date(mesure.date).toLocaleDateString('fr-FR')}`, 25, yPos);
           yPos += 5;
           
-          if (mesure.poids_kg) {
-            doc.text(`  Poids: ${mesure.poids_kg} kg`, 30, yPos);
+          if (mesure.poids) {
+            doc.text(`  Poids: ${mesure.poids} kg`, 30, yPos);
             yPos += 5;
           }
           
-          if (mesure.taille_cm) {
-            doc.text(`  Taille: ${mesure.taille_cm} cm`, 30, yPos);
+          if (mesure.taille) {
+            doc.text(`  Taille: ${mesure.taille} cm`, 30, yPos);
             yPos += 5;
           }
           

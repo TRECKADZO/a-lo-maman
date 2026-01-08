@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Stethoscope, Loader2, User, MapPin, Phone, AlertCircle, CheckCircle } from 'lucide-react';
+import { Heart, Stethoscope, Loader2, User, MapPin, Phone, AlertCircle, CheckCircle, Radio } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -89,6 +89,39 @@ export default function SelectionCompte() {
         console.log('✅ ProfilMaman créé:', profile.id);
         
         // SOLUTION: Recharger complètement la page pour forcer le refetch
+        console.log('🔄 Rechargement de la page...');
+        window.location.href = createPageUrl('Dashboard');
+        
+      } else if (selectedType === 'centre_teleechographie') {
+        console.log('🏥 CRÉATION PROFIL CENTRE TÉLÉ-ÉCHOGRAPHIE');
+        
+        if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
+          throw new Error('Nom du centre invalide (min 3 caractères)');
+        }
+        if (!formData.telephone?.trim() || formData.telephone.trim().length < 8) {
+          throw new Error('Téléphone invalide (min 8 caractères)');
+        }
+        if (!formData.ville?.trim()) throw new Error('Ville manquante');
+        if (!formData.region) throw new Error('Région manquante');
+
+        const centreData = {
+          nom_centre: formData.nom_complet.trim(),
+          email_contact: user.email,
+          type_etablissement: formData.specialite,
+          telephone: formData.telephone.trim(),
+          ville: formData.ville.trim(),
+          region: formData.region,
+          administrateur_email: user.email,
+          administrateurs: [user.email],
+          statut_validation: 'en_attente',
+          langue_preferee: 'francais',
+          theme_prefere: 'clair',
+        };
+
+        console.log('📦 Données Centre:', centreData);
+        const centre = await base44.entities.CentreTeleEchographie.create(centreData);
+        console.log('✅ Centre créé:', centre.id);
+        
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
         
@@ -184,7 +217,7 @@ export default function SelectionCompte() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <Card 
                 className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group"
                 onClick={() => handleSelectType('maman')}
@@ -224,6 +257,26 @@ export default function SelectionCompte() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card 
+                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-purple-400 group"
+                onClick={() => handleSelectType('centre_teleechographie')}
+              >
+                <CardContent className="p-8 text-center">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Radio className="w-12 h-12 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre Télé-Échographie</h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    PMI, clinique ou centre de santé offrant la télé-échographie
+                  </p>
+                  <div className="mt-6 space-y-2 text-sm text-gray-500">
+                    <p>✓ Gestion complète des RDV</p>
+                    <p>✓ Rapports échographie DICOM</p>
+                    <p>✓ Intégration FHIR et API</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         ) : (
@@ -244,21 +297,28 @@ export default function SelectionCompte() {
                   ← Retour
                 </Button>
                 <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                  {selectedType === 'maman' ? (
-                    <>
-                      <Heart className="w-8 h-8 text-pink-500" />
-                      Créer mon compte Maman
-                    </>
-                  ) : (
-                    <>
-                      <Stethoscope className="w-8 h-8 text-teal-500" />
-                      Créer mon compte Professionnel
-                    </>
-                  )}
+                 {selectedType === 'maman' ? (
+                   <>
+                     <Heart className="w-8 h-8 text-pink-500" />
+                     Créer mon compte Maman
+                   </>
+                 ) : selectedType === 'centre_teleechographie' ? (
+                   <>
+                     <Radio className="w-8 h-8 text-purple-500" />
+                     Créer mon compte Centre Télé-Échographie
+                   </>
+                 ) : (
+                   <>
+                     <Stethoscope className="w-8 h-8 text-teal-500" />
+                     Créer mon compte Professionnel
+                   </>
+                 )}
                 </h2>
                 <p className="text-gray-600 mt-2">
                   {selectedType === 'maman' 
                     ? 'Quelques informations pour personnaliser votre expérience'
+                    : selectedType === 'centre_teleechographie'
+                    ? 'Informations du centre pour valider votre accréditation'
                     : 'Informations professionnelles obligatoires pour votre profil'}
                 </p>
               </div>
@@ -317,6 +377,48 @@ export default function SelectionCompte() {
                               {spec.label}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
+
+                {selectedType === 'centre_teleechographie' && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="nom_complet" className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Nom du centre *
+                      </Label>
+                      <Input
+                        id="nom_complet"
+                        value={formData.nom_complet}
+                        onChange={(e) => handleChange('nom_complet', e.target.value)}
+                        placeholder="PMI du Plateau"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="specialite" className="flex items-center gap-2">
+                        <Radio className="w-4 h-4" />
+                        Type d'établissement *
+                      </Label>
+                      <Select
+                        value={formData.specialite}
+                        onValueChange={(value) => handleChange('specialite', value)}
+                        required
+                        disabled={loading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pmi">PMI</SelectItem>
+                          <SelectItem value="clinique">Clinique privée</SelectItem>
+                          <SelectItem value="hopital">Hôpital public</SelectItem>
+                          <SelectItem value="centre_sante">Centre de santé</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

@@ -55,6 +55,7 @@ import ProfilProfessionnel from './pages/ProfilProfessionnel';
 import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
 import Ressources from './pages/Ressources';
 import SelectionCompte from './pages/SelectionCompte';
+import SuiviSommeil from './pages/SuiviSommeil';
 import Support from './pages/Support';
 import TableauBordEnfants from './pages/TableauBordEnfants';
 import TeleEchographie from './pages/TeleEchographie';
@@ -62,7 +63,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import SuiviSommeil from './pages/SuiviSommeil';
 import __Layout from './Layout.jsx';
 
 
@@ -124,6 +124,7 @@ export const PAGES = {
     "QuestionsSpecialistes": QuestionsSpecialistes,
     "Ressources": Ressources,
     "SelectionCompte": SelectionCompte,
+    "SuiviSommeil": SuiviSommeil,
     "Support": Support,
     "TableauBordEnfants": TableauBordEnfants,
     "TeleEchographie": TeleEchographie,
@@ -131,7 +132,6 @@ export const PAGES = {
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "SuiviSommeil": SuiviSommeil,
 }
 
 export const pagesConfig = {

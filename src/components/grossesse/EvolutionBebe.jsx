@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Baby, Activity, TrendingUp, Heart, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Baby, Activity, TrendingUp, Heart, ChevronDown, ChevronUp, Sparkles, Plus, Calendar } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import AjouterDeveloppementBebe from "./AjouterDeveloppementBebe";
 
 export default function EvolutionBebe({ semainesGrossesse, trimestre, grossesse }) {
   const [showConseils, setShowConseils] = useState(false);
   const [showEchos, setShowEchos] = useState(false);
+  const [showAjouterDev, setShowAjouterDev] = useState(false);
+  const [showMesures, setShowMesures] = useState(false);
   const evolutionData = {
     1: {
       titre: "Semaines 1-4",
@@ -236,6 +242,68 @@ export default function EvolutionBebe({ semainesGrossesse, trimestre, grossesse 
         )}
       </button>
 
+      {/* Mes mesures enregistrées */}
+      {grossesse?.developpement_bebe && grossesse.developpement_bebe.length > 0 && (
+        <button
+          onClick={() => setShowMesures(!showMesures)}
+          className="w-full bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 shadow-sm text-left active:scale-[0.99] transition-transform"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="font-semibold text-green-900">Mesures enregistrées</p>
+                <p className="text-xs text-green-600">{grossesse.developpement_bebe.length} mesure(s)</p>
+              </div>
+            </div>
+            {showMesures ? <ChevronUp className="w-5 h-5 text-green-500" /> : <ChevronDown className="w-5 h-5 text-green-500" />}
+          </div>
+
+          {showMesures && (
+            <div className="mt-4 space-y-2 border-t border-green-200 pt-3">
+              {grossesse.developpement_bebe
+                .sort((a, b) => b.semaine_amenorrhee - a.semaine_amenorrhee)
+                .map((mesure, index) => (
+                  <div key={index} className="p-3 bg-white rounded-xl">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-medium text-sm text-gray-900">SA {mesure.semaine_amenorrhee}</p>
+                        <p className="text-xs text-gray-500">{format(new Date(mesure.date_mesure), 'dd MMM yyyy', { locale: fr })}</p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">{mesure.source}</Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {mesure.taille_estimee_cm && (
+                        <p className="text-gray-600">📏 {mesure.taille_estimee_cm} cm</p>
+                      )}
+                      {mesure.poids_estime_g && (
+                        <p className="text-gray-600">⚖️ {mesure.poids_estime_g} g</p>
+                      )}
+                      {mesure.perimetre_cranien_mm && (
+                        <p className="text-gray-600">PC: {mesure.perimetre_cranien_mm} mm</p>
+                      )}
+                      {mesure.longueur_femorale_mm && (
+                        <p className="text-gray-600">LF: {mesure.longueur_femorale_mm} mm</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </button>
+      )}
+
+      {/* Bouton ajouter mesure */}
+      <Button
+        onClick={() => setShowAjouterDev(true)}
+        className="w-full bg-gradient-to-r from-pink-500 to-rose-600 h-12"
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Enregistrer une mesure
+      </Button>
+
       {/* Échographies - Accordéon */}
       {grossesse?.echographies && grossesse.echographies.length > 0 && (
         <button
@@ -272,6 +340,14 @@ export default function EvolutionBebe({ semainesGrossesse, trimestre, grossesse 
             </div>
           )}
         </button>
+      )}
+
+      {showAjouterDev && (
+        <AjouterDeveloppementBebe
+          grossesse={grossesse}
+          semainesGrossesse={semainesGrossesse}
+          onClose={() => setShowAjouterDev(false)}
+        />
       )}
     </div>
   );

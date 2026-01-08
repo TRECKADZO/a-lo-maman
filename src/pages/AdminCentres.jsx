@@ -7,9 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Search, AlertTriangle, CheckCircle, Building2, Radio, Filter } from 'lucide-react';
+import { Loader2, Search, AlertTriangle, CheckCircle, Building2, Radio, Filter, ChevronDown } from 'lucide-react';
 import AuthGuard from '../components/auth/AuthGuard';
 import EditerCentre from '../components/admin/EditerCentre';
+import DashboardCentres from '../components/admin/DashboardCentres';
+import FiltresAvances from '../components/admin/FiltresAvances';
+import CarteCentre from '../components/admin/CarteCentre';
+import StatutIntegrations from '../components/admin/StatutIntegrations';
 
 export default function AdminCentres() {
   const queryClient = useQueryClient();
@@ -17,6 +21,9 @@ export default function AdminCentres() {
   const [filterStatut, setFilterStatut] = useState('tous');
   const [selectedCentre, setSelectedCentre] = useState(null);
   const [filterType, setFilterType] = useState('tous');
+  const [filterFHIR, setFilterFHIR] = useState('tous');
+  const [filterRegion, setFilterRegion] = useState('tous');
+  const [showDetails, setShowDetails] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
@@ -33,18 +40,31 @@ export default function AdminCentres() {
     queryFn: () => base44.entities.CentreTeleEchographie.list(),
   });
 
+  // Extraire toutes les régions uniques
+  const allRegions = Array.from(
+    new Set([
+      ...cliniques.map(c => c.region),
+      ...centresTeleEcho.map(c => c.region)
+    ])
+  ).filter(Boolean);
+
   const filteredCliniques = cliniques.filter(c => {
     const matchSearch = c.nom?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                       c.email_contact?.toLowerCase().includes(searchQuery.toLowerCase());
+                       c.email_contact?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                       c.ville?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchStatut = filterStatut === 'tous' || c.statut_validation === filterStatut;
-    return matchSearch && matchStatut;
+    const matchFHIR = filterFHIR === 'tous' || (filterFHIR === 'enabled' ? c.api_fhir_enabled : !c.api_fhir_enabled);
+    const matchRegion = filterRegion === 'tous' || c.region === filterRegion;
+    return matchSearch && matchStatut && matchFHIR && matchRegion;
   });
 
   const filteredEcho = centresTeleEcho.filter(c => {
     const matchSearch = c.nom_centre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                       c.email_contact?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchStatut = filterStatut === 'tous' || c.actif;
-    return matchSearch && matchStatut;
+                       c.email_contact?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                       c.ville?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchStatut = filterStatut === 'tous' || (filterStatut === 'actif' ? c.actif : !c.actif);
+    const matchRegion = filterRegion === 'tous' || c.region === filterRegion;
+    return matchSearch && matchStatut && matchRegion;
   });
 
   // Vérifier que l'utilisateur est admin
@@ -96,67 +116,30 @@ export default function AdminCentres() {
             <p className="text-gray-600">Administrez tous les centres de santé et télé-échographie</p>
           </div>
 
-          {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="shadow-lg border-none">
-              <CardContent className="pt-6">
-                <p className="text-gray-600 text-sm">Cliniques totales</p>
-                <p className="text-3xl font-bold text-indigo-600">{cliniques.length}</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-lg border-none">
-              <CardContent className="pt-6">
-                <p className="text-gray-600 text-sm">Centres télé-écho</p>
-                <p className="text-3xl font-bold text-purple-600">{centresTeleEcho.length}</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-lg border-none">
-              <CardContent className="pt-6">
-                <p className="text-gray-600 text-sm">En attente d'approbation</p>
-                <p className="text-3xl font-bold text-yellow-600">
-                  {cliniques.filter(c => c.statut_validation === 'en_attente').length}
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-lg border-none">
-              <CardContent className="pt-6">
-                <p className="text-gray-600 text-sm">Approuvés</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {cliniques.filter(c => c.statut_validation === 'approuve').length}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Dashboard with KPIs */}
+          <DashboardCentres cliniques={cliniques} centresTeleEcho={centresTeleEcho} />
 
-          {/* Filters */}
-          <Card className="shadow-lg border-none">
-            <CardContent className="pt-6 space-y-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border">
-                    <Search className="w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Rechercher par nom ou email..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1 outline-none"
-                    />
-                  </div>
-                </div>
-                <select
-                  value={filterStatut}
-                  onChange={(e) => setFilterStatut(e.target.value)}
-                  className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="tous">Tous les statuts</option>
-                  <option value="en_attente">En attente</option>
-                  <option value="approuve">Approuvé</option>
-                  <option value="rejete">Rejeté</option>
-                </select>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Advanced Filters */}
+          <FiltresAvances
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            filterStatut={filterStatut}
+            onStatutChange={setFilterStatut}
+            filterType={filterType}
+            onTypeChange={setFilterType}
+            filterFHIR={filterFHIR}
+            onFHIRChange={setFilterFHIR}
+            filterRegion={filterRegion}
+            onRegionChange={setFilterRegion}
+            regions={allRegions}
+            onReset={() => {
+              setSearchQuery('');
+              setFilterStatut('tous');
+              setFilterType('tous');
+              setFilterFHIR('tous');
+              setFilterRegion('tous');
+            }}
+          />
 
           {/* Tabs */}
           <Tabs defaultValue="cliniques" className="space-y-4">
@@ -181,54 +164,13 @@ export default function AdminCentres() {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredCliniques.map(clinique => (
-                    <Card key={clinique.id} className="shadow-lg border-none hover:shadow-xl transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-lg font-bold text-gray-900">{clinique.nom}</h3>
-                              <Badge 
-                                className={
-                                  clinique.statut_validation === 'approuve' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : clinique.statut_validation === 'en_attente'
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
-                                }
-                              >
-                                {clinique.statut_validation}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {clinique.type_etablissement?.replace(/_/g, ' ')} • {clinique.ville}, {clinique.region}
-                            </p>
-                            <p className="text-sm text-gray-600">{clinique.email_contact}</p>
-                            {clinique.services_offerts?.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mt-3">
-                                {clinique.services_offerts.slice(0, 3).map((service, idx) => (
-                                  <Badge key={idx} variant="outline" className="text-xs">
-                                    {service.replace(/_/g, ' ')}
-                                  </Badge>
-                                ))}
-                                {clinique.services_offerts.length > 3 && (
-                                  <Badge variant="outline" className="text-xs">
-                                    +{clinique.services_offerts.length - 3}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          <Button
-                            onClick={() => setSelectedCentre({ ...clinique, type: 'clinique' })}
-                            className="bg-indigo-600 hover:bg-indigo-700"
-                          >
-                            Éditer
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <CarteCentre
+                      key={clinique.id}
+                      centre={clinique}
+                      onEdit={(centre) => setSelectedCentre({ ...centre, type: 'clinique' })}
+                    />
                   ))}
                 </div>
               )}
@@ -244,43 +186,13 @@ export default function AdminCentres() {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredEcho.map(centre => (
-                    <Card key={centre.id} className="shadow-lg border-none hover:shadow-xl transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-lg font-bold text-gray-900">{centre.nom_centre}</h3>
-                              <Badge 
-                                className={centre.actif ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
-                              >
-                                {centre.actif ? 'Actif' : 'Inactif'}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {centre.type_etablissement?.replace(/_/g, ' ')} • {centre.ville}, {centre.region}
-                            </p>
-                            <p className="text-sm text-gray-600">{centre.email_contact}</p>
-                            {centre.types_echographie?.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mt-3">
-                                {centre.types_echographie.map((type, idx) => (
-                                  <Badge key={idx} variant="outline" className="text-xs">
-                                    {type.replace(/_/g, ' ')}
-                                  </Badge>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <Button
-                            onClick={() => setSelectedCentre({ ...centre, type: 'teleecho' })}
-                            className="bg-purple-600 hover:bg-purple-700"
-                          >
-                            Éditer
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <CarteCentre
+                      key={centre.id}
+                      centre={centre}
+                      onEdit={(c) => setSelectedCentre({ ...c, type: 'teleecho' })}
+                    />
                   ))}
                 </div>
               )}

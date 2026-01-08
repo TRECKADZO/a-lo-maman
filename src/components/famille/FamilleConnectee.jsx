@@ -117,52 +117,26 @@ export default function FamilleConnectee() {
     }
   });
 
-  // Rejoindre une famille avec code
+  // Rejoindre une famille avec code (via fonction backend sécurisée)
   const joinFamilleMutation = useMutation({
     mutationFn: async () => {
-      // Trouver la famille avec ce code
-      const allFamilles = await base44.entities.FamilleConnectee.list();
-      const familleAvecCode = allFamilles.find(f => f.code_partage === codeJoindre.toUpperCase());
+      const response = await base44.functions.invoke('rejoindreAvecCode', {
+        code: codeJoindre.toUpperCase(),
+        relation: relationJoindre
+      });
       
-      if (!familleAvecCode) {
-        throw new Error('Code invalide ou famille introuvable');
-      }
-
-      // Vérifier si déjà membre
-      const dejaMembre = familleAvecCode.membres?.some(m => m.email === user.email);
-      if (dejaMembre) {
-        throw new Error('Vous êtes déjà membre de cette famille');
-      }
-
-      const newMembre = {
-        email: user.email,
-        nom: user.full_name,
-        relation: relationJoindre,
-        statut: 'accepte',
-        date_ajout: new Date().toISOString(),
-        permissions: {
-          grossesse: true,
-          grossesse_details: false,
-          enfants: true,
-          enfants_details: false,
-          rendez_vous: true,
-          documents: false,
-          messagerie: true
-        }
-      };
-
-      const membres = [...(familleAvecCode.membres || []), newMembre];
-      await base44.entities.FamilleConnectee.update(familleAvecCode.id, { membres });
+      return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['famille_connectee'] });
       queryClient.invalidateQueries({ queryKey: ['familles_membre'] });
       setShowJoindre(false);
       setCodeJoindre('');
-      toast.success('Vous avez rejoint la famille !');
+      toast.success(`Vous avez rejoint "${data.famille.nom_groupe}" !`);
     },
     onError: (error) => {
-      toast.error(error.message);
+      const message = error.response?.data?.error || error.message || 'Erreur lors de la connexion';
+      toast.error(message);
     }
   });
 

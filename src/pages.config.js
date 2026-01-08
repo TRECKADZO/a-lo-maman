@@ -61,6 +61,7 @@ import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
 import TeleEchographie from './pages/TeleEchographie';
 import PostPartum from './pages/PostPartum';
+import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
 import __Layout from './Layout.jsx';
 
 
@@ -128,6 +129,7 @@ export const PAGES = {
     "VideoConsultation": VideoConsultation,
     "TeleEchographie": TeleEchographie,
     "PostPartum": PostPartum,
+    "QuestionsSpecialistes": QuestionsSpecialistes,
 }
 
 export const pagesConfig = {

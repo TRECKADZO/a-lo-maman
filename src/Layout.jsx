@@ -20,7 +20,8 @@ import {
   FolderOpen,
   BookOpen,
   HelpCircle,
-  Radio
+  Radio,
+  FileText
 } from "lucide-react";
 import {
   Sidebar,

@@ -20,6 +20,10 @@ import TestEdinburgh from '../components/postpartum/TestEdinburgh';
 import ContraceeptionPostPartum from '../components/postpartum/ContraceptionPostPartum';
 import RecuperationPhysique from '../components/postpartum/RecuperationPhysique';
 import ConseillsPersonnalises from '../components/postpartum/ConseilsPersonnalises';
+import RetourCouches from '../components/postpartum/RetourCouches';
+import SuiviAllaitement from '../components/postpartum/SuiviAllaitement';
+import PoidsNourrissonSuivi from '../components/postpartum/PoidsNourrissonSuivi';
+import RappelsVaccinsNourrisson from '../components/postpartum/RappelsVaccinsNourrisson';
 
 export default function PostPartum() {
   const [showConfigurer, setShowConfigurer] = useState(false);
@@ -250,10 +254,14 @@ export default function PostPartum() {
 
                 <TabsContent value="suivi" className="space-y-4">
                   <JournalQuotidien suivi={suivi} />
+                  <RetourCouches suivi={suivi} />
+                  <SuiviAllaitement suivi={suivi} />
+                  <PoidsNourrissonSuivi suivi={suivi} />
                   <ConsultationsPostnatales suivi={suivi} />
                 </TabsContent>
 
                 <TabsContent value="sante" className="space-y-4">
+                  <RappelsVaccinsNourrisson suivi={suivi} />
                   <TestEdinburgh suivi={suivi} />
                   <RecuperationPhysique suivi={suivi} />
                   <ContraceeptionPostPartum suivi={suivi} />

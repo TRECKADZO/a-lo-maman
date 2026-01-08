@@ -261,7 +261,34 @@ export default function Layout({ children, currentPageName }) {
   const lang = currentProfile?.langue_preferee === 'anglais' ? 'en' : 'fr';
   const theme = currentProfile?.theme_prefere || 'clair';
 
-  const navigationItems = getNavigationItems(lang, isSpecialist, isAdmin);
+  const { data: preferencesNav } = useQuery({
+    queryKey: ['preferences_nav', user?.email],
+    queryFn: async () => {
+      if (!user) return null;
+      const prefs = await base44.entities.PreferencesDashboard.filter({ user_email: user.email });
+      return prefs[0];
+    },
+    enabled: !!user,
+  });
+
+  const navigationItems = React.useMemo(() => {
+    const items = getNavigationItems(lang, isSpecialist, isAdmin);
+    
+    if (!preferencesNav?.navigation_personnalisee || preferencesNav.navigation_personnalisee.length === 0) {
+      return items;
+    }
+
+    // Appliquer l'ordre personnalisé
+    const itemsMap = new Map(items.map(item => [item.url.split('?')[0].split('/').pop(), item]));
+    const navPerso = preferencesNav.navigation_personnalisee
+      .filter(n => n.visible !== false)
+      .sort((a, b) => (a.ordre || 0) - (b.ordre || 0));
+
+    return navPerso
+      .map(n => itemsMap.get(n.page))
+      .filter(Boolean);
+  }, [lang, isSpecialist, isAdmin, preferencesNav]);
+
   const currentBottomNavItems = isSpecialist ? proBottomNavItems : mamanBottomNavItems;
 
   useEffect(() => {

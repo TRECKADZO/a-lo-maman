@@ -21,10 +21,12 @@ import WidgetAlertesIA from '../components/dashboard/WidgetAlertesIA';
 import WidgetEnfants from '../components/dashboard/WidgetEnfants';
 import PersonnaliserWidgets from '../components/dashboard/PersonnaliserWidgets';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
+import GenererRapportPDF from '../components/dashboard/GenererRapportPDF';
 
 export default function DashboardMaman() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showPersonnaliser, setShowPersonnaliser] = useState(false);
+  const [showRapportPDF, setShowRapportPDF] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
@@ -171,15 +173,26 @@ export default function DashboardMaman() {
                     Votre tableau de bord personnalisé
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowPersonnaliser(true)}
-                  className="bg-white/80 backdrop-blur-sm flex-shrink-0"
-                >
-                  <Settings className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:inline">Personnaliser</span>
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowRapportPDF(true)}
+                    className="bg-white/80 backdrop-blur-sm flex-shrink-0"
+                  >
+                    <Sparkles className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Rapport PDF</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPersonnaliser(true)}
+                    className="bg-white/80 backdrop-blur-sm flex-shrink-0"
+                  >
+                    <Settings className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Personnaliser</span>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -234,6 +247,10 @@ export default function DashboardMaman() {
               preferences={preferences}
               onClose={() => setShowPersonnaliser(false)}
             />
+          )}
+
+          {showRapportPDF && (
+            <GenererRapportPDF onClose={() => setShowRapportPDF(false)} />
           )}
         </div>
       </div>

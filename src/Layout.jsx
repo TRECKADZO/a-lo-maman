@@ -61,18 +61,20 @@ import PersonnaliserNavigation from "@/components/navigation/PersonnaliserNaviga
 const getNavigationItems = (lang, isSpecialist, isAdmin) => {
     if (isAdmin) {
       const items = {
-        fr: [
-          { title: "Accueil", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
-          { title: "Analytics", url: createPageUrl("AdminAnalytics"), icon: Sparkles, color: "text-purple-500" },
-          { title: "Modèle tarifaire", url: createPageUrl("ModeleTarifaire"), icon: Users, color: "text-amber-500" },
-        ],
-        en: [
-          { title: "Home", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
-          { title: "Analytics", url: createPageUrl("AdminAnalytics"), icon: Sparkles, color: "text-purple-500" },
-          { title: "Pricing Model", url: createPageUrl("ModeleTarifaire"), icon: Users, color: "text-amber-500" },
-        ],
-      };
-      return items[lang] || items.fr;
+            fr: [
+              { title: "Accueil", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
+              { title: "Analytics", url: createPageUrl("AdminAnalytics"), icon: Sparkles, color: "text-purple-500" },
+              { title: "Gestion des Centres", url: createPageUrl("AdminCentres"), icon: Users, color: "text-blue-500" },
+              { title: "Modèle tarifaire", url: createPageUrl("ModeleTarifaire"), icon: Users, color: "text-amber-500" },
+            ],
+            en: [
+              { title: "Home", url: createPageUrl("0_Accueil"), icon: Home, color: "text-pink-500" },
+              { title: "Analytics", url: createPageUrl("AdminAnalytics"), icon: Sparkles, color: "text-purple-500" },
+              { title: "Manage Centers", url: createPageUrl("AdminCentres"), icon: Users, color: "text-blue-500" },
+              { title: "Pricing Model", url: createPageUrl("ModeleTarifaire"), icon: Users, color: "text-amber-500" },
+            ],
+          };
+          return items[lang] || items.fr;
     }
     if (isSpecialist) {
       const items = {

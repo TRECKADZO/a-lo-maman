@@ -59,8 +59,9 @@ import DeveloppementFoetal from "../components/grossesse/DeveloppementFoetal";
 
 // Configuration des sections de la page
 const SECTIONS = [
+  { id: 'developpement', label: 'Développement', icon: Baby, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-50' },
   { id: 'trimestres', label: 'Par Trimestre', icon: Calendar, color: 'from-pink-500 to-purple-500', bgColor: 'bg-gradient-to-br from-pink-50 to-purple-50' },
-  { id: 'evolution', label: 'Évolution Bébé', icon: Baby, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-50' },
+  { id: 'evolution', label: 'Évolution Bébé', icon: Activity, color: 'from-orange-500 to-amber-500', bgColor: 'bg-orange-50' },
   { id: 'graphiques', label: 'Graphiques', icon: BarChart3, color: 'from-blue-500 to-indigo-500', bgColor: 'bg-blue-50' },
   { id: 'risques_ia', label: 'Risques IA', icon: Brain, color: 'from-purple-500 to-fuchsia-500', bgColor: 'bg-purple-50' },
   { id: 'echographies', label: 'Échographies', icon: FileImage, color: 'from-cyan-500 to-blue-500', bgColor: 'bg-cyan-50' },

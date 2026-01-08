@@ -92,8 +92,8 @@ export default function SelectionCompte() {
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
         
-      } else if (selectedType === 'centre_teleechographie') {
-        console.log('🏥 CRÉATION PROFIL CENTRE TÉLÉ-ÉCHOGRAPHIE');
+      } else if (selectedType === 'centre_sante') {
+        console.log('🏥 CRÉATION PROFIL CENTRE DE SANTÉ');
         
         if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
           throw new Error('Nom du centre invalide (min 3 caractères)');
@@ -105,21 +105,19 @@ export default function SelectionCompte() {
         if (!formData.region) throw new Error('Région manquante');
 
         const centreData = {
-          nom_centre: formData.nom_complet.trim(),
-          email_contact: user.email,
+          nom: formData.nom_complet.trim(),
           type_etablissement: formData.specialite,
           telephone: formData.telephone.trim(),
+          email_contact: user.email,
           ville: formData.ville.trim(),
           region: formData.region,
           administrateur_email: user.email,
           administrateurs: [user.email],
           statut_validation: 'en_attente',
-          langue_preferee: 'francais',
-          theme_prefere: 'clair',
         };
 
         console.log('📦 Données Centre:', centreData);
-        const centre = await base44.entities.CentreTeleEchographie.create(centreData);
+        const centre = await base44.entities.Clinique.create(centreData);
         console.log('✅ Centre créé:', centre.id);
         
         console.log('🔄 Rechargement de la page...');
@@ -260,19 +258,19 @@ export default function SelectionCompte() {
 
               <Card 
                 className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-purple-400 group"
-                onClick={() => handleSelectType('centre_teleechographie')}
+                onClick={() => handleSelectType('centre_sante')}
               >
                 <CardContent className="p-8 text-center">
                   <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                     <Radio className="w-12 h-12 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre Télé-Échographie</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre de Santé</h2>
                   <p className="text-gray-600 leading-relaxed">
-                    PMI, clinique ou centre de santé offrant la télé-échographie
+                    PMI, clinique, hôpital ou centre offrant des services de maternité
                   </p>
                   <div className="mt-6 space-y-2 text-sm text-gray-500">
-                    <p>✓ Gestion complète des RDV</p>
-                    <p>✓ Rapports échographie DICOM</p>
+                    <p>✓ Gestion des rendez-vous</p>
+                    <p>✓ Services maternité personnalisés</p>
                     <p>✓ Intégration FHIR et API</p>
                   </div>
                 </CardContent>
@@ -302,10 +300,10 @@ export default function SelectionCompte() {
                      <Heart className="w-8 h-8 text-pink-500" />
                      Créer mon compte Maman
                    </>
-                 ) : selectedType === 'centre_teleechographie' ? (
+                 ) : selectedType === 'centre_sante' ? (
                    <>
                      <Radio className="w-8 h-8 text-purple-500" />
-                     Créer mon compte Centre Télé-Échographie
+                     Créer mon compte Centre de Santé
                    </>
                  ) : (
                    <>
@@ -317,7 +315,7 @@ export default function SelectionCompte() {
                 <p className="text-gray-600 mt-2">
                   {selectedType === 'maman' 
                     ? 'Quelques informations pour personnaliser votre expérience'
-                    : selectedType === 'centre_teleechographie'
+                    : selectedType === 'centre_sante'
                     ? 'Informations du centre pour valider votre accréditation'
                     : 'Informations professionnelles obligatoires pour votre profil'}
                 </p>
@@ -383,7 +381,7 @@ export default function SelectionCompte() {
                   </>
                 )}
 
-                {selectedType === 'centre_teleechographie' && (
+                {selectedType === 'centre_sante' && (
                   <>
                     <div className="space-y-2">
                       <Label htmlFor="nom_complet" className="flex items-center gap-2">
@@ -416,8 +414,9 @@ export default function SelectionCompte() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="pmi">PMI</SelectItem>
-                          <SelectItem value="clinique">Clinique privée</SelectItem>
-                          <SelectItem value="hopital">Hôpital public</SelectItem>
+                          <SelectItem value="clinique_privee">Clinique privée</SelectItem>
+                          <SelectItem value="hopital_public">Hôpital public</SelectItem>
+                          <SelectItem value="maternite">Maternité</SelectItem>
                           <SelectItem value="centre_sante">Centre de santé</SelectItem>
                         </SelectContent>
                       </Select>

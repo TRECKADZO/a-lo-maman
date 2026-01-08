@@ -441,7 +441,7 @@ export default function DeclarationNaissanceForm({ onSuccess, declarationExistan
                     <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px]">
                       {REGIONS_CI.map(region => (
                         <SelectItem key={region} value={region}>
                           {region}

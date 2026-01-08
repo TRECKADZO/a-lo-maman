@@ -14,6 +14,7 @@ import RechercheCentreEcho from '../components/teleechographie/RechercheCentreEc
 import ReserverRDVEchographie from '../components/teleechographie/ReserverRDVEchographie';
 import MesRDVEchographie from '../components/teleechographie/MesRDVEchographie';
 import DetailRapportEcho from '../components/teleechographie/DetailRapportEcho';
+import AffichageRapportEchographie from '../components/teleechographie/AffichageRapportEchographie';
 
 export default function TeleEchographie() {
   const [activeTab, setActiveTab] = useState('chercher');
@@ -218,6 +219,15 @@ export default function TeleEchographie() {
 
             <TabsContent value="mes-rdv" className="mt-6">
               <MesRDVEchographie onViewRapport={handleViewRapport} />
+              {grossesse && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Mes rapports d'échographie</h3>
+                  <AffichageRapportEchographie 
+                    grossesseId={grossesse.id} 
+                    mamanEmail={user?.email}
+                  />
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="rapport" className="mt-6">

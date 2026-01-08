@@ -200,7 +200,7 @@ export default function DashboardMaman() {
 
           {/* Suivi de Grossesse - Section complète */}
           {(grossesse || widgetsActifs.includes('grossesse')) && (
-            <SectionSuiviGrossesse grossesse={grossesse} userEmail={user?.email} />
+            <SectionSuiviGrossesse grossesse={grossesse} profilMaman={profilMaman} userEmail={user?.email} />
           )}
 
           {/* Grille de widgets personnalisables */}

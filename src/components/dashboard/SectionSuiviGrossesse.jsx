@@ -11,8 +11,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Calendar, Edit2, Save, X, CheckCircle, AlertCircle, FileText, TrendingUp } from 'lucide-react';
 import { differenceInWeeks, differenceInDays } from 'date-fns';
+import AnalyseIAGrossesse from '../grossesse/AnalyseIAGrossesse';
+import ConseillsIAPersonnalises from '../grossesse/ConseillsIAPersonnalises';
+import RapportIAGrossesse from '../grossesse/RapportIAGrossesse';
 
-export default function SectionSuiviGrossesse({ grossesse, userEmail }) {
+export default function SectionSuiviGrossesse({ grossesse, profilMaman, userEmail }) {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -242,6 +245,32 @@ export default function SectionSuiviGrossesse({ grossesse, userEmail }) {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Analyse IA */}
+      {!isEditing && grossesse?.id && (
+        <AnalyseIAGrossesse 
+          grossesse={grossesse} 
+          profilMaman={profilMaman}
+          userEmail={userEmail}
+        />
+      )}
+
+      {/* Conseils IA personnalisés */}
+      {!isEditing && grossesse?.id && (
+        <ConseillsIAPersonnalises 
+          grossesse={grossesse}
+          profilMaman={profilMaman}
+        />
+      )}
+
+      {/* Rapport IA périodique */}
+      {!isEditing && grossesse?.id && (
+        <RapportIAGrossesse
+          grossesse={grossesse}
+          profilMaman={profilMaman}
+          userEmail={userEmail}
+        />
       )}
 
       {/* Rapports d'échographie */}

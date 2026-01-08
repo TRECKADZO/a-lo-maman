@@ -11,33 +11,34 @@ Deno.serve(async (req) => {
 
     const { code, relation } = await req.json();
 
-    if (!code || code.length !== 6) {
-      return Response.json({ error: 'Code invalide (6 caractères requis)' }, { status: 400 });
+    if (!code || !relation) {
+      return Response.json({ error: 'Code et relation requis' }, { status: 400 });
     }
 
-    // Utiliser service role pour chercher la famille par code
-    const allFamilles = await base44.asServiceRole.entities.FamilleConnectee.list();
-    const familleAvecCode = allFamilles.find(f => f.code_partage === code.toUpperCase());
+    console.log(`🔍 Recherche famille avec code: ${code}`);
 
-    if (!familleAvecCode) {
-      return Response.json({ error: 'Code invalide ou famille introuvable' }, { status: 404 });
+    // Chercher la famille avec ce code
+    const familles = await base44.entities.FamilleConnectee.filter({
+      code_partage: code.toUpperCase()
+    });
+
+    if (!familles || familles.length === 0) {
+      return Response.json({ error: 'Code de famille invalide' }, { status: 404 });
     }
 
-    // Vérifier si déjà membre ou propriétaire
-    if (familleAvecCode.proprietaire_email === user.email) {
-      return Response.json({ error: 'Vous êtes le propriétaire de cette famille' }, { status: 400 });
-    }
+    const famille = familles[0];
 
-    const dejaMembre = familleAvecCode.membres?.some(m => m.email === user.email);
-    if (dejaMembre) {
+    // Vérifier si l'utilisateur est déjà membre
+    const estDejaMembre = famille.membres?.some(m => m.email === user.email);
+    if (estDejaMembre) {
       return Response.json({ error: 'Vous êtes déjà membre de cette famille' }, { status: 400 });
     }
 
-    // Ajouter l'utilisateur comme membre
-    const newMembre = {
+    // Ajouter le nouveau membre
+    const nouveauMembre = {
       email: user.email,
       nom: user.full_name,
-      relation: relation || 'autre',
+      relation: relation,
       statut: 'accepte',
       date_ajout: new Date().toISOString(),
       permissions: {
@@ -51,21 +52,24 @@ Deno.serve(async (req) => {
       }
     };
 
-    const membres = [...(familleAvecCode.membres || []), newMembre];
-    
-    await base44.asServiceRole.entities.FamilleConnectee.update(familleAvecCode.id, { membres });
+    const membres = [...(famille.membres || []), nouveauMembre];
 
-    return Response.json({ 
-      success: true, 
+    await base44.entities.FamilleConnectee.update(famille.id, {
+      membres
+    });
+
+    console.log(`✅ ${user.full_name} a rejoint la famille ${famille.parametres?.nom_groupe}`);
+
+    return Response.json({
+      success: true,
       famille: {
-        nom_groupe: familleAvecCode.parametres?.nom_groupe || 'Ma Famille',
-        proprietaire: familleAvecCode.proprietaire_email,
-        nombre_membres: membres.length
+        id: famille.id,
+        nom_groupe: famille.parametres?.nom_groupe
       }
     });
 
   } catch (error) {
-    console.error('Erreur rejoindre famille:', error);
+    console.error('❌ Erreur rejoindre code:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

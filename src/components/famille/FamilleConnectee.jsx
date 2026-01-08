@@ -163,6 +163,7 @@ export default function FamilleConnectee() {
   });
 
   // Envoyer message
+  const [newMessage, setNewMessage] = React.useState('');
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       const message = {
@@ -352,7 +353,7 @@ export default function FamilleConnectee() {
             </div>
           ))}
 
-          {membresAcceptes.length === 0 && membresEnAttente.length === 0 && (
+          {membresAcceptes.length === 0 && (
             <div className="text-center py-6 text-gray-500">
               <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p>Invitez des membres à rejoindre votre cercle</p>

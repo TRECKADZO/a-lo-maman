@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Bell, Calendar, Stethoscope, Baby, Syringe, Activity,
-  CheckCircle2, Clock, AlertCircle, ChevronRight
+  CheckCircle2, Clock, AlertCircle, ChevronRight, Plus, FileText
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import AjouterRappelRDV from './AjouterRappelRDV';
 
 // Calendrier prénatal standard
 const CALENDRIER_PRENATAL = [
@@ -31,6 +33,7 @@ const CALENDRIER_PRENATAL = [
 export default function RappelsPrenatals({ grossesse, semainesGrossesse }) {
   const queryClient = useQueryClient();
   const [showSettings, setShowSettings] = useState(false);
+  const [showAjouterRappel, setShowAjouterRappel] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -133,8 +136,75 @@ export default function RappelsPrenatals({ grossesse, semainesGrossesse }) {
     return status === 'retard' || status === 'imminent';
   });
 
+  // Rappels personnalisés
+  const rappelsPersonnalises = grossesse.rappels_rdv || [];
+  const rappelsActifs = rappelsPersonnalises.filter(r => r.statut !== 'annule' && r.statut !== 'realise');
+
   return (
     <div className="space-y-4">
+      {/* Mes rappels personnalisés */}
+      {rappelsActifs.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-cyan-50 flex justify-between items-center">
+            <p className="font-semibold text-gray-900 flex items-center gap-2">
+              <Bell className="w-4 h-4 text-blue-500" />
+              Mes rappels personnalisés ({rappelsActifs.length})
+            </p>
+            <Button size="sm" onClick={() => setShowAjouterRappel(true)} className="bg-blue-600">
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+          <div className="divide-y">
+            {rappelsActifs.map((rappel) => {
+              const dateRappel = new Date(rappel.date_prevue);
+              const joursRestants = differenceInDays(dateRappel, new Date());
+              const estPasse = joursRestants < 0;
+              
+              return (
+                <div key={rappel.id} className={`p-3 ${estPasse ? 'bg-red-50' : joursRestants <= 2 ? 'bg-amber-50' : ''}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{rappel.titre}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        {format(dateRappel, 'dd MMMM yyyy à HH:mm', { locale: fr })}
+                      </p>
+                      {rappel.lieu && <p className="text-xs text-gray-500">{rappel.lieu}</p>}
+                      {rappel.documents_requis && rappel.documents_requis.length > 0 && (
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {rappel.documents_requis.map((doc, idx) => (
+                            <Badge key={idx} variant="outline" className="text-[10px]">
+                              <FileText className="w-2 h-2 mr-0.5" />{doc}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {estPasse ? (
+                      <Badge className="bg-red-100 text-red-800">En retard</Badge>
+                    ) : joursRestants <= 2 ? (
+                      <Badge className="bg-amber-100 text-amber-800">{joursRestants}j</Badge>
+                    ) : (
+                      <Badge variant="outline">{joursRestants}j</Badge>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {!rappelsActifs.length && (
+        <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
+          <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-600 mb-3">Aucun rappel personnalisé</p>
+          <Button onClick={() => setShowAjouterRappel(true)} variant="outline">
+            <Plus className="w-4 h-4 mr-2" />
+            Créer un rappel
+          </Button>
+        </div>
+      )}
+
       {/* Alerte RDV urgents - Compact */}
       {rdvsUrgents.length > 0 && (
         <Link to={createPageUrl('Teleconsultation')}>
@@ -218,6 +288,13 @@ export default function RappelsPrenatals({ grossesse, semainesGrossesse }) {
         <Bell className="w-4 h-4 text-blue-500 flex-shrink-0" />
         <p className="text-xs text-blue-700">Rappels automatiques 1 semaine avant chaque RDV</p>
       </div>
+
+      {showAjouterRappel && (
+        <AjouterRappelRDV
+          grossesse={grossesse}
+          onClose={() => setShowAjouterRappel(false)}
+        />
+      )}
     </div>
   );
 }

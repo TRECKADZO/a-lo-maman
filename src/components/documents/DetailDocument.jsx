@@ -25,8 +25,11 @@ import {
   Baby,
   Eye,
   Send,
-  Clock
+  Clock,
+  FileSearch
 } from 'lucide-react';
+import PartagerDocument from './PartagerDocument';
+import ExtracteurTexteOCR from './ExtracteurTexteOCR';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { BottomSheet } from '@/components/ui/safe-area-view';
@@ -34,18 +37,10 @@ import { BottomSheet } from '@/components/ui/safe-area-view';
 export default function DetailDocument({ document, enfants, onClose }) {
   const queryClient = useQueryClient();
   const [showPartage, setShowPartage] = useState(false);
-  const [partageEmail, setPartageEmail] = useState('');
-  const [partageNom, setPartageNom] = useState('');
-  const [partageType, setPartageType] = useState('professionnel');
-  const [partageExpire, setPartageExpire] = useState('');
-  const [permissions, setPermissions] = useState(['lecture']);
+  const [showOCR, setShowOCR] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  // Fetch professionnels for quick share
-  const { data: professionnels = [] } = useQuery({
-    queryKey: ['professionnels_partage'],
-    queryFn: () => base44.entities.Professionnel.list(),
-  });
+
 
   // Toggle favori
   const toggleFavoriMutation = useMutation({
@@ -71,42 +66,7 @@ export default function DetailDocument({ document, enfants, onClose }) {
     },
   });
 
-  // Partager
-  const partageMutation = useMutation({
-    mutationFn: async () => {
-      const partagesActuels = document.partages || [];
-      const nouveauPartage = {
-        email: partageEmail,
-        nom: partageNom,
-        type: partageType,
-        permissions,
-        date_partage: new Date().toISOString(),
-        expire_le: partageExpire || null,
-      };
-      
-      await base44.entities.DocumentFamille.update(document.id, {
-        partages: [...partagesActuels, nouveauPartage]
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents_famille'] });
-      setShowPartage(false);
-      setPartageEmail('');
-      setPartageNom('');
-      setPermissions(['lecture']);
-    },
-  });
 
-  // Révoquer partage
-  const revoquerPartageMutation = useMutation({
-    mutationFn: async (email) => {
-      const partagesActuels = document.partages || [];
-      await base44.entities.DocumentFamille.update(document.id, {
-        partages: partagesActuels.filter(p => p.email !== email)
-      });
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['documents_famille'] }),
-  });
 
   // Télécharger
   const handleDownload = async () => {
@@ -128,14 +88,6 @@ export default function DetailDocument({ document, enfants, onClose }) {
   const handleDelete = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce document ? Cette action est irréversible.')) {
       deleteMutation.mutate();
-    }
-  };
-
-  const togglePermission = (perm) => {
-    if (permissions.includes(perm)) {
-      setPermissions(permissions.filter(p => p !== perm));
-    } else {
-      setPermissions([...permissions, perm]);
     }
   };
 
@@ -183,6 +135,13 @@ export default function DetailDocument({ document, enfants, onClose }) {
             >
               <Share2 className="w-4 h-4 mr-2" />
               Partager
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowOCR(true)}
+            >
+              <FileSearch className="w-4 h-4 mr-2" />
+              OCR
             </Button>
             <Button
               variant="outline"
@@ -340,138 +299,25 @@ export default function DetailDocument({ document, enfants, onClose }) {
             </Button>
           </div>
         </div>
-
-        {/* Modal Partage */}
-        {showPartage && (
-          <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-            <div className="bg-white rounded-t-3xl w-full max-w-lg p-6 max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">Partager ce document</h3>
-                <button onClick={() => setShowPartage(false)}>
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {/* Partage rapide avec pro */}
-                {professionnels.length > 0 && (
-                  <div>
-                    <Label>Partage rapide avec un professionnel</Label>
-                    <Select
-                      onValueChange={(value) => {
-                        const pro = professionnels.find(p => p.email === value);
-                        if (pro) {
-                          setPartageEmail(pro.email);
-                          setPartageNom(pro.nom_complet);
-                          setPartageType('professionnel');
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Sélectionner un professionnel" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {professionnels.map(pro => (
-                          <SelectItem key={pro.id} value={pro.email}>
-                            {pro.nom_complet} - {pro.specialite}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                <div className="text-center text-gray-400 text-sm">ou</div>
-
-                {/* Partage manuel */}
-                <div>
-                  <Label>Email *</Label>
-                  <Input
-                    type="email"
-                    value={partageEmail}
-                    onChange={(e) => setPartageEmail(e.target.value)}
-                    placeholder="email@exemple.com"
-                  />
-                </div>
-
-                <div>
-                  <Label>Nom (optionnel)</Label>
-                  <Input
-                    value={partageNom}
-                    onChange={(e) => setPartageNom(e.target.value)}
-                    placeholder="Nom de la personne"
-                  />
-                </div>
-
-                <div>
-                  <Label>Type</Label>
-                  <Select value={partageType} onValueChange={setPartageType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="professionnel">Professionnel de santé</SelectItem>
-                      <SelectItem value="famille">Membre de la famille</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label>Permissions</Label>
-                  <div className="space-y-2 mt-2">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={permissions.includes('lecture')}
-                        onCheckedChange={() => togglePermission('lecture')}
-                      />
-                      <span className="text-sm">Lecture (visualiser)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={permissions.includes('telechargement')}
-                        onCheckedChange={() => togglePermission('telechargement')}
-                      />
-                      <span className="text-sm">Téléchargement</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Date d'expiration (optionnel)</Label>
-                  <Input
-                    type="date"
-                    value={partageExpire}
-                    onChange={(e) => setPartageExpire(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowPartage(false)}
-                    className="flex-1"
-                  >
-                    Annuler
-                  </Button>
-                  <Button
-                    onClick={() => partageMutation.mutate()}
-                    disabled={partageMutation.isPending || !partageEmail}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                  >
-                    {partageMutation.isPending ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      <Send className="w-4 h-4 mr-2" />
-                    )}
-                    Partager
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {showPartage && (
+        <PartagerDocument
+          document={document}
+          onClose={() => setShowPartage(false)}
+          onSuccess={() => {
+            setShowPartage(false);
+            queryClient.invalidateQueries({ queryKey: ['documents_famille'] });
+          }}
+        />
+      )}
+
+      {showOCR && (
+        <ExtracteurTexteOCR
+          document={document}
+          onClose={() => setShowOCR(false)}
+        />
+      )}
     </BottomSheet>
   );
 }

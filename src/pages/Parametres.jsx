@@ -214,14 +214,27 @@ export default function Parametres() {
   const handleExportFHIR = async () => {
     try {
       setExportingFHIR(true);
-      const response = await base44.functions.invoke('exporterFHIR');
       
-      // Créer un blob et télécharger
-      const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/fhir+json' });
+      // Appeler directement l'URL de la fonction
+      const functionUrl = `/api/functions/exporterFHIR`;
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await base44.auth.getToken()}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'export');
+      }
+
+      // Récupérer le blob JSON
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `export-fhir-${user.email}-${Date.now()}.json`;
+      a.download = `export-fhir-${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

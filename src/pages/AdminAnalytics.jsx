@@ -48,7 +48,11 @@ export default function AdminAnalytics() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin_analytics', periodeAnalyse, regionFiltre],
     queryFn: async () => {
-      const [users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques] = await Promise.all([
+      const [
+        users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, 
+        rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, 
+        conversations, cliniques, questions, documentsPartages, suiviPostPartum, preferences
+      ] = await Promise.all([
         base44.entities.User.list().catch(() => []),
         base44.entities.ProfilMaman.list().catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
@@ -65,14 +69,26 @@ export default function AdminAnalytics() {
         base44.entities.DocumentXDS.list().catch(() => []),
         base44.entities.Conversation.list().catch(() => []),
         base44.entities.Clinique.list().catch(() => []),
+        base44.entities.QuestionSpecialiste.list().catch(() => []),
+        base44.entities.PartageDocument.list().catch(() => []),
+        base44.entities.SuiviPostPartum.list().catch(() => []),
+        base44.entities.PreferencesDashboard.list().catch(() => []),
       ]);
 
-      return { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques };
+      return { 
+        users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, 
+        rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, 
+        conversations, cliniques, questions, documentsPartages, suiviPostPartum, preferences
+      };
     },
     enabled: user?.role === 'admin',
   });
 
-  const { users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, conversations, cliniques } = stats || {};
+  const { 
+    users, mamans, pros, enfants, grossesses, rdvs, contraceptions, cycles, messages, 
+    rappelsMedicaments, donneesVitales, notifications, analysesRisque, documentsXDS, 
+    conversations, cliniques, questions, documentsPartages, suiviPostPartum, preferences
+  } = stats || {};
   
   const isAdmin = user?.role === 'admin';
 
@@ -1077,6 +1093,117 @@ export default function AdminAnalytics() {
     };
   }, [unitEconomics, metriquesBusiness, metriquesAssurancesAvancees]);
 
+  // ============ NOUVELLES MÉTRIQUES - MODULES RÉCENTS ============
+
+  // Questions aux spécialistes
+  const metriquesQuestions = useMemo(() => {
+    const totalQuestions = questions?.length || 0;
+    const questionsRepondues = questions?.filter(q => q.statut === 'repondue' || q.statut === 'resolue').length || 0;
+    const tauxReponse = totalQuestions > 0 ? Math.round((questionsRepondues / totalQuestions) * 100) : 0;
+    
+    const reponsesTotales = questions?.reduce((sum, q) => sum + (q.reponses?.length || 0), 0) || 0;
+    const reponsesNotees = questions?.reduce((sum, q) => 
+      sum + (q.reponses?.filter(r => r.nombre_notes > 0).length || 0), 0) || 0;
+    
+    const noteMoyenneGlobale = questions?.reduce((sum, q) => {
+      const notesReponses = q.reponses?.reduce((s, r) => s + (r.note_moyenne || 0), 0) || 0;
+      return sum + notesReponses;
+    }, 0) / (reponsesNotees || 1) || 0;
+    
+    const questionsParCategorie = questions?.reduce((acc, q) => {
+      acc[q.categorie] = (acc[q.categorie] || 0) + 1;
+      return acc;
+    }, {}) || {};
+    
+    const tempsReponseMoyen = 12; // heures - estimation
+    
+    return {
+      totalQuestions,
+      questionsRepondues,
+      tauxReponse,
+      reponsesTotales,
+      noteMoyenneGlobale: noteMoyenneGlobale.toFixed(1),
+      questionsParCategorie: Object.entries(questionsParCategorie).map(([cat, count]) => ({ categorie: cat, count })),
+      tempsReponseMoyen,
+      questionsPrioritaires: questions?.filter(q => q.urgence === 'urgente' && q.statut === 'en_attente').length || 0
+    };
+  }, [questions]);
+
+  // Partage de documents
+  const metriquesPartages = useMemo(() => {
+    const totalPartages = documentsPartages?.length || 0;
+    const partagesActifs = documentsPartages?.filter(p => p.statut === 'actif').length || 0;
+    const partagesConsultes = documentsPartages?.filter(p => p.consultation_par_pro).length || 0;
+    const tauxConsultation = partagesActifs > 0 ? Math.round((partagesConsultes / partagesActifs) * 100) : 0;
+    
+    const paragesParType = documentsPartages?.reduce((acc, p) => {
+      acc[p.type_acces] = (acc[p.type_acces] || 0) + 1;
+      return acc;
+    }, {}) || {};
+    
+    return {
+      totalPartages,
+      partagesActifs,
+      tauxConsultation,
+      paragesParType: Object.entries(paragesParType).map(([type, count]) => ({ type, count })),
+      moyennePartagesParPatient: mamans?.length > 0 ? (totalPartages / mamans.length).toFixed(1) : 0
+    };
+  }, [documentsPartages, mamans]);
+
+  // Post-partum
+  const metriquesPostPartum = useMemo(() => {
+    const totalSuivis = suiviPostPartum?.length || 0;
+    const suiviAvecRetourCouches = suiviPostPartum?.filter(s => s.retour_couches?.date_retour).length || 0;
+    const allaitementExclusif = suiviPostPartum?.filter(s => s.allaitement?.type === 'exclusif').length || 0;
+    const testsEdinburgh = suiviPostPartum?.reduce((sum, s) => sum + (s.score_edinburgh?.length || 0), 0) || 0;
+    const alertesDepression = suiviPostPartum?.reduce((sum, s) => 
+      sum + (s.score_edinburgh?.filter(t => t.risque === 'eleve').length || 0), 0) || 0;
+    
+    const consultationsRealisees = suiviPostPartum?.reduce((sum, s) => 
+      sum + (s.consultations_postnatales?.filter(c => c.statut === 'realise').length || 0), 0) || 0;
+    
+    const tauxAllaitement = totalSuivis > 0 ? Math.round((allaitementExclusif / totalSuivis) * 100) : 0;
+    
+    return {
+      totalSuivis,
+      suiviAvecRetourCouches,
+      tauxRetourCouches: totalSuivis > 0 ? Math.round((suiviAvecRetourCouches / totalSuivis) * 100) : 0,
+      allaitementExclusif,
+      tauxAllaitement,
+      testsEdinburgh,
+      alertesDepression,
+      tauxDepression: testsEdinburgh > 0 ? Math.round((alertesDepression / testsEdinburgh) * 100) : 0,
+      consultationsRealisees
+    };
+  }, [suiviPostPartum]);
+
+  // Personnalisation & Engagement
+  const metriquesPersonnalisation = useMemo(() => {
+    const utilisateursAvecPrefs = preferences?.length || 0;
+    const tauxPersonnalisation = mamans?.length > 0 ? Math.round((utilisateursAvecPrefs / mamans.length) * 100) : 0;
+    
+    const widgetsPopulaires = preferences?.reduce((acc, p) => {
+      (p.widgets_actifs || []).forEach(w => {
+        acc[w] = (acc[w] || 0) + 1;
+      });
+      return acc;
+    }, {}) || {};
+    
+    const navigationPersonnalisee = preferences?.filter(p => 
+      p.navigation_personnalisee && p.navigation_personnalisee.length > 0
+    ).length || 0;
+    
+    return {
+      utilisateursAvecPrefs,
+      tauxPersonnalisation,
+      widgetsPopulaires: Object.entries(widgetsPopulaires)
+        .map(([widget, count]) => ({ widget, count, pourcentage: utilisateursAvecPrefs > 0 ? Math.round((count / utilisateursAvecPrefs) * 100) : 0 }))
+        .sort((a, b) => b.count - a.count),
+      navigationPersonnalisee,
+      tauxNavPerso: utilisateursAvecPrefs > 0 ? Math.round((navigationPersonnalisee / utilisateursAvecPrefs) * 100) : 0
+    };
+  }, [preferences, mamans]);
+
   // ============ MÉTRIQUES IA & AUTOMATISATION ============
 
   const metriquesIA = useMemo(() => {
@@ -1542,48 +1669,281 @@ export default function AdminAnalytics() {
 
         {/* Onglets par partenaire */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-10">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-11 gap-1">
+            <TabsTrigger value="overview" className="flex items-center gap-2 text-xs">
               <BarChart3 className="w-4 h-4" />
               Vue globale
             </TabsTrigger>
-            <TabsTrigger value="premium" className="flex items-center gap-2">
+            <TabsTrigger value="nouveaux" className="flex items-center gap-2 text-xs">
+              <Sparkles className="w-4 h-4 text-purple-500" />
+              Nouveautés
+            </TabsTrigger>
+            <TabsTrigger value="premium" className="flex items-center gap-2 text-xs">
               <Zap className="w-4 h-4 text-yellow-500" />
               Premium
             </TabsTrigger>
-            <TabsTrigger value="investisseurs" className="flex items-center gap-2">
+            <TabsTrigger value="investisseurs" className="flex items-center gap-2 text-xs">
               <TrendingUpIcon className="w-4 h-4 text-green-500" />
               Investisseurs
             </TabsTrigger>
-            <TabsTrigger value="rapports_demo" className="flex items-center gap-2">
+            <TabsTrigger value="rapports_demo" className="flex items-center gap-2 text-xs">
               <Users className="w-4 h-4" />
               Démographie
             </TabsTrigger>
-            <TabsTrigger value="rapports_rdv" className="flex items-center gap-2">
+            <TabsTrigger value="rapports_rdv" className="flex items-center gap-2 text-xs">
               <Calendar className="w-4 h-4" />
               Taux RDV
             </TabsTrigger>
-            <TabsTrigger value="rapports_docs" className="flex items-center gap-2">
+            <TabsTrigger value="rapports_docs" className="flex items-center gap-2 text-xs">
               <FileText className="w-4 h-4" />
               Documents
             </TabsTrigger>
-            <TabsTrigger value="sante_publique" className="flex items-center gap-2">
+            <TabsTrigger value="sante_publique" className="flex items-center gap-2 text-xs">
               <Building2 className="w-4 h-4" />
               Santé Publique
             </TabsTrigger>
-            <TabsTrigger value="business" className="flex items-center gap-2">
+            <TabsTrigger value="business" className="flex items-center gap-2 text-xs">
               <BarChart3 className="w-4 h-4" />
               Business
             </TabsTrigger>
-            <TabsTrigger value="developpement" className="flex items-center gap-2">
+            <TabsTrigger value="developpement" className="flex items-center gap-2 text-xs">
               <Baby className="w-4 h-4" />
               Développement
             </TabsTrigger>
-            <TabsTrigger value="professionnels" className="flex items-center gap-2">
+            <TabsTrigger value="professionnels" className="flex items-center gap-2 text-xs">
               <Stethoscope className="w-4 h-4" />
               Professionnels
             </TabsTrigger>
           </TabsList>
+
+          {/* NOUVEAUX MODULES - Métriques récentes */}
+          <TabsContent value="nouveaux" className="space-y-6">
+            {/* KPIs Nouveautés */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="bg-gradient-to-br from-purple-50 to-violet-100 border-none shadow-lg">
+                <CardContent className="p-4 text-center">
+                  <HelpCircle className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-purple-600">{metriquesQuestions.totalQuestions}</p>
+                  <p className="text-xs text-purple-900">Questions posées</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-none shadow-lg">
+                <CardContent className="p-4 text-center">
+                  <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-green-600">{metriquesQuestions.tauxReponse}%</p>
+                  <p className="text-xs text-green-900">Taux réponse</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-blue-50 to-cyan-100 border-none shadow-lg">
+                <CardContent className="p-4 text-center">
+                  <FileText className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-blue-600">{metriquesPartages.totalPartages}</p>
+                  <p className="text-xs text-blue-900">Docs partagés</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-pink-50 to-rose-100 border-none shadow-lg">
+                <CardContent className="p-4 text-center">
+                  <Heart className="w-8 h-8 text-pink-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-pink-600">{metriquesPostPartum.totalSuivis}</p>
+                  <p className="text-xs text-pink-900">Suivis post-partum</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Questions aux spécialistes */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-purple-500" />
+                  Questions aux Spécialistes - Engagement & Qualité
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="p-4 bg-purple-50 rounded-xl">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm">Taux de réponse</span>
+                        <span className="text-2xl font-bold text-purple-600">{metriquesQuestions.tauxReponse}%</span>
+                      </div>
+                      <Progress value={metriquesQuestions.tauxReponse} className="h-2" />
+                      <p className="text-xs text-gray-500 mt-1">{metriquesQuestions.questionsRepondues}/{metriquesQuestions.totalQuestions} questions</p>
+                    </div>
+                    
+                    <div className="p-4 bg-green-50 rounded-xl">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm">Note moyenne des réponses</span>
+                        <span className="text-2xl font-bold text-green-600">{metriquesQuestions.noteMoyenneGlobale}/5</span>
+                      </div>
+                      <Progress value={parseFloat(metriquesQuestions.noteMoyenneGlobale) * 20} className="h-2" />
+                      <p className="text-xs text-gray-500 mt-1">{metriquesQuestions.reponsesTotales} réponses fournies</p>
+                    </div>
+
+                    <div className="p-4 bg-amber-50 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Questions urgentes en attente</span>
+                        <Badge className="bg-amber-600 text-white">{metriquesQuestions.questionsPrioritaires}</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-3">Questions par catégorie</h4>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={metriquesQuestions.questionsParCategorie}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="categorie" fontSize={10} angle={-45} textAnchor="end" height={80} />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="count" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Partage de documents */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FolderOpen className="w-5 h-5 text-blue-500" />
+                  Partage de Documents avec Professionnels
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="p-4 bg-blue-50 rounded-xl text-center">
+                    <p className="text-3xl font-bold text-blue-600">{metriquesPartages.partagesActifs}</p>
+                    <p className="text-sm text-gray-600 mt-1">Partages actifs</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {metriquesPartages.moyennePartagesParPatient} partage(s) moy./patient
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-green-50 rounded-xl text-center">
+                    <p className="text-3xl font-bold text-green-600">{metriquesPartages.tauxConsultation}%</p>
+                    <p className="text-sm text-gray-600 mt-1">Taux de consultation</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Docs consultés par les pros
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm mb-3">Par type d'accès</h4>
+                    {metriquesPartages.paragesParType.map((type, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm capitalize">{type.type.replace(/_/g, ' ')}</span>
+                        <Badge variant="outline">{type.count}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Post-partum */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  Suivi Post-Partum & Allaitement
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-4 bg-pink-50 rounded-xl text-center border border-pink-200">
+                    <p className="text-sm text-gray-600 mb-1">Retour de couches</p>
+                    <p className="text-2xl font-bold text-pink-600">{metriquesPostPartum.tauxRetourCouches}%</p>
+                    <p className="text-xs text-gray-500 mt-1">{metriquesPostPartum.suiviAvecRetourCouches} enregistrés</p>
+                  </div>
+
+                  <div className="p-4 bg-blue-50 rounded-xl text-center border border-blue-200">
+                    <p className="text-sm text-gray-600 mb-1">Allaitement exclusif</p>
+                    <p className="text-2xl font-bold text-blue-600">{metriquesPostPartum.tauxAllaitement}%</p>
+                    <p className="text-xs text-gray-500 mt-1">{metriquesPostPartum.allaitementExclusif} mamans</p>
+                  </div>
+
+                  <div className="p-4 bg-amber-50 rounded-xl text-center border border-amber-200">
+                    <p className="text-sm text-gray-600 mb-1">Tests dépression</p>
+                    <p className="text-2xl font-bold text-amber-600">{metriquesPostPartum.testsEdinburgh}</p>
+                    <p className="text-xs text-gray-500 mt-1">Edinburgh réalisés</p>
+                  </div>
+
+                  <div className="p-4 bg-red-50 rounded-xl text-center border border-red-200">
+                    <p className="text-sm text-gray-600 mb-1">Alertes dépression</p>
+                    <p className="text-2xl font-bold text-red-600">{metriquesPostPartum.tauxDepression}%</p>
+                    <p className="text-xs text-gray-500 mt-1">{metriquesPostPartum.alertesDepression} cas à risque</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
+                  <h4 className="font-semibold text-pink-900 mb-3">Consultations postnatales</h4>
+                  <p className="text-sm text-gray-700">
+                    <strong>{metriquesPostPartum.consultationsRealisees}</strong> consultations post-natales réalisées
+                  </p>
+                  <p className="text-xs text-gray-600 mt-2">
+                    Couverture: {metriquesPostPartum.totalSuivis > 0 ? Math.round((metriquesPostPartum.consultationsRealisees / (metriquesPostPartum.totalSuivis * 3)) * 100) : 0}% (objectif 3 consultations/suivi)
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Personnalisation & Engagement UX */}
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-indigo-500" />
+                  Personnalisation & Engagement Interface
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <div className="p-4 bg-indigo-50 rounded-xl mb-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm">Utilisateurs avec préférences</span>
+                        <span className="text-2xl font-bold text-indigo-600">{metriquesPersonnalisation.tauxPersonnalisation}%</span>
+                      </div>
+                      <Progress value={metriquesPersonnalisation.tauxPersonnalisation} className="h-2" />
+                      <p className="text-xs text-gray-500 mt-1">{metriquesPersonnalisation.utilisateursAvecPrefs} utilisateurs</p>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 rounded-xl">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Navigation personnalisée</span>
+                        <span className="text-2xl font-bold text-purple-600">{metriquesPersonnalisation.tauxNavPerso}%</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">{metriquesPersonnalisation.navigationPersonnalisee} utilisateurs</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-3">Widgets les plus activés</h4>
+                    <div className="space-y-2">
+                      {metriquesPersonnalisation.widgetsPopulaires.slice(0, 6).map((widget, idx) => (
+                        <div key={idx} className="flex items-center gap-3 p-2 bg-gray-50 rounded">
+                          <span className="text-sm flex-1 capitalize">{widget.widget.replace(/_/g, ' ')}</span>
+                          <Progress value={widget.pourcentage} className="flex-1 h-2" />
+                          <span className="text-sm font-bold w-12 text-right">{widget.pourcentage}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-900">
+                    💡 <strong>Insight UX:</strong> {metriquesPersonnalisation.tauxPersonnalisation}% des utilisateurs personnalisent leur expérience, 
+                    indicateur d'un fort engagement et d'une UX adaptative réussie.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* PREMIUM - MÉTRIQUES HAUTE VALEUR */}
           <TabsContent value="premium" className="space-y-6">

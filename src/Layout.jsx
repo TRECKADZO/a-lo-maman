@@ -19,7 +19,8 @@ import {
   Sparkles,
   FolderOpen,
   BookOpen,
-  HelpCircle
+  HelpCircle,
+  Radio
 } from "lucide-react";
 import {
   Sidebar,
@@ -103,6 +104,7 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
         { title: "Assistant IA", url: createPageUrl("AssistantIA"), icon: Sparkles, color: "text-indigo-500" },
         { title: "Contraception", url: createPageUrl("Contraception"), icon: Heart, color: "text-rose-500" },
         { title: "Suivi Grossesse", url: createPageUrl("Grossesse"), icon: HeartPulse, color: "text-pink-600" },
+        { title: "Télé-Échographie", url: createPageUrl("TeleEchographie"), icon: Radio, color: "text-teal-600" },
         { title: "Carnets Enfants", url: createPageUrl("Enfants"), icon: Baby, color: "text-blue-500" },
         { title: "Professionnels", url: createPageUrl("Teleconsultation"), icon: Stethoscope, color: "text-teal-500" },
         { title: "Messagerie", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
@@ -119,6 +121,7 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
         { title: "AI Assistant", url: createPageUrl("AssistantIA"), icon: Sparkles, color: "text-indigo-500" },
         { title: "Contraception", url: createPageUrl("Contraception"), icon: Heart, color: "text-rose-500" },
         { title: "Pregnancy Tracking", url: createPageUrl("Grossesse"), icon: HeartPulse, color: "text-pink-600" },
+        { title: "Tele-Ultrasound", url: createPageUrl("TeleEchographie"), icon: Radio, color: "text-teal-600" },
         { title: "Children's Records", url: createPageUrl("Enfants"), icon: Baby, color: "text-blue-500" },
         { title: "Specialists", url: createPageUrl("Teleconsultation"), icon: Stethoscope, color: "text-teal-500" },
         { title: "Messaging", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },

@@ -305,10 +305,37 @@ export default function DashboardMaman() {
           {/* Widget Rappels */}
           <RappelsWidget userEmail={user?.email} />
 
-          {/* CTA Déclaration de Naissance */}
-          {(grossesse && getSemaineGrossesse() >= 37) || enfants.length > 0 ? (
+          {/* CTA Déclaration de Naissance - Affichage conditionnel */}
+          {grossesse && getSemaineGrossesse() >= 37 && (
+            <Card className="shadow-xl border-2 border-pink-300 bg-gradient-to-br from-pink-100 via-white to-rose-100 animate-pulse">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Baby className="w-7 h-7 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      🎉 Votre bébé arrive bientôt !
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Préparez dès maintenant sa déclaration de naissance
+                    </p>
+                    <Button asChild className="w-full bg-gradient-to-r from-pink-500 to-rose-600 shadow-lg">
+                      <Link to={createPageUrl('DeclarationNaissance')}>
+                        Préparer la déclaration
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Ou si grossesse inactive mais pas de déclaration récente */}
+          {!grossesse && enfants.length === 0 && (
             <NaissanceCTA variant="compact" />
-          ) : null}
+          )}
 
           {/* Conseils personnalisés IA */}
           <ConseilsPersonnalises 

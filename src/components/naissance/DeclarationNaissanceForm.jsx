@@ -30,6 +30,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import ConfirmationDeclaration from './ConfirmationDeclaration';
+import ModeHorsLigne, { useOfflineDeclaration } from './ModeHorsLigne';
 
 const REGIONS_CI = [
   "Abidjan",
@@ -62,6 +63,7 @@ export default function DeclarationNaissanceForm({ onSuccess, declarationExistan
   const [uploading, setUploading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [declarationId, setDeclarationId] = useState(null);
+  const { isOnline, saveDeclaration } = useOfflineDeclaration();
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -219,6 +221,34 @@ export default function DeclarationNaissanceForm({ onSuccess, declarationExistan
       return;
     }
 
+    // Mode hors-ligne : sauvegarder localement
+    if (!isOnline) {
+      try {
+        saveDeclaration(formData);
+        toast.success('Déclaration sauvegardée. Elle sera envoyée dès la reconnexion.');
+        setStep(1);
+        setFormData({
+          prenoms_enfant: '',
+          nom_famille: profilMaman?.nom_complet?.split(' ').pop() || '',
+          sexe: '',
+          date_naissance: '',
+          heure_naissance: '',
+          lieu_naissance: '',
+          type_lieu: 'hopital',
+          ville: '',
+          region: 'Abidjan',
+          prenom_pere: '',
+          nom_pere: '',
+          no_cmu_mere: profilMaman?.no_cmu || '',
+          attestation_url: '',
+          consentement_transmission: true,
+        });
+      } catch (error) {
+        toast.error('Erreur de sauvegarde hors-ligne');
+      }
+      return;
+    }
+
     creerDeclaration.mutate(formData);
   };
 
@@ -235,6 +265,7 @@ export default function DeclarationNaissanceForm({ onSuccess, declarationExistan
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24">
+      <ModeHorsLigne />
       <div className="max-w-2xl mx-auto p-4">
         {/* Header */}
         <div className="text-center mb-6">

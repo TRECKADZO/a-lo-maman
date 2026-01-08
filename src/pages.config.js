@@ -19,6 +19,7 @@ import Dashboard from './pages/Dashboard';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import DashboardMaman from './pages/DashboardMaman';
 import DashboardProfessionnel from './pages/DashboardProfessionnel';
+import DeclarationNaissance from './pages/DeclarationNaissance';
 import DiagnosticProfil from './pages/DiagnosticProfil';
 import DossierPatient from './pages/DossierPatient';
 import Enfants from './pages/Enfants';
@@ -34,6 +35,7 @@ import InscriptionClinique from './pages/InscriptionClinique';
 import Interoperabilite from './pages/Interoperabilite';
 import Intro from './pages/Intro';
 import IntroSlides from './pages/IntroSlides';
+import MesDeclarations from './pages/MesDeclarations';
 import MesDocuments from './pages/MesDocuments';
 import MesPatients from './pages/MesPatients';
 import MesRappels from './pages/MesRappels';
@@ -57,8 +59,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import DeclarationNaissance from './pages/DeclarationNaissance';
-import MesDeclarations from './pages/MesDeclarations';
 import __Layout from './Layout.jsx';
 
 
@@ -84,6 +84,7 @@ export const PAGES = {
     "DashboardAnalytics": DashboardAnalytics,
     "DashboardMaman": DashboardMaman,
     "DashboardProfessionnel": DashboardProfessionnel,
+    "DeclarationNaissance": DeclarationNaissance,
     "DiagnosticProfil": DiagnosticProfil,
     "DossierPatient": DossierPatient,
     "Enfants": Enfants,
@@ -99,6 +100,7 @@ export const PAGES = {
     "Interoperabilite": Interoperabilite,
     "Intro": Intro,
     "IntroSlides": IntroSlides,
+    "MesDeclarations": MesDeclarations,
     "MesDocuments": MesDocuments,
     "MesPatients": MesPatients,
     "MesRappels": MesRappels,
@@ -122,8 +124,6 @@ export const PAGES = {
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "DeclarationNaissance": DeclarationNaissance,
-    "MesDeclarations": MesDeclarations,
 }
 
 export const pagesConfig = {

@@ -46,6 +46,7 @@ import AppointmentReminders from "@/components/notifications/AppointmentReminder
 import MessageNotifications from "@/components/notifications/MessageNotifications";
 import RappelsChecker from "@/components/notifications/RappelsChecker";
 import VaccinNotificationService from "@/components/notifications/VaccinNotificationService";
+import ModeHorsLigne from "@/components/naissance/ModeHorsLigne";
 import ABTestProvider from "@/components/analytics/ABTestProvider";
 import FeedbackWidget from "@/components/analytics/FeedbackWidget";
 import OfflineManager from "@/components/offline/OfflineManager";
@@ -512,6 +513,7 @@ export default function Layout({ children, currentPageName }) {
           <FloatingChatButton />
           <SupportFloatingButton />
           <OfflineManager />
+          <ModeHorsLigne />
           <ServiceWorkerRegistration />
           <NotificationToast />
           <AppointmentReminders />

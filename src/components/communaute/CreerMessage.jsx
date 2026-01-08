@@ -61,25 +61,25 @@ export default function CreerMessage({ onClose }) {
     return acc;
   }, {});
 
-  const { data: userProfile } = useQuery({
-    queryKey: ['userProfile', user?.email],
+  const { data: profilPro } = useQuery({
+    queryKey: ['profil_professionnel', user?.email],
     queryFn: async () => {
-      if (!user) return null;
-      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
-      return profiles[0] || null;
+      if (!user?.email) return null;
+      const profils = await base44.entities.Professionnel.filter({ email: user.email });
+      return profils[0] || null;
     },
-    enabled: !!user,
+    enabled: !!user?.email,
   });
 
   const creerMessageMutation = useMutation({
     mutationFn: async (data) => {
-      const isSpecialist = userProfile && userProfile.type_compte !== 'maman';
+      const isSpecialist = !!profilPro;
 
       return base44.entities.MessageCommunaute.create({
         ...data,
         auteur_nom: data.auteur_anonyme ? "Anonyme" : user.full_name || "Utilisateur",
         auteur_type: isSpecialist ? 'specialiste' : 'maman',
-        auteur_specialite: !data.auteur_anonyme && isSpecialist ? userProfile.type_compte : null,
+        auteur_specialite: !data.auteur_anonyme && isSpecialist ? profilPro.specialite : null,
         reactions: {},
         reponses: [],
         upvotes: [],

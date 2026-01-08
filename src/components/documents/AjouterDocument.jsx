@@ -130,7 +130,7 @@ export default function AjouterDocument({ enfants, onClose }) {
       title="Ajouter un document"
       fullHeight
     >
-      <div className="p-6 overflow-y-auto" style={{ maxHeight: '80vh' }}>
+      <div className="p-6 overflow-y-auto pb-32" style={{ maxHeight: '80vh', paddingBottom: 'calc(8rem + env(safe-area-inset-bottom))' }}>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Upload fichier */}
           <div>

@@ -155,11 +155,11 @@ export default function Accueil() {
     { nombre: "FHIR", label: "Interopérabilité certifiée", icon: Shield }
   ];
 
-  const stats = [
-    { nombre: "10,000+", label: "Familles inscrites" },
-    { nombre: "300+", label: "Professionnels de santé" },
-    { nombre: "50,000+", label: "Consultations réalisées" },
-    { nombre: "99.8%", label: "Satisfaction" }
+  const avantagesPlatform = [
+    { icon: Shield, titre: "Conformité FHIR", desc: "Interopérabilité certifiée avec les systèmes hospitaliers" },
+    { icon: Lock, titre: "AES-256 Chiffré", desc: "Chiffrement militaire pour vos données médicales" },
+    { icon: Globe, titre: "DMP Sécurisé", desc: "Dossier médical partagé avec autorisations granulaires" },
+    { icon: Sparkles, titre: "IA Validée", desc: "Conseils santé validés médicalement 24/7" }
   ];
 
   const temoignages = [
@@ -382,18 +382,59 @@ export default function Accueil() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="bg-gray-50 py-12">
+      {/* Avantages Plateforme */}
+      <div className="bg-gradient-to-br from-gray-50 to-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                  {stat.nombre}
-                </p>
-                <p className="text-gray-600 font-medium">{stat.label}</p>
+          <div className="text-center mb-12">
+            <Badge className="bg-indigo-100 text-indigo-800 mb-4 text-base px-4 py-1.5">
+              <Zap className="w-4 h-4 mr-2" />
+              Plateforme Professionnelle
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Standards internationaux de qualité et sécurité
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {avantagesPlatform.map((avantage, i) => {
+              const Icon = avantage.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="border-none shadow-lg hover:shadow-xl transition-all h-full">
+                    <CardContent className="p-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-bold text-gray-900 mb-2">{avantage.titre}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">{avantage.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 p-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200">
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div>
+                <p className="text-3xl font-bold text-indigo-600 mb-2">FHIR v4.0</p>
+                <p className="text-sm text-gray-700 font-medium">Standard d'interopérabilité healthcare</p>
               </div>
-            ))}
+              <div>
+                <p className="text-3xl font-bold text-purple-600 mb-2">RGPD</p>
+                <p className="text-sm text-gray-700 font-medium">Conformité protection données</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-pink-600 mb-2">ISO 27001</p>
+                <p className="text-sm text-gray-700 font-medium">Sécurité information certifiée</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

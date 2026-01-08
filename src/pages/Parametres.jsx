@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Save, User, Settings, Camera, Upload, X, Droplet, AlertTriangle, Pill, CheckCircle, AlertCircle, Trash2, ExternalLink } from 'lucide-react';
+import { Loader2, Save, User, Settings, Camera, Upload, X, Droplet, AlertTriangle, Pill, CheckCircle, AlertCircle, Trash2, ExternalLink, Download, FileText, Mail, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import NotificationPreferences from '@/components/notifications/NotificationPreferences';
@@ -38,6 +38,7 @@ export default function Parametres() {
   const [nouvelleMaladie, setNouvelleMaladie] = useState('');
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [exportingFHIR, setExportingFHIR] = useState(false);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
@@ -209,6 +210,37 @@ export default function Parametres() {
       alert(`❌ ${error.message || "Une erreur est survenue"}\n\nVos données sont conservées. Réessayez.`);
     }
   });
+
+  const handleExportFHIR = async () => {
+    try {
+      setExportingFHIR(true);
+      const response = await base44.functions.invoke('exporterFHIR');
+      
+      // Créer un blob et télécharger
+      const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/fhir+json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `export-fhir-${user.email}-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+      
+      alert('✅ Export FHIR téléchargé avec succès !');
+    } catch (error) {
+      console.error('Erreur export FHIR:', error);
+      alert('❌ Erreur lors de l\'export FHIR');
+    } finally {
+      setExportingFHIR(false);
+    }
+  };
+
+  const handleRequestDataEmail = () => {
+    const subject = 'Demande d\'export de mes données';
+    const body = `Bonjour,\n\nJe souhaite recevoir un export complet de toutes mes données personnelles stockées sur A'lo Maman.\n\nEmail du compte : ${user?.email}\n\nMerci.`;
+    window.open(`mailto:minagepi@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+  };
 
   if (userLoading || profileLoading) {
     return (
@@ -591,6 +623,63 @@ export default function Parametres() {
           <CalendarSyncSettings />
 
           <EncryptionSetup />
+
+          {/* Section Gestion des données */}
+          <Card className="shadow-lg border-none bg-card mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-red-600">
+                <Shield className="w-5 h-5" />
+                Gestion des données
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-start gap-3 mb-3">
+                  <Download className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-blue-900 mb-1">Exporter mes données</h3>
+                    <p className="text-sm text-blue-800">
+                      Téléchargez une copie de toutes vos données
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start border-blue-300 hover:bg-blue-100"
+                    onClick={handleExportFHIR}
+                    disabled={exportingFHIR}
+                  >
+                    {exportingFHIR ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <FileText className="w-4 h-4 mr-2" />
+                    )}
+                    Export FHIR
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={handleRequestDataEmail}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Demander par email
+                  </Button>
+                </div>
+              </div>
+
+              <Alert className="bg-gray-50 border-gray-200">
+                <AlertDescription className="text-sm text-gray-700">
+                  <strong>Format FHIR :</strong> Standard international d'interopérabilité des données de santé. 
+                  Compatible avec tous les systèmes hospitaliers modernes.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
 
           {/* Section Suppression de compte */}
           <Card className="shadow-lg border-none bg-card mt-6 border-red-200">

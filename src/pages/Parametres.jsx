@@ -215,25 +215,91 @@ export default function Parametres() {
     try {
       setExportingFHIR(true);
       
-      // Utiliser le SDK Base44 pour appeler la fonction
-      const result = await base44.functions.invoke('exporterFHIR', {});
-      
-      // Le résultat est déjà un objet JSON
-      const jsonString = JSON.stringify(result, null, 2);
+      // Récupérer toutes les données localement
+      const [grossesses, enfants, rendezVous] = await Promise.all([
+        base44.entities.SuiviGrossesse.filter({ created_by: user.email }).catch(() => []),
+        base44.entities.EnfantCarnet.filter({ created_by: user.email }).catch(() => []),
+        base44.entities.RendezVous.filter({ created_by: user.email }).catch(() => [])
+      ]);
+
+      // Construire le bundle FHIR
+      const bundle = {
+        resourceType: "Bundle",
+        type: "collection",
+        timestamp: new Date().toISOString(),
+        entry: []
+      };
+
+      // Patient Resource
+      if (profilMaman) {
+        bundle.entry.push({
+          fullUrl: `urn:uuid:patient-${user.email}`,
+          resource: {
+            resourceType: "Patient",
+            id: profilMaman.id,
+            name: [{
+              use: "official",
+              text: profilMaman.display_name || user.full_name,
+            }],
+            telecom: profilMaman.telephone ? [{
+              system: "phone",
+              value: profilMaman.telephone
+            }] : [],
+            gender: "female",
+            birthDate: profilMaman.date_naissance || null
+          }
+        });
+      }
+
+      // Grossesses
+      grossesses.forEach((grossesse) => {
+        if (grossesse.grossesse_active) {
+          bundle.entry.push({
+            fullUrl: `urn:uuid:pregnancy-${grossesse.id}`,
+            resource: {
+              resourceType: "Observation",
+              status: "final",
+              code: {
+                coding: [{
+                  system: "http://loinc.org",
+                  code: "82810-3",
+                  display: "Pregnancy status"
+                }]
+              },
+              subject: { reference: `urn:uuid:patient-${user.email}` },
+              effectiveDateTime: grossesse.date_derniere_regle
+            }
+          });
+        }
+      });
+
+      // Enfants
+      enfants.forEach((enfant) => {
+        bundle.entry.push({
+          fullUrl: `urn:uuid:child-${enfant.id}`,
+          resource: {
+            resourceType: "Patient",
+            name: [{ text: enfant.nom_complet }],
+            gender: enfant.sexe === "masculin" ? "male" : "female",
+            birthDate: enfant.date_naissance
+          }
+        });
+      });
+
+      // Télécharger
+      const jsonString = JSON.stringify(bundle, null, 2);
       const blob = new Blob([jsonString], { type: 'application/fhir+json' });
-      const url = window.URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `export-fhir-${user?.email}-${Date.now()}.json`;
-      document.body.appendChild(a);
+      a.download = `export-fhir-alomaman-${Date.now()}.json`;
       a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
+      URL.revokeObjectURL(url);
       
       alert('✅ Export FHIR téléchargé avec succès !');
     } catch (error) {
       console.error('Erreur export FHIR:', error);
-      alert('❌ Erreur lors de l\'export FHIR: ' + (error.message || 'Erreur inconnue'));
+      alert('❌ Erreur: ' + error.message);
     } finally {
       setExportingFHIR(false);
     }

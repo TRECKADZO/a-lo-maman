@@ -55,6 +55,7 @@ import PredictionRisquesIA from "../components/grossesse/PredictionRisquesIA";
 import GestionEchographies from "../components/grossesse/GestionEchographies";
 import NavigationTrimestres from "../components/grossesse/NavigationTrimestres";
 import ContenuTrimestre from "../components/grossesse/ContenuTrimestre";
+import DeveloppementFoetal from "../components/grossesse/DeveloppementFoetal";
 
 // Configuration des sections de la page
 const SECTIONS = [

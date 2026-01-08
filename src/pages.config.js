@@ -65,6 +65,7 @@ import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
 import AdminCentres from './pages/AdminCentres';
 import AdminFHIR from './pages/AdminFHIR';
+import AdminGestionCentres from './pages/AdminGestionCentres';
 import __Layout from './Layout.jsx';
 
 
@@ -136,6 +137,7 @@ export const PAGES = {
     "VideoConsultation": VideoConsultation,
     "AdminCentres": AdminCentres,
     "AdminFHIR": AdminFHIR,
+    "AdminGestionCentres": AdminGestionCentres,
 }
 
 export const pagesConfig = {

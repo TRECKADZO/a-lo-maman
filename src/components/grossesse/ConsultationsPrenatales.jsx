@@ -3,9 +3,6 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { 
   Stethoscope, 
@@ -14,25 +11,18 @@ import {
   CheckCircle, 
   Clock,
   TrendingUp,
-  Activity
+  Activity,
+  FileText
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import AjouterConsultation from "./AjouterConsultation";
 
 export default function ConsultationsPrenatales({ grossesse, semainesGrossesse }) {
   const [showAjouter, setShowAjouter] = useState(false);
   const queryClient = useQueryClient();
 
-  const [nouvelleConsultation, setNouvelleConsultation] = useState({
-    date: new Date().toISOString().split('T')[0],
-    semaine_grossesse: semainesGrossesse,
-    poids: "",
-    tension_arterielle: "",
-    hauteur_uterine: "",
-    notes: "",
-    professionnel: "",
-    lieu: ""
-  });
+
 
   const consultationsRecommandees = [
     { semaine: 8, titre: "1ère consultation obligatoire", description: "Examen clinique complet, prescriptions analyses" },
@@ -46,34 +36,7 @@ export default function ConsultationsPrenatales({ grossesse, semainesGrossesse }
     { semaine: 39, titre: "Consultation du terme", description: "Surveillance, déclenchement si nécessaire" }
   ];
 
-  const ajouterConsultationMutation = useMutation({
-    mutationFn: async (data) => {
-      const consultations = [...(grossesse.consultations || []), data];
-      return base44.entities.SuiviGrossesse.update(grossesse.id, { consultations });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grossesse_active'] });
-      setShowAjouter(false);
-      setNouvelleConsultation({
-        date: new Date().toISOString().split('T')[0],
-        semaine_grossesse: semainesGrossesse,
-        poids: "",
-        tension_arterielle: "",
-        hauteur_uterine: "",
-        notes: "",
-        professionnel: "",
-        lieu: ""
-      });
-    },
-  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const dataToSend = { ...nouvelleConsultation };
-    if (dataToSend.poids) dataToSend.poids = parseFloat(dataToSend.poids);
-    if (dataToSend.hauteur_uterine) dataToSend.hauteur_uterine = parseFloat(dataToSend.hauteur_uterine);
-    ajouterConsultationMutation.mutate(dataToSend);
-  };
 
   const consultationsFaites = grossesse.consultations || [];
   const prochainesConsultations = consultationsRecommandees.filter(
@@ -139,107 +102,6 @@ export default function ConsultationsPrenatales({ grossesse, semainesGrossesse }
           </div>
         </CardHeader>
         <CardContent>
-          {showAjouter && (
-            <form onSubmit={handleSubmit} className="mb-6 p-4 bg-blue-50 rounded-lg space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">Date *</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={nouvelleConsultation.date}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, date: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="semaine">Semaine de grossesse *</Label>
-                  <Input
-                    id="semaine"
-                    type="number"
-                    value={nouvelleConsultation.semaine_grossesse}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, semaine_grossesse: parseInt(e.target.value)})}
-                    required
-                    min="1"
-                    max="42"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="poids">Poids (kg)</Label>
-                  <Input
-                    id="poids"
-                    type="number"
-                    step="0.1"
-                    value={nouvelleConsultation.poids}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, poids: e.target.value})}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="tension">Tension artérielle</Label>
-                  <Input
-                    id="tension"
-                    placeholder="12/8"
-                    value={nouvelleConsultation.tension_arterielle}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, tension_arterielle: e.target.value})}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="hauteur">Hauteur utérine (cm)</Label>
-                  <Input
-                    id="hauteur"
-                    type="number"
-                    value={nouvelleConsultation.hauteur_uterine}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, hauteur_uterine: e.target.value})}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="professionnel">Professionnel</Label>
-                  <Input
-                    id="professionnel"
-                    placeholder="Dr. Nom"
-                    value={nouvelleConsultation.professionnel}
-                    onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, professionnel: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lieu">Lieu</Label>
-                <Input
-                  id="lieu"
-                  placeholder="Hôpital, clinique..."
-                  value={nouvelleConsultation.lieu}
-                  onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, lieu: e.target.value})}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  value={nouvelleConsultation.notes}
-                  onChange={(e) => setNouvelleConsultation({...nouvelleConsultation, notes: e.target.value})}
-                  rows={3}
-                  placeholder="Observations, recommandations..."
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setShowAjouter(false)} className="flex-1">
-                  Annuler
-                </Button>
-                <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                  Enregistrer
-                </Button>
-              </div>
-            </form>
-          )}
-
           {consultationsFaites.length > 0 ? (
             <div className="space-y-4">
               {consultationsFaites
@@ -287,10 +149,39 @@ export default function ConsultationsPrenatales({ grossesse, semainesGrossesse }
                       </p>
                     )}
 
-                    {consult.notes && (
-                      <p className="text-sm text-gray-700 mt-2 p-2 bg-white rounded">
-                        {consult.notes}
-                      </p>
+                    {consult.notes_medecin && (
+                      <div className="mt-2 p-3 bg-white rounded border-l-4 border-l-blue-500">
+                        <p className="text-xs font-medium text-gray-600 mb-1">Notes du médecin:</p>
+                        <p className="text-sm text-gray-700">{consult.notes_medecin}</p>
+                      </div>
+                    )}
+
+                    {consult.documents_joints && consult.documents_joints.length > 0 && (
+                      <div className="mt-3 pt-3 border-t">
+                        <p className="text-xs font-medium text-gray-600 mb-2">Documents joints:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {consult.documents_joints.map((doc, idx) => (
+                            <a
+                              key={idx}
+                              href={doc.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+                            >
+                              <FileText className="w-3 h-3" />
+                              {doc.type}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {consult.frequence_cardiaque_bebe && (
+                      <div className="mt-2 p-2 bg-pink-50 rounded">
+                        <p className="text-xs text-pink-800">
+                          💓 FC bébé: {consult.frequence_cardiaque_bebe} bpm
+                        </p>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -309,6 +200,14 @@ export default function ConsultationsPrenatales({ grossesse, semainesGrossesse }
           )}
         </CardContent>
       </Card>
+
+      {showAjouter && (
+        <AjouterConsultation
+          grossesse={grossesse}
+          semainesGrossesse={semainesGrossesse}
+          onClose={() => setShowAjouter(false)}
+        />
+      )}
     </div>
   );
 }

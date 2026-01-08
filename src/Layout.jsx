@@ -21,7 +21,9 @@ import {
   BookOpen,
   HelpCircle,
   Radio,
-  FileText
+  FileText,
+  Star,
+  SlidersHorizontal
 } from "lucide-react";
 import {
   Sidebar,
@@ -53,6 +55,7 @@ import ABTestProvider from "@/components/analytics/ABTestProvider";
 import FeedbackWidget from "@/components/analytics/FeedbackWidget";
 import OfflineManager from "@/components/offline/OfflineManager";
 import ServiceWorkerRegistration from "@/components/offline/ServiceWorkerRegistration";
+import PersonnaliserNavigation from "@/components/navigation/PersonnaliserNavigation";
 
 const getNavigationItems = (lang, isSpecialist, isAdmin) => {
     if (isAdmin) {
@@ -227,6 +230,7 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showPersonnaliserNav, setShowPersonnaliserNav] = React.useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -413,17 +417,30 @@ export default function Layout({ children, currentPageName }) {
         {/* Sidebar - Desktop cachée, accessible via Menu sur mobile */}
         <Sidebar className="hidden lg:flex border-r">
           <SidebarHeader className="border-b p-6">
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 bg-gradient-to-br ${primaryGradient} rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0`}>
-                {isSpecialist ? <Stethoscope className="w-7 h-7 text-white" /> : <Heart className="w-7 h-7 text-white fill-white" />}
-              </div>
-              <div>
-                <h2 className="font-bold text-xl">A'lo Maman</h2>
-                <p className="text-xs text-gray-500">
-                  {isSpecialist ? (lang === 'fr' ? 'Espace Professionnel' : 'Professional Space') : (lang === 'fr' ? 'Santé Maternelle' : 'Maternal Health')}
-                </p>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 bg-gradient-to-br ${primaryGradient} rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0`}>
+                  {isSpecialist ? <Stethoscope className="w-7 h-7 text-white" /> : <Heart className="w-7 h-7 text-white fill-white" />}
+                </div>
+                <div>
+                  <h2 className="font-bold text-xl">A'lo Maman</h2>
+                  <p className="text-xs text-gray-500">
+                    {isSpecialist ? (lang === 'fr' ? 'Espace Professionnel' : 'Professional Space') : (lang === 'fr' ? 'Santé Maternelle' : 'Maternal Health')}
+                  </p>
+                </div>
               </div>
             </div>
+            {!isAdmin && !isSpecialist && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPersonnaliserNav(true)}
+                className="w-full"
+              >
+                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                Personnaliser
+              </Button>
+            )}
           </SidebarHeader>
           
           <SidebarContent className="p-3">
@@ -432,13 +449,17 @@ export default function Layout({ children, currentPageName }) {
                 <SidebarMenu>
                   {navigationItems.map((item) => {
                     const isActive = location.pathname === item.url;
-                    
+                    const pageName = item.url.split('?')[0].split('/').pop();
+                    const navItem = preferencesNav?.navigation_personnalisee?.find(n => n.page === pageName);
+                    const isFavori = navItem?.favori;
+
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild className={`transition-all rounded-xl mb-2 py-6 ${isActive ? `bg-gradient-to-r ${isSpecialist ? 'from-teal-100 to-cyan-100' : 'from-pink-100 to-rose-100'} shadow-sm` : 'hover:bg-gray-50'}`}>
                           <Link to={item.url} className="flex items-center gap-3 px-4">
                             <item.icon className={`w-5 h-5 ${isActive ? item.color : 'text-gray-500'}`} />
-                            <span className={`font-medium ${isActive ? 'text-gray-800' : 'text-gray-600'}`}>{item.title}</span>
+                            <span className={`font-medium flex-1 ${isActive ? 'text-gray-800' : 'text-gray-600'}`}>{item.title}</span>
+                            {isFavori && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -558,6 +579,14 @@ export default function Layout({ children, currentPageName }) {
           <RappelsChecker />
           <VaccinNotificationService />
         </ABTestProvider>
+
+        {showPersonnaliserNav && (
+          <PersonnaliserNavigation
+            preferences={preferencesNav}
+            navigationItems={getNavigationItems(lang, isSpecialist, isAdmin)}
+            onClose={() => setShowPersonnaliserNav(false)}
+          />
+        )}
         </div>
         </SidebarProvider>
         );

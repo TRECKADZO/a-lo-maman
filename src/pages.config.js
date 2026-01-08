@@ -50,18 +50,18 @@ import OutilsIAPro from './pages/OutilsIAPro';
 import Parametres from './pages/Parametres';
 import Politique from './pages/Politique';
 import PortailClinique from './pages/PortailClinique';
+import PostPartum from './pages/PostPartum';
 import ProfilProfessionnel from './pages/ProfilProfessionnel';
+import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
 import Ressources from './pages/Ressources';
 import SelectionCompte from './pages/SelectionCompte';
 import Support from './pages/Support';
 import TableauBordEnfants from './pages/TableauBordEnfants';
+import TeleEchographie from './pages/TeleEchographie';
 import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import TeleEchographie from './pages/TeleEchographie';
-import PostPartum from './pages/PostPartum';
-import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
 import __Layout from './Layout.jsx';
 
 
@@ -118,18 +118,18 @@ export const PAGES = {
     "Parametres": Parametres,
     "Politique": Politique,
     "PortailClinique": PortailClinique,
+    "PostPartum": PostPartum,
     "ProfilProfessionnel": ProfilProfessionnel,
+    "QuestionsSpecialistes": QuestionsSpecialistes,
     "Ressources": Ressources,
     "SelectionCompte": SelectionCompte,
     "Support": Support,
     "TableauBordEnfants": TableauBordEnfants,
+    "TeleEchographie": TeleEchographie,
     "Teleconsultation": Teleconsultation,
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "TeleEchographie": TeleEchographie,
-    "PostPartum": PostPartum,
-    "QuestionsSpecialistes": QuestionsSpecialistes,
 }
 
 export const pagesConfig = {

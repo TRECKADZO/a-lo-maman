@@ -57,6 +57,7 @@ export default function MesDocuments() {
   const [filterMembre, setFilterMembre] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState('tous');
+  const [sortBy, setSortBy] = useState('date_desc');
 
   // Fetch data
   const { data: documents = [], isLoading: loadingDocs } = useQuery({
@@ -69,7 +70,7 @@ export default function MesDocuments() {
     queryFn: () => base44.entities.EnfantCarnet.list(),
   });
 
-  // Filter documents
+  // Filter and sort documents
   const filteredDocuments = useMemo(() => {
     let result = documents;
 
@@ -112,8 +113,26 @@ export default function MesDocuments() {
       );
     }
 
+    // Sort
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case 'date_desc':
+          return new Date(b.date_document || b.created_date) - new Date(a.date_document || a.created_date);
+        case 'date_asc':
+          return new Date(a.date_document || a.created_date) - new Date(b.date_document || b.created_date);
+        case 'titre_asc':
+          return (a.titre || '').localeCompare(b.titre || '');
+        case 'titre_desc':
+          return (b.titre || '').localeCompare(a.titre || '');
+        case 'type':
+          return (a.type_document || '').localeCompare(b.type_document || '');
+        default:
+          return 0;
+      }
+    });
+
     return result;
-  }, [documents, activeTab, filterType, filterMembre, searchQuery]);
+  }, [documents, activeTab, filterType, filterMembre, searchQuery, sortBy]);
 
   // Stats
   const stats = useMemo(() => ({
@@ -248,51 +267,66 @@ export default function MesDocuments() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 pt-4 border-t">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Type de document</label>
-                        <Select value={filterType} onValueChange={setFilterType}>
-                          <SelectTrigger className="rounded-xl">
-                            <SelectValue placeholder="Tous les types" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">Tous les types</SelectItem>
-                            {TYPES_DOCUMENTS.map(type => (
-                              <SelectItem key={type.id} value={type.id}>
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Membre de la famille</label>
-                        <Select value={filterMembre} onValueChange={setFilterMembre}>
-                          <SelectTrigger className="rounded-xl">
-                            <SelectValue placeholder="Tous les membres" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">Tous les membres</SelectItem>
-                            <SelectItem value="maman">
-                              <div className="flex items-center gap-2">
-                                <User className="w-4 h-4" /> Moi
-                              </div>
-                            </SelectItem>
-                            <SelectItem value="famille">
-                              <div className="flex items-center gap-2">
-                                <Users className="w-4 h-4" /> Famille
-                              </div>
-                            </SelectItem>
-                            {enfants.map(enfant => (
-                              <SelectItem key={enfant.id} value={enfant.id}>
-                                <div className="flex items-center gap-2">
-                                  <Baby className="w-4 h-4" /> {enfant.prenom}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-4 border-t">
+                     <div>
+                       <label className="text-sm font-medium text-gray-700 mb-1 block">Type de document</label>
+                       <Select value={filterType} onValueChange={setFilterType}>
+                         <SelectTrigger className="rounded-xl">
+                           <SelectValue placeholder="Tous les types" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="all">Tous les types</SelectItem>
+                           {TYPES_DOCUMENTS.map(type => (
+                             <SelectItem key={type.id} value={type.id}>
+                               {type.label}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                     <div>
+                       <label className="text-sm font-medium text-gray-700 mb-1 block">Membre de la famille</label>
+                       <Select value={filterMembre} onValueChange={setFilterMembre}>
+                         <SelectTrigger className="rounded-xl">
+                           <SelectValue placeholder="Tous les membres" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="all">Tous les membres</SelectItem>
+                           <SelectItem value="maman">
+                             <div className="flex items-center gap-2">
+                               <User className="w-4 h-4" /> Moi
+                             </div>
+                           </SelectItem>
+                           <SelectItem value="famille">
+                             <div className="flex items-center gap-2">
+                               <Users className="w-4 h-4" /> Famille
+                             </div>
+                           </SelectItem>
+                           {enfants.map(enfant => (
+                             <SelectItem key={enfant.id} value={enfant.id}>
+                               <div className="flex items-center gap-2">
+                                 <Baby className="w-4 h-4" /> {enfant.prenom}
+                               </div>
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                     <div>
+                       <label className="text-sm font-medium text-gray-700 mb-1 block">Trier par</label>
+                       <Select value={sortBy} onValueChange={setSortBy}>
+                         <SelectTrigger className="rounded-xl">
+                           <SelectValue />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="date_desc">Date (plus récent)</SelectItem>
+                           <SelectItem value="date_asc">Date (plus ancien)</SelectItem>
+                           <SelectItem value="titre_asc">Titre (A-Z)</SelectItem>
+                           <SelectItem value="titre_desc">Titre (Z-A)</SelectItem>
+                           <SelectItem value="type">Type</SelectItem>
+                         </SelectContent>
+                       </Select>
+                     </div>
                     </div>
                   </motion.div>
                 )}

@@ -107,6 +107,7 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
         { title: "Télé-Échographie", url: createPageUrl("TeleEchographie"), icon: Radio, color: "text-teal-600" },
         { title: "Post-Partum", url: createPageUrl("PostPartum"), icon: Heart, color: "text-rose-600" },
         { title: "Carnets Enfants", url: createPageUrl("Enfants"), icon: Baby, color: "text-blue-500" },
+        { title: "Déclarer Naissance", url: createPageUrl("DeclarationNaissance"), icon: FileText, color: "text-purple-600" },
         { title: "Professionnels", url: createPageUrl("Teleconsultation"), icon: Stethoscope, color: "text-teal-500" },
         { title: "Messagerie", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
         { title: "Communauté", url: createPageUrl("Communaute"), icon: Users, color: "text-amber-500" },

@@ -305,6 +305,11 @@ export default function DashboardMaman() {
           {/* Widget Rappels */}
           <RappelsWidget userEmail={user?.email} />
 
+          {/* CTA Déclaration de Naissance */}
+          {(grossesse && getSemaineGrossesse() >= 37) || enfants.length > 0 ? (
+            <NaissanceCTA variant="compact" />
+          ) : null}
+
           {/* Conseils personnalisés IA */}
           <ConseilsPersonnalises 
             profil={profilMaman}

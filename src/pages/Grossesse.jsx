@@ -172,6 +172,7 @@ export default function Grossesse() {
     const props = { grossesse, semainesGrossesse: info.semainesGrossesse, trimestre: info.trimestre };
 
     switch (activeSection) {
+      case 'developpement': return <DeveloppementFoetal currentWeek={info.semainesGrossesse} />;
       case 'trimestres': 
         return selectedTrimestre ? (
           <ContenuTrimestre 

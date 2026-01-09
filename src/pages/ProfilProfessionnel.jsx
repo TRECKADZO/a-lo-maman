@@ -14,6 +14,7 @@ import { Loader2, Save, User, Settings, Stethoscope, Camera, Upload, X, Award, C
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import NotificationPreferences from '@/components/notifications/NotificationPreferences';
+import Configuration2FA from '@/components/security/Configuration2FA';
 import AuthGuard from '../components/auth/AuthGuard';
 
 const SPECIALITES = [
@@ -897,6 +898,8 @@ export default function ProfilProfessionnel() {
             </Card>
 
             <NotificationPreferences />
+
+            <Configuration2FA user={user} />
 
             <div className="mt-8 flex flex-col md:flex-row justify-end gap-3">
               <Button

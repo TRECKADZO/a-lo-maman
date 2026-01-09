@@ -60,11 +60,11 @@ export default function DashboardProfessionnel() {
   const profilPro = profiles?.pro;
 
   const { data: mesPatients } = useQuery({
-    queryKey: ['mes_patients', profilPro?.id],
+    queryKey: ['mes_patients', profilPro?.email],
     queryFn: async () => {
       if (!profilPro) return [];
       const enfants = await base44.entities.EnfantCarnet.filter({
-        professionnels_suivi: { $in: [profilPro.id] }
+        professionnels_suivi: { $in: [profilPro.email] }
       });
       return enfants;
     },

@@ -64,10 +64,10 @@ const courbeTailleFeminin = [
   { mois: 36, p3: 86.2, p15: 89.6, p50: 93.1, p85: 96.7, p97: 101.0 },
 ];
 
-export default function GraphiqueCroissance({ enfant, isEditable = false }) {
+export default function GraphiqueCroissance({ enfant, mesures, isEditable = false }) {
   const [showModal, setShowModal] = useState(false);
   const [ongletActif, setOngletActif] = useState("poids");
-  const mesures = enfant.mesures_croissance || [];
+  const mesuresCroissance = mesures || enfant?.mesures_croissance || [];
 
   // Déterminer les courbes de référence selon le sexe
   const courbePoids = enfant.sexe === 'masculin' ? courbePoidsMasculin : courbePoidsFeminin;
@@ -78,7 +78,7 @@ export default function GraphiqueCroissance({ enfant, isEditable = false }) {
 
   // Ajouter la mesure de naissance si elle existe
   const toutesLesMesures = [];
-  if (enfant.date_naissance && (enfant.poids_naissance || enfant.taille_naissance)) {
+  if (enfant?.date_naissance && (enfant?.poids_naissance || enfant?.taille_naissance)) {
     toutesLesMesures.push({
       date: enfant.date_naissance,
       poids: enfant.poids_naissance,
@@ -86,7 +86,7 @@ export default function GraphiqueCroissance({ enfant, isEditable = false }) {
       perimetre_cranien: null
     });
   }
-  toutesLesMesures.push(...mesures);
+  toutesLesMesures.push(...mesuresCroissance);
 
   // Préparer les données pour les graphiques avec comparaison OMS
   const dataPoids = toutesLesMesures
@@ -119,7 +119,7 @@ export default function GraphiqueCroissance({ enfant, isEditable = false }) {
       };
     });
 
-  const derniereMesure = mesures.length > 0 ? mesures[mesures.length - 1] : null;
+  const derniereMesure = mesuresCroissance.length > 0 ? mesuresCroissance[mesuresCroissance.length - 1] : null;
 
   // Calculer le Z-score (position par rapport à la médiane OMS)
   const calculerPercentile = (valeur, mois, type) => {
@@ -485,7 +485,7 @@ export default function GraphiqueCroissance({ enfant, isEditable = false }) {
       {showModal && (
         <AjouterMesureModal 
           enfantId={enfant.id}
-          mesuresExistantes={mesures}
+          mesuresExistantes={mesuresCroissance}
           onClose={() => setShowModal(false)}
         />
       )}

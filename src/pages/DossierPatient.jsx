@@ -125,21 +125,21 @@ export default function DossierPatient() {
     enabled: !!enfant,
   });
 
-  const isPatientInList = profilPro && enfant?.professionnels_suivi?.includes(profilPro.id);
+  const isPatientInList = profilPro && enfant?.professionnels_suivi?.includes(profilPro.email);
 
   const addPatientMutation = useMutation({
     mutationFn: async () => {
       if (!profilPro || !enfant) return;
       const suivis = enfant.professionnels_suivi || [];
-      if (!suivis.includes(profilPro.id)) {
+      if (!suivis.includes(profilPro.email)) {
         await base44.entities.EnfantCarnet.update(enfant.id, {
-          professionnels_suivi: [...suivis, profilPro.id],
+          professionnels_suivi: [...suivis, profilPro.email],
         });
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dossier_enfant', enfantId] });
-      queryClient.invalidateQueries({ queryKey: ['mes_patients', profilPro.id] });
+      queryClient.invalidateQueries({ queryKey: ['mes_patients', profilPro.email] });
       alert('✅ Patient ajouté à votre liste de suivi');
     },
   });
@@ -633,7 +633,7 @@ export default function DossierPatient() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <GraphiqueCroissance mesures={enfant.mesures_croissance || []} />
+                <GraphiqueCroissance enfant={enfant} isEditable={true} />
               </CardContent>
             </Card>
           </TabsContent>

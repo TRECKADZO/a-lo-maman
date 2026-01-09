@@ -122,25 +122,21 @@ export default function Intro() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
-                asChild
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
                 size="lg"
                 className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-8 py-6 text-lg shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
               >
-                <Link to={createPageUrl('Inscription')}>
-                  <UserPlus className="w-5 h-5 mr-2" />
-                  Créer un compte gratuit
-                </Link>
+                <UserPlus className="w-5 h-5 mr-2" />
+                Créer un compte gratuit
               </Button>
 
               <Button
-                asChild
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
                 size="lg"
                 variant="outline"
                 className="border-2 border-pink-500 text-pink-600 hover:bg-pink-50 px-8 py-6 text-lg w-full sm:w-auto"
               >
-                <Link to={createPageUrl('Connexion')}>
-                  Se connecter
-                </Link>
+                Se connecter
               </Button>
             </div>
           </div>
@@ -250,7 +246,7 @@ export default function Intro() {
             </p>
             <Button
               size="lg"
-              onClick={() => navigate(createPageUrl('Inscription'))}
+              onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               className="bg-white text-pink-600 hover:bg-gray-100 px-8 py-6 text-lg shadow-xl transform hover:scale-105 transition-all"
             >
               Créer mon compte gratuitement

@@ -139,7 +139,7 @@ export default function InscriptionClinique() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 p-4 md:p-8 pb-24" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -164,15 +164,15 @@ export default function InscriptionClinique() {
           ))}
         </div>
 
-        <Card className="shadow-xl">
+        <Card className="shadow-xl overflow-visible">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-lg md:text-xl">
               {etape === 1 && "Informations de l'établissement"}
               {etape === 2 && "Services et API"}
               {etape === 3 && "Documents officiels"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 max-h-[70vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             {/* Étape 1: Infos établissement */}
             {etape === 1 && (
               <>

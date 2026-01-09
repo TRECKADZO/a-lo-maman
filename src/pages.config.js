@@ -74,6 +74,7 @@ import RejoindreAvecCode from './pages/RejoindreAvecCode';
 import CalendrierCentre from './pages/CalendrierCentre';
 import AuditSysteme from './pages/AuditSysteme';
 import LogsAudit from './pages/LogsAudit';
+import TestsSecurite from './pages/TestsSecurite';
 import __Layout from './Layout.jsx';
 
 
@@ -154,6 +155,7 @@ export const PAGES = {
     "CalendrierCentre": CalendrierCentre,
     "AuditSysteme": AuditSysteme,
     "LogsAudit": LogsAudit,
+    "TestsSecurite": TestsSecurite,
 }
 
 export const pagesConfig = {

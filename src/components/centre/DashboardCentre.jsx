@@ -150,9 +150,9 @@ export default function DashboardCentre({ centre }) {
                 Profil public
               </Button>
               <Button asChild className="h-20 flex-col gap-2">
-                <Link to={createPageUrl('AdminCentres')}>
+                <Link to={createPageUrl('CalendrierCentre')}>
                   <Calendar className="w-6 h-6" />
-                  Gérer RDV
+                  Calendrier
                 </Link>
               </Button>
               <Button asChild variant="outline" className="h-20 flex-col gap-2">

@@ -88,7 +88,11 @@ export default function SelectionCompte() {
         const profile = await base44.entities.ProfilMaman.create(mamanData);
         console.log('✅ ProfilMaman créé:', profile.id);
         
-        // SOLUTION: Recharger complètement la page pour forcer le refetch
+        // Invalider le cache et attendre la synchronisation
+        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+        console.log('🔄 Attente de synchronisation (2s)...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
         
@@ -119,6 +123,11 @@ export default function SelectionCompte() {
         console.log('📦 Données Centre:', centreData);
         const centre = await base44.entities.Clinique.create(centreData);
         console.log('✅ Centre créé:', centre.id);
+        
+        // Invalider le cache et attendre la synchronisation
+        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+        console.log('🔄 Attente de synchronisation (2s)...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
@@ -164,7 +173,11 @@ export default function SelectionCompte() {
         const profile = await base44.entities.Professionnel.create(proData);
         console.log('✅ Professionnel créé:', profile.id);
         
-        // SOLUTION: Recharger complètement la page pour forcer le refetch
+        // Invalider le cache et attendre la synchronisation
+        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+        console.log('🔄 Attente de synchronisation (2s)...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
       }

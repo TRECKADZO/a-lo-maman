@@ -68,6 +68,7 @@ import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
 import ProfilCentrePublic from './pages/ProfilCentrePublic';
+import RechercherCentres from './pages/RechercherCentres';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
     "ProfilCentrePublic": ProfilCentrePublic,
+    "RechercherCentres": RechercherCentres,
 }
 
 export const pagesConfig = {

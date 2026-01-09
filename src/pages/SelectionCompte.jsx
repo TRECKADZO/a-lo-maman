@@ -331,7 +331,7 @@ export default function SelectionCompte() {
                   {selectedType === 'maman' 
                     ? 'Quelques informations pour personnaliser votre expérience'
                     : selectedType === 'centre_sante'
-                    ? 'Informations du centre pour valider votre accréditation'
+                    ? 'Informations du centre pour créer votre compte'
                     : 'Informations professionnelles obligatoires pour votre profil'}
                 </p>
               </div>
@@ -557,7 +557,11 @@ export default function SelectionCompte() {
                   <Button
                     type="submit"
                     disabled={loading || success}
-                    className={`flex-1 ${selectedType === 'maman' ? 'bg-pink-600 hover:bg-pink-700' : 'bg-teal-600 hover:bg-teal-700'}`}
+                    className={`flex-1 ${
+                      selectedType === 'maman' ? 'bg-pink-600 hover:bg-pink-700' : 
+                      selectedType === 'centre_sante' ? 'bg-purple-600 hover:bg-purple-700' :
+                      'bg-teal-600 hover:bg-teal-700'
+                    }`}
                   >
                     {loading ? (
                       <>

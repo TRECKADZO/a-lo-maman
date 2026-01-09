@@ -96,35 +96,57 @@ export default function InscriptionClinique() {
 
   const soumettreDemande = useMutation({
     mutationFn: async () => {
+      // Validation
       if (!user) {
         throw new Error('Utilisateur non connecté');
+      }
+      if (!formData.nom || !formData.region || !formData.ville) {
+        throw new Error('Informations établissement incomplètes');
+      }
+      if (!formData.document_agrement || !formData.document_registre_commerce) {
+        throw new Error('Documents manquants');
       }
 
       const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
       
       const demande = {
-        ...formData,
-        administrateur_email: user.email,
-        administrateurs: [user.email],
+        nom: formData.nom,
+        type_etablissement: formData.type_etablissement,
+        numero_agrement: formData.numero_agrement,
+        region: formData.region,
+        ville: formData.ville,
+        adresse: formData.adresse,
+        telephone: formData.telephone,
         email_contact: formData.email_contact || user.email,
+        administrateur_nom: formData.administrateur_nom,
+        administrateur_email: user.email,
+        administrateur_telephone: formData.administrateur_telephone,
+        administrateurs: [user.email],
+        services_offerts: formData.services_offerts,
+        capacite_lits: formData.capacite_lits ? parseInt(formData.capacite_lits) : null,
+        document_agrement: formData.document_agrement,
+        document_registre_commerce: formData.document_registre_commerce,
         code_invitation: codeInvitation,
         statut_validation: 'en_attente',
         date_demande: new Date().toISOString(),
         onboarding_completed: false
       };
 
-      console.log('📤 Envoi demande:', demande);
+      console.log('📤 Envoi demande complète:', demande);
       
-      // Créer la demande (nécessite validation admin)
-      return await base44.entities.Clinique.create(demande);
+      const result = await base44.entities.Clinique.create(demande);
+      console.log('✅ Demande créée:', result);
+      return result;
     },
-    onSuccess: () => {
-      toast.success('Demande envoyée ! Vous recevrez un email sous 48h.');
-      setEtape(4);
+    onSuccess: (data) => {
+      console.log('🎉 Succès de la soumission');
+      toast.success('✅ Demande envoyée avec succès ! Vous recevrez un email sous 48h.');
+      setTimeout(() => setEtape(4), 500);
     },
     onError: (error) => {
       console.error('❌ Erreur soumission:', error);
-      toast.error(error.message || 'Erreur lors de l\'envoi');
+      const message = error.message || 'Erreur lors de l\'envoi de la demande';
+      toast.error('❌ ' + message);
     }
   });
 
@@ -441,20 +463,24 @@ export default function InscriptionClinique() {
                   </Button>
                   <Button
                     onClick={() => {
+                      if (!formData.nom || !formData.region || !formData.ville) {
+                        toast.error('❌ Veuillez remplir les infos établissement (Étape 1)');
+                        return;
+                      }
+                      if (!formData.document_agrement || !formData.document_registre_commerce) {
+                        toast.error('❌ Veuillez uploader les deux documents');
+                        return;
+                      }
                       console.log('🔘 Clic bouton soumettre');
-                      console.log('📄 Documents:', {
-                        agrement: formData.document_agrement,
-                        registre: formData.document_registre_commerce
-                      });
                       soumettreDemande.mutate();
                     }}
-                    disabled={!formData.document_agrement || !formData.document_registre_commerce || soumettreDemande.isLoading}
+                    disabled={soumettreDemande.isPending || !formData.document_agrement || !formData.document_registre_commerce}
                     className="flex-1 bg-teal-600 hover:bg-teal-700"
                   >
-                    {soumettreDemande.isLoading ? (
+                    {soumettreDemande.isPending ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Envoi...
+                        Envoi en cours...
                       </>
                     ) : (
                       'Soumettre la demande'

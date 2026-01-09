@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,13 +14,18 @@ import {
   Settings,
   TrendingUp,
   Activity,
-  Clock
+  Clock,
+  Edit,
+  Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import GestionUtilisateursCentre from './GestionUtilisateursCentre';
+import EditerProfilCentre from './EditerProfilCentre';
 
 export default function DashboardCentre({ centre }) {
+  const [showEditProfile, setShowEditProfile] = useState(false);
+
   const { data: statistiques } = useQuery({
     queryKey: ['stats_centre', centre.id],
     queryFn: async () => {
@@ -123,17 +128,27 @@ export default function DashboardCentre({ centre }) {
             <CardTitle>Actions rapides</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <Button 
+                onClick={() => setShowEditProfile(true)}
+                variant="outline" 
+                className="h-20 flex-col gap-2"
+              >
+                <Edit className="w-6 h-6" />
+                Compléter profil
+              </Button>
+              <Button 
+                onClick={() => window.open(createPageUrl('ProfilCentrePublic') + '?id=' + centre.id, '_blank')}
+                variant="outline" 
+                className="h-20 flex-col gap-2"
+              >
+                <Eye className="w-6 h-6" />
+                Profil public
+              </Button>
               <Button asChild className="h-20 flex-col gap-2">
                 <Link to={createPageUrl('AdminCentres')}>
                   <Calendar className="w-6 h-6" />
                   Gérer RDV
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="h-20 flex-col gap-2">
-                <Link to={createPageUrl('AdminCentres')}>
-                  <FileText className="w-6 h-6" />
-                  Facturation
                 </Link>
               </Button>
               <Button asChild variant="outline" className="h-20 flex-col gap-2">
@@ -239,6 +254,14 @@ export default function DashboardCentre({ centre }) {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Modal édition profil */}
+        {showEditProfile && (
+          <EditerProfilCentre 
+            centre={centre} 
+            onClose={() => setShowEditProfile(false)} 
+          />
+        )}
       </div>
     </div>
   );

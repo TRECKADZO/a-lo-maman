@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import GestionUtilisateursCentre from './GestionUtilisateursCentre';
 import EditerProfilCentre from './EditerProfilCentre';
+import CodeInvitationCentre from './CodeInvitationCentre';
 
 export default function DashboardCentre({ centre }) {
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -121,6 +122,9 @@ export default function DashboardCentre({ centre }) {
             </CardContent>
           </Card>
         </div>
+
+        {/* Code d'invitation */}
+        <CodeInvitationCentre centre={centre} />
 
         {/* Actions rapides */}
         <Card>

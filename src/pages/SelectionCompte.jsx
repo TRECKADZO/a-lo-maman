@@ -125,12 +125,12 @@ export default function SelectionCompte() {
         console.log('📦 Données Centre:', centreData);
         const centre = await base44.entities.Clinique.create(centreData);
         console.log('✅ Centre créé:', centre.id);
-        
+
         // Invalider le cache et attendre la synchronisation
-        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
-        console.log('🔄 Attente de synchronisation (2s)...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        await queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+        console.log('🔄 Attente de synchronisation (3s)...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
         

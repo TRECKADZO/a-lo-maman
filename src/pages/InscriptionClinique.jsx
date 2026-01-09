@@ -468,11 +468,18 @@ export default function InscriptionClinique() {
                     ← Retour
                   </Button>
                   <Button
-                    onClick={() => soumettreDemande.mutate()}
-                    disabled={!formData.document_agrement || !formData.document_registre_commerce || soumettreDemande.isPending}
+                    onClick={() => {
+                      console.log('🔘 Clic bouton soumettre');
+                      console.log('📄 Documents:', {
+                        agrement: formData.document_agrement,
+                        registre: formData.document_registre_commerce
+                      });
+                      soumettreDemande.mutate();
+                    }}
+                    disabled={!formData.document_agrement || !formData.document_registre_commerce || soumettreDemande.isLoading}
                     className="flex-1 bg-teal-600 hover:bg-teal-700"
                   >
-                    {soumettreDemande.isPending ? (
+                    {soumettreDemande.isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Envoi...

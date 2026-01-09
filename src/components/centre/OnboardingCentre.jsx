@@ -69,12 +69,15 @@ export default function OnboardingCentre({ centre, onComplete }) {
 
   const completerOnboarding = useMutation({
     mutationFn: async () => {
+      const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
+      
       await base44.entities.Clinique.update(centre.id, {
         adresse: formData.adresse,
         numero_agrement: formData.numero_agrement,
         capacite_lits: parseInt(formData.capacite_lits) || 0,
         services_offerts: formData.services_offerts,
         api_scopes: formData.api_scopes,
+        code_invitation: codeInvitation,
         onboarding_completed: true
       });
 

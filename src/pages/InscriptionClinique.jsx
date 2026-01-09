@@ -14,6 +14,15 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
+const regions = [
+  "Abidjan", "Agnéby-Tiassa", "Bafing", "Bagoué", "Bélier", "Béré",
+  "Bounkani", "Cavally", "Folon", "Gbêkê", "Gbôklé", "Gôh", "Gontougo",
+  "Grands-Ponts", "Guémon", "Hambol", "Haut-Sassandra", "Iffou",
+  "Indénié-Djuablin", "Kabadougou", "La Mé", "Lôh-Djiboua", "Marahoué",
+  "Moronou", "N'Zi", "Nawa", "Poro", "San-Pédro", "Sud-Comoé",
+  "Tchologo", "Tonkpi", "Worodougou", "Yamoussoukro"
+].sort();
+
 export default function InscriptionClinique() {
   const navigate = useNavigate();
   const [etape, setEtape] = useState(1);
@@ -224,11 +233,18 @@ export default function InscriptionClinique() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <Label>Région *</Label>
-                    <Input
-                      placeholder="Abidjan"
-                      value={formData.region}
-                      onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                    />
+                    <Select value={formData.region} onValueChange={(v) => setFormData({ ...formData, region: v })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner une région" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {regions.map((region) => (
+                          <SelectItem key={region} value={region}>
+                            {region}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label>Ville *</Label>

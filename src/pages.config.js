@@ -75,6 +75,7 @@ import CalendrierCentre from './pages/CalendrierCentre';
 import AuditSysteme from './pages/AuditSysteme';
 import LogsAudit from './pages/LogsAudit';
 import TestsSecurite from './pages/TestsSecurite';
+import DashboardProfessionnelPersonnalise from './pages/DashboardProfessionnelPersonnalise';
 import __Layout from './Layout.jsx';
 
 
@@ -156,6 +157,7 @@ export const PAGES = {
     "AuditSysteme": AuditSysteme,
     "LogsAudit": LogsAudit,
     "TestsSecurite": TestsSecurite,
+    "DashboardProfessionnelPersonnalise": DashboardProfessionnelPersonnalise,
 }
 
 export const pagesConfig = {

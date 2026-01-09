@@ -71,6 +71,7 @@ import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
 import GestionMembresCentre from './pages/GestionMembresCentre';
 import RejoindreAvecCode from './pages/RejoindreAvecCode';
+import CalendrierCentre from './pages/CalendrierCentre';
 import __Layout from './Layout.jsx';
 
 
@@ -148,6 +149,7 @@ export const PAGES = {
     "VideoConsultation": VideoConsultation,
     "GestionMembresCentre": GestionMembresCentre,
     "RejoindreAvecCode": RejoindreAvecCode,
+    "CalendrierCentre": CalendrierCentre,
 }
 
 export const pagesConfig = {

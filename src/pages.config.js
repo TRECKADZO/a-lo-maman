@@ -11,7 +11,9 @@ import Analytics from './pages/Analytics';
 import AssistantIA from './pages/AssistantIA';
 import AssistantIAPro from './pages/AssistantIAPro';
 import AuditApp from './pages/AuditApp';
+import AuditSysteme from './pages/AuditSysteme';
 import Calendrier from './pages/Calendrier';
+import CalendrierCentre from './pages/CalendrierCentre';
 import ChatAssistant from './pages/ChatAssistant';
 import Communaute from './pages/Communaute';
 import Conditions from './pages/Conditions';
@@ -23,6 +25,7 @@ import Dashboard from './pages/Dashboard';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import DashboardMaman from './pages/DashboardMaman';
 import DashboardProfessionnel from './pages/DashboardProfessionnel';
+import DashboardProfessionnelPersonnalise from './pages/DashboardProfessionnelPersonnalise';
 import DeclarationNaissance from './pages/DeclarationNaissance';
 import DiagnosticProfil from './pages/DiagnosticProfil';
 import DossierPatient from './pages/DossierPatient';
@@ -31,6 +34,7 @@ import FAQ from './pages/FAQ';
 import FamilleConnectee from './pages/FamilleConnectee';
 import FileAttenteConsultation from './pages/FileAttenteConsultation';
 import GestionDisponibilites from './pages/GestionDisponibilites';
+import GestionMembresCentre from './pages/GestionMembresCentre';
 import GestionRappels from './pages/GestionRappels';
 import Grossesse from './pages/Grossesse';
 import Home from './pages/Home';
@@ -39,6 +43,7 @@ import InscriptionClinique from './pages/InscriptionClinique';
 import Interoperabilite from './pages/Interoperabilite';
 import Intro from './pages/Intro';
 import IntroSlides from './pages/IntroSlides';
+import LogsAudit from './pages/LogsAudit';
 import MesDeclarations from './pages/MesDeclarations';
 import MesDocuments from './pages/MesDocuments';
 import MesPatients from './pages/MesPatients';
@@ -59,6 +64,7 @@ import ProfilCentrePublic from './pages/ProfilCentrePublic';
 import ProfilProfessionnel from './pages/ProfilProfessionnel';
 import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
 import RechercherCentres from './pages/RechercherCentres';
+import RejoindreAvecCode from './pages/RejoindreAvecCode';
 import Ressources from './pages/Ressources';
 import SelectionCompte from './pages/SelectionCompte';
 import SuiviSommeil from './pages/SuiviSommeil';
@@ -67,15 +73,9 @@ import TableauBordEnfants from './pages/TableauBordEnfants';
 import TeleEchographie from './pages/TeleEchographie';
 import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
+import TestsSecurite from './pages/TestsSecurite';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import GestionMembresCentre from './pages/GestionMembresCentre';
-import RejoindreAvecCode from './pages/RejoindreAvecCode';
-import CalendrierCentre from './pages/CalendrierCentre';
-import AuditSysteme from './pages/AuditSysteme';
-import LogsAudit from './pages/LogsAudit';
-import TestsSecurite from './pages/TestsSecurite';
-import DashboardProfessionnelPersonnalise from './pages/DashboardProfessionnelPersonnalise';
 import __Layout from './Layout.jsx';
 
 
@@ -93,7 +93,9 @@ export const PAGES = {
     "AssistantIA": AssistantIA,
     "AssistantIAPro": AssistantIAPro,
     "AuditApp": AuditApp,
+    "AuditSysteme": AuditSysteme,
     "Calendrier": Calendrier,
+    "CalendrierCentre": CalendrierCentre,
     "ChatAssistant": ChatAssistant,
     "Communaute": Communaute,
     "Conditions": Conditions,
@@ -105,6 +107,7 @@ export const PAGES = {
     "DashboardAnalytics": DashboardAnalytics,
     "DashboardMaman": DashboardMaman,
     "DashboardProfessionnel": DashboardProfessionnel,
+    "DashboardProfessionnelPersonnalise": DashboardProfessionnelPersonnalise,
     "DeclarationNaissance": DeclarationNaissance,
     "DiagnosticProfil": DiagnosticProfil,
     "DossierPatient": DossierPatient,
@@ -113,6 +116,7 @@ export const PAGES = {
     "FamilleConnectee": FamilleConnectee,
     "FileAttenteConsultation": FileAttenteConsultation,
     "GestionDisponibilites": GestionDisponibilites,
+    "GestionMembresCentre": GestionMembresCentre,
     "GestionRappels": GestionRappels,
     "Grossesse": Grossesse,
     "Home": Home,
@@ -121,6 +125,7 @@ export const PAGES = {
     "Interoperabilite": Interoperabilite,
     "Intro": Intro,
     "IntroSlides": IntroSlides,
+    "LogsAudit": LogsAudit,
     "MesDeclarations": MesDeclarations,
     "MesDocuments": MesDocuments,
     "MesPatients": MesPatients,
@@ -141,6 +146,7 @@ export const PAGES = {
     "ProfilProfessionnel": ProfilProfessionnel,
     "QuestionsSpecialistes": QuestionsSpecialistes,
     "RechercherCentres": RechercherCentres,
+    "RejoindreAvecCode": RejoindreAvecCode,
     "Ressources": Ressources,
     "SelectionCompte": SelectionCompte,
     "SuiviSommeil": SuiviSommeil,
@@ -149,15 +155,9 @@ export const PAGES = {
     "TeleEchographie": TeleEchographie,
     "Teleconsultation": Teleconsultation,
     "Tests": Tests,
+    "TestsSecurite": TestsSecurite,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "GestionMembresCentre": GestionMembresCentre,
-    "RejoindreAvecCode": RejoindreAvecCode,
-    "CalendrierCentre": CalendrierCentre,
-    "AuditSysteme": AuditSysteme,
-    "LogsAudit": LogsAudit,
-    "TestsSecurite": TestsSecurite,
-    "DashboardProfessionnelPersonnalise": DashboardProfessionnelPersonnalise,
 }
 
 export const pagesConfig = {

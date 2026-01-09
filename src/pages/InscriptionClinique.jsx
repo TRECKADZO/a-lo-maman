@@ -367,38 +367,7 @@ export default function InscriptionClinique() {
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-blue-600" />
-                    Scopes API demandés
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Sélectionnez les permissions dont votre établissement a besoin pour l'intégration API.
-                  </p>
-                  
-                  <div className="space-y-2">
-                    {scopesDisponibles.map((scope) => (
-                      <div key={scope.value} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50">
-                        <Checkbox
-                          id={scope.value}
-                          checked={formData.scopes_demandes.includes(scope.value)}
-                          onCheckedChange={() => toggleScope(scope.value)}
-                        />
-                        <div className="flex-1">
-                          <Label htmlFor={scope.value} className="cursor-pointer">
-                            {scope.label}
-                          </Label>
-                          <Badge className="ml-2 text-xs" variant={
-                            scope.type === 'lecture' ? 'outline' : 
-                            scope.type === 'ecriture' ? 'default' : 'secondary'
-                          }>
-                            {scope.type}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+
 
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={() => setEtape(1)} className="flex-1">

@@ -40,6 +40,7 @@ import { createPageUrl } from "@/utils";
 import { format, differenceInYears, differenceInMonths, differenceInDays } from "date-fns";
 import { fr } from "date-fns/locale";
 import PlanifierRDVSuivi from "../components/messagerie/PlanifierRDVSuivi";
+import SuiviPatientComplet from "../components/patients/SuiviPatientComplet";
 
 export default function DossierPatient() {
   const location = useLocation();
@@ -474,15 +475,21 @@ export default function DossierPatient() {
           </Card>
         )}
 
+        {/* Suivi Patient Complet */}
+        <SuiviPatientComplet 
+        patientEmail={enfant.created_by}
+        patientNom={`${enfant.prenom} ${enfant.nom}`}
+        />
+
         {/* Tabs */}
         <Tabs defaultValue="historique" className="space-y-4">
-          <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1 p-1">
-            <TabsTrigger value="historique" className="text-xs md:text-sm px-3 py-2">Historique</TabsTrigger>
-            <TabsTrigger value="vaccins" className="text-xs md:text-sm px-3 py-2">Vaccins</TabsTrigger>
-            <TabsTrigger value="croissance" className="text-xs md:text-sm px-3 py-2">Croissance</TabsTrigger>
-            <TabsTrigger value="documents" className="text-xs md:text-sm px-3 py-2">Documents</TabsTrigger>
-            <TabsTrigger value="consultations" className="text-xs md:text-sm px-3 py-2">RDV</TabsTrigger>
-          </TabsList>
+        <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1 p-1">
+          <TabsTrigger value="historique" className="text-xs md:text-sm px-3 py-2">Historique</TabsTrigger>
+          <TabsTrigger value="vaccins" className="text-xs md:text-sm px-3 py-2">Vaccins</TabsTrigger>
+          <TabsTrigger value="croissance" className="text-xs md:text-sm px-3 py-2">Croissance</TabsTrigger>
+          <TabsTrigger value="documents" className="text-xs md:text-sm px-3 py-2">Documents</TabsTrigger>
+          <TabsTrigger value="consultations" className="text-xs md:text-sm px-3 py-2">RDV</TabsTrigger>
+        </TabsList>
 
           {/* Historique Médical */}
           <TabsContent value="historique">

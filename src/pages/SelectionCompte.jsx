@@ -125,11 +125,10 @@ export default function SelectionCompte() {
         const centre = await base44.entities.Clinique.create(centreData);
         console.log('✅ Centre créé:', centre.id);
         
-        // Déconnexion et redirection vers connexion
+        // Déconnexion et redirection vers connexion base44
         localStorage.setItem('centre_validation_message', 'Votre demande d\'inscription est en attente de validation par notre équipe. Vous serez notifié par email une fois votre centre approuvé.');
         await base44.auth.logout();
-        console.log('🔄 Redirection vers connexion...');
-        window.location.href = createPageUrl('Connexion');
+        console.log('🔄 Redirection vers connexion base44...');
         
       } else {
         console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');

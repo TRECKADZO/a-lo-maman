@@ -55,6 +55,36 @@ export default function Dashboard() {
 
   // Affichage pour centres de santé
   if (profilCentre) {
+    // Vérifier si onboarding est complété
+    const needsOnboarding = profilCentre.statut_validation === 'approuve' && !profilCentre.onboarding_completed;
+
+    if (needsOnboarding) {
+      const OnboardingCentre = React.lazy(() => import('../components/centre/OnboardingCentre'));
+      return (
+        <AuthGuard>
+          <React.Suspense fallback={<div className="flex items-center justify-center h-screen"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>}>
+            <OnboardingCentre
+              centre={profilCentre}
+              onComplete={() => window.location.reload()}
+            />
+          </React.Suspense>
+        </AuthGuard>
+      );
+    }
+
+    // Centre validé et onboarding complété
+    if (profilCentre.statut_validation === 'approuve') {
+      const DashboardCentre = React.lazy(() => import('../components/centre/DashboardCentre'));
+      return (
+        <AuthGuard>
+          <React.Suspense fallback={<div className="flex items-center justify-center h-screen"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>}>
+            <DashboardCentre centre={profilCentre} />
+          </React.Suspense>
+        </AuthGuard>
+      );
+    }
+
+    // Centre en attente ou rejeté
     return (
       <AuthGuard>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 p-8">

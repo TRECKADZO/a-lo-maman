@@ -24,7 +24,8 @@ import {
   Clock,
   Mail,
   Phone,
-  Activity
+  Activity,
+  Shield
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,8 @@ import PlanifierRDVSuivi from "../components/messagerie/PlanifierRDVSuivi";
 import SuiviPatientComplet from "../components/patients/SuiviPatientComplet";
 import AjouterNoteEvolution from "../components/patients/AjouterNoteEvolution";
 import CreerRappelSuivi from "../components/patients/CreerRappelSuivi";
+import ConsulterDMPProfessionnel from "../components/dmp/ConsulterDMPProfessionnel";
+import PublierDMPProfessionnel from "../components/dmp/PublierDMPProfessionnel";
 
 export default function DossierPatient() {
   const location = useLocation();
@@ -487,6 +490,10 @@ export default function DossierPatient() {
         <Tabs defaultValue="suivi" className="space-y-4">
           <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1 p-1">
             <TabsTrigger value="suivi" className="text-xs md:text-sm px-3 py-2">Suivi Patient</TabsTrigger>
+            <TabsTrigger value="dmp" className="text-xs md:text-sm px-3 py-2 flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              DMP
+            </TabsTrigger>
             <TabsTrigger value="historique" className="text-xs md:text-sm px-3 py-2">Historique</TabsTrigger>
             <TabsTrigger value="vaccins" className="text-xs md:text-sm px-3 py-2">Vaccins</TabsTrigger>
             <TabsTrigger value="croissance" className="text-xs md:text-sm px-3 py-2">Croissance</TabsTrigger>
@@ -499,6 +506,20 @@ export default function DossierPatient() {
             <SuiviPatientComplet
               patientEmail={enfant.created_by}
               patientNom={`${enfant.prenom} ${enfant.nom}`}
+            />
+          </TabsContent>
+
+          {/* DMP - Dossier Médical Partagé */}
+          <TabsContent value="dmp" className="space-y-6">
+            <ConsulterDMPProfessionnel
+              patientEmail={enfant.created_by}
+              professionnelId={profilPro?.id}
+            />
+
+            <PublierDMPProfessionnel
+              patientEmail={enfant.created_by}
+              professionnelId={profilPro?.id}
+              professionnelNom={profilPro?.nom_complet}
             />
           </TabsContent>
 

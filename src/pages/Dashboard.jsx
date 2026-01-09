@@ -24,15 +24,19 @@ export default function Dashboard() {
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
-        base44.entities.Clinique.filter({ administrateur_email: user.email }).catch(() => [])
+        base44.entities.Clinique.list().catch(() => [])
       ]);
       
       const proProfil = proProfiles.find(p => p.email === user.email);
+      const centreProfil = centreProfiles.find(c => 
+        c.administrateurs?.includes(user.email) || 
+        c.administrateur_email === user.email
+      );
       
       return {
         maman: mamanProfiles[0] || null,
         pro: proProfil || null,
-        centre: centreProfiles[0] || null
+        centre: centreProfil || null
       };
     },
     enabled: !!user,

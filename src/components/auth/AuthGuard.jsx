@@ -39,25 +39,29 @@ export default function AuthGuard({ children }) {
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
-        base44.entities.Clinique.filter({ administrateur_email: user.email }).catch(() => [])
+        base44.entities.Clinique.list().catch(() => [])
       ]);
 
-      // Filter côté client pour le professionnel (plus fiable)
+      // Filter côté client pour le professionnel et le centre (plus fiable)
       const proProfil = proProfiles.find(p => p.email === user.email);
+      const centreProfil = centreProfiles.find(c => 
+        c.administrateurs?.includes(user.email) || 
+        c.administrateur_email === user.email
+      );
 
       console.log('📊 AuthGuard - Results:', {
         mamanCount: mamanProfiles.length,
         proCount: proProfil ? 1 : 0,
-        centreCount: centreProfiles.length,
+        centreCount: centreProfil ? 1 : 0,
         mamanProfile: mamanProfiles[0]?.id,
         proProfile: proProfil?.id,
-        centreProfile: centreProfiles[0]?.id
+        centreProfile: centreProfil?.id
       });
 
       return {
         maman: mamanProfiles[0] || null,
         pro: proProfil || null,
-        centre: centreProfiles[0] || null
+        centre: centreProfil || null
       };
     },
     enabled: !!user,

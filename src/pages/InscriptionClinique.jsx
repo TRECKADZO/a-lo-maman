@@ -100,11 +100,14 @@ export default function InscriptionClinique() {
         throw new Error('Utilisateur non connecté');
       }
 
+      const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
+      
       const demande = {
         ...formData,
         administrateur_email: user.email,
         administrateurs: [user.email],
         email_contact: formData.email_contact || user.email,
+        code_invitation: codeInvitation,
         statut_validation: 'en_attente',
         date_demande: new Date().toISOString(),
         onboarding_completed: false

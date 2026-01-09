@@ -280,14 +280,14 @@ export default function SelectionCompte() {
                     <Radio className="w-12 h-12 text-white" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre de Santé</h2>
-                  <p className="text-gray-600 leading-relaxed">
-                    PMI, clinique, hôpital ou centre offrant des services de maternité
-                  </p>
-                  <div className="mt-6 space-y-2 text-sm text-gray-500">
-                    <p>✓ Gestion des rendez-vous</p>
-                    <p>✓ Services maternité personnalisés</p>
-                    <p>✓ Intégration FHIR et API</p>
-                  </div>
+                    <p className="text-gray-600 leading-relaxed">
+                      PMI, clinique, hôpital ou centre offrant des services de maternité
+                    </p>
+                    <div className="mt-6 space-y-2 text-sm text-gray-500">
+                      <p>✓ Gestion des rendez-vous</p>
+                      <p>✓ Profil public détaillé</p>
+                      <p>✓ Intégration plateforme</p>
+                    </div>
                 </CardContent>
               </Card>
             </div>
@@ -439,60 +439,64 @@ export default function SelectionCompte() {
                   </>
                 )}
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="telephone" className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      Téléphone {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
-                    </Label>
-                    <Input
-                      id="telephone"
-                      type="tel"
-                      value={formData.telephone}
-                      onChange={(e) => handleChange('telephone', e.target.value)}
-                      placeholder="+225 07 XX XX XX XX"
-                      required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
-                      disabled={loading}
-                    />
-                  </div>
+                {selectedType !== 'centre_sante' && (
+                  <>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="telephone" className="flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          Téléphone {selectedType === 'professionnel' && '*'}
+                        </Label>
+                        <Input
+                          id="telephone"
+                          type="tel"
+                          value={formData.telephone}
+                          onChange={(e) => handleChange('telephone', e.target.value)}
+                          placeholder="+225 07 XX XX XX XX"
+                          required={selectedType === 'professionnel'}
+                          disabled={loading}
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="region" className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      Région {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
-                    </Label>
-                    <Select
-                      value={formData.region}
-                      onValueChange={(value) => handleChange('region', value)}
-                      disabled={loading}
-                      required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {regions.map(r => (
-                          <SelectItem key={r} value={r}>{r}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="region" className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          Région {selectedType === 'professionnel' && '*'}
+                        </Label>
+                        <Select
+                          value={formData.region}
+                          onValueChange={(value) => handleChange('region', value)}
+                          disabled={loading}
+                          required={selectedType === 'professionnel'}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {regions.map(r => (
+                              <SelectItem key={r} value={r}>{r}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="ville" className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    Ville {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
-                  </Label>
-                  <Input
-                    id="ville"
-                    value={formData.ville}
-                    onChange={(e) => handleChange('ville', e.target.value)}
-                    placeholder="Abidjan"
-                    required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
-                    disabled={loading}
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ville" className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        Ville {selectedType === 'professionnel' && '*'}
+                      </Label>
+                      <Input
+                        id="ville"
+                        value={formData.ville}
+                        onChange={(e) => handleChange('ville', e.target.value)}
+                        placeholder="Abidjan"
+                        required={selectedType === 'professionnel'}
+                        disabled={loading}
+                      />
+                    </div>
+                  </>
+                )}
 
                 {selectedType === 'professionnel' && (
                   <div className="space-y-2">
@@ -556,7 +560,7 @@ export default function SelectionCompte() {
                   </Button>
                   <Button
                     type="submit"
-                    disabled={loading || success}
+                    disabled={loading || success || (selectedType === 'centre_sante' && !formData.acceptConditions)}
                     className={`flex-1 ${
                       selectedType === 'maman' ? 'bg-pink-600 hover:bg-pink-700' : 
                       selectedType === 'centre_sante' ? 'bg-purple-600 hover:bg-purple-700' :
@@ -573,6 +577,8 @@ export default function SelectionCompte() {
                         <CheckCircle className="w-4 h-4 mr-2" />
                         Profil créé !
                       </>
+                    ) : selectedType === 'centre_sante' ? (
+                      'Continuer vers l\'inscription'
                     ) : (
                       'Créer mon compte'
                     )}

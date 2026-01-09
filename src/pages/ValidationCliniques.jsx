@@ -20,7 +20,7 @@ export default function ValidationCliniques() {
     queryKey: ['demandes_cliniques'],
     queryFn: async () => {
       const cliniques = await base44.entities.Clinique.list();
-      return cliniques.filter(c => c.api_key === 'PENDING_VALIDATION');
+      return cliniques.filter(c => c.statut_validation === 'en_attente');
     },
     enabled: user?.role === 'admin'
   });

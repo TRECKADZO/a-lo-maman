@@ -72,6 +72,7 @@ import VideoConsultation from './pages/VideoConsultation';
 import GestionMembresCentre from './pages/GestionMembresCentre';
 import RejoindreAvecCode from './pages/RejoindreAvecCode';
 import CalendrierCentre from './pages/CalendrierCentre';
+import AuditSysteme from './pages/AuditSysteme';
 import __Layout from './Layout.jsx';
 
 
@@ -150,6 +151,7 @@ export const PAGES = {
     "GestionMembresCentre": GestionMembresCentre,
     "RejoindreAvecCode": RejoindreAvecCode,
     "CalendrierCentre": CalendrierCentre,
+    "AuditSysteme": AuditSysteme,
 }
 
 export const pagesConfig = {

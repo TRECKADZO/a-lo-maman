@@ -10,6 +10,7 @@ import AdminLiveChat from './pages/AdminLiveChat';
 import Analytics from './pages/Analytics';
 import AssistantIA from './pages/AssistantIA';
 import AssistantIAPro from './pages/AssistantIAPro';
+import AuditApp from './pages/AuditApp';
 import Calendrier from './pages/Calendrier';
 import ChatAssistant from './pages/ChatAssistant';
 import Communaute from './pages/Communaute';
@@ -66,7 +67,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import AuditApp from './pages/AuditApp';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +83,7 @@ export const PAGES = {
     "Analytics": Analytics,
     "AssistantIA": AssistantIA,
     "AssistantIAPro": AssistantIAPro,
+    "AuditApp": AuditApp,
     "Calendrier": Calendrier,
     "ChatAssistant": ChatAssistant,
     "Communaute": Communaute,
@@ -139,7 +140,6 @@ export const PAGES = {
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "AuditApp": AuditApp,
 }
 
 export const pagesConfig = {

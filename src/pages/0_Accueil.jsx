@@ -85,8 +85,14 @@ export default function Accueil() {
     }
   };
 
-  const handleSignup = () => {
-    base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+  const handleSignup = async () => {
+    console.log('🔵 Signup clicked, redirecting to login...');
+    try {
+      await base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+    } catch (error) {
+      console.error('❌ Error redirecting to login:', error);
+      alert('Erreur lors de la redirection. Veuillez réessayer.');
+    }
   };
 
   const fonctionnalites = [
@@ -278,7 +284,10 @@ export default function Accueil() {
                       Créer un compte gratuit
                     </Button>
                     <Button
-                      onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                      onClick={async () => {
+                        console.log('🔵 Login clicked');
+                        await base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+                      }}
                       size="lg"
                       className="bg-white/20 text-white hover:bg-white/30 border-2 border-white/50 px-8 py-6 text-lg h-auto font-semibold backdrop-blur-sm"
                     >

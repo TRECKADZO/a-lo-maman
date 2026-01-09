@@ -2,7 +2,10 @@ import _0Accueil from './pages/0_Accueil';
 import ABTesting from './pages/ABTesting';
 import APIDocumentation from './pages/APIDocumentation';
 import AdminAnalytics from './pages/AdminAnalytics';
+import AdminCentres from './pages/AdminCentres';
+import AdminFHIR from './pages/AdminFHIR';
 import AdminFeedback from './pages/AdminFeedback';
+import AdminGestionCentres from './pages/AdminGestionCentres';
 import AdminLiveChat from './pages/AdminLiveChat';
 import Analytics from './pages/Analytics';
 import AssistantIA from './pages/AssistantIA';
@@ -63,9 +66,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import AdminCentres from './pages/AdminCentres';
-import AdminFHIR from './pages/AdminFHIR';
-import AdminGestionCentres from './pages/AdminGestionCentres';
 import __Layout from './Layout.jsx';
 
 
@@ -74,7 +74,10 @@ export const PAGES = {
     "ABTesting": ABTesting,
     "APIDocumentation": APIDocumentation,
     "AdminAnalytics": AdminAnalytics,
+    "AdminCentres": AdminCentres,
+    "AdminFHIR": AdminFHIR,
     "AdminFeedback": AdminFeedback,
+    "AdminGestionCentres": AdminGestionCentres,
     "AdminLiveChat": AdminLiveChat,
     "Analytics": Analytics,
     "AssistantIA": AssistantIA,
@@ -135,9 +138,6 @@ export const PAGES = {
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "AdminCentres": AdminCentres,
-    "AdminFHIR": AdminFHIR,
-    "AdminGestionCentres": AdminGestionCentres,
 }
 
 export const pagesConfig = {

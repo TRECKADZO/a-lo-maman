@@ -102,6 +102,7 @@ export default function SelectionCompte() {
         if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
           throw new Error('Nom du centre invalide (min 3 caractères)');
         }
+        if (!formData.specialite) throw new Error('Type d\'établissement manquant');
         if (!formData.telephone?.trim() || formData.telephone.trim().length < 8) {
           throw new Error('Téléphone invalide (min 8 caractères)');
         }
@@ -442,7 +443,7 @@ export default function SelectionCompte() {
                   <div className="space-y-2">
                     <Label htmlFor="telephone" className="flex items-center gap-2">
                       <Phone className="w-4 h-4" />
-                      Téléphone {selectedType === 'professionnel' && '*'}
+                      Téléphone {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
                     </Label>
                     <Input
                       id="telephone"
@@ -450,7 +451,7 @@ export default function SelectionCompte() {
                       value={formData.telephone}
                       onChange={(e) => handleChange('telephone', e.target.value)}
                       placeholder="+225 07 XX XX XX XX"
-                      required={selectedType === 'professionnel'}
+                      required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
                       disabled={loading}
                     />
                   </div>
@@ -458,12 +459,13 @@ export default function SelectionCompte() {
                   <div className="space-y-2">
                     <Label htmlFor="region" className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      Région {selectedType === 'professionnel' && '*'}
+                      Région {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
                     </Label>
                     <Select
                       value={formData.region}
                       onValueChange={(value) => handleChange('region', value)}
                       disabled={loading}
+                      required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner" />
@@ -480,14 +482,14 @@ export default function SelectionCompte() {
                 <div className="space-y-2">
                   <Label htmlFor="ville" className="flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
-                    Ville {selectedType === 'professionnel' && '*'}
+                    Ville {(selectedType === 'professionnel' || selectedType === 'centre_sante') && '*'}
                   </Label>
                   <Input
                     id="ville"
                     value={formData.ville}
                     onChange={(e) => handleChange('ville', e.target.value)}
                     placeholder="Abidjan"
-                    required={selectedType === 'professionnel'}
+                    required={selectedType === 'professionnel' || selectedType === 'centre_sante'}
                     disabled={loading}
                   />
                 </div>

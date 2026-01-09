@@ -73,6 +73,7 @@ import GestionMembresCentre from './pages/GestionMembresCentre';
 import RejoindreAvecCode from './pages/RejoindreAvecCode';
 import CalendrierCentre from './pages/CalendrierCentre';
 import AuditSysteme from './pages/AuditSysteme';
+import LogsAudit from './pages/LogsAudit';
 import __Layout from './Layout.jsx';
 
 
@@ -152,6 +153,7 @@ export const PAGES = {
     "RejoindreAvecCode": RejoindreAvecCode,
     "CalendrierCentre": CalendrierCentre,
     "AuditSysteme": AuditSysteme,
+    "LogsAudit": LogsAudit,
 }
 
 export const pagesConfig = {

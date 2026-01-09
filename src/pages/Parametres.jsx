@@ -712,6 +712,8 @@ export default function Parametres() {
 
           <EncryptionSetup />
 
+          <ExportDonneesGDPR user={user} />
+
           {/* Section Gestion des données */}
           <Card className="shadow-lg border-none bg-card mt-6">
             <CardHeader>
@@ -768,36 +770,7 @@ export default function Parametres() {
             </CardContent>
           </Card>
 
-          {/* Section Suppression de compte */}
-          <Card className="shadow-lg border-none bg-card mt-6 border-red-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-600">
-                <Trash2 className="w-5 h-5" />
-                Suppression du compte
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Vous pouvez demander la suppression de votre compte et de toutes les données associées. 
-                Cette action est irréversible.
-              </p>
-              <Alert className="bg-red-50 border-red-200">
-                <AlertTriangle className="w-4 h-4 text-red-600" />
-                <AlertDescription className="text-red-800 text-sm">
-                  La suppression entraînera la perte définitive de toutes vos données : profil, grossesses, enfants, messages, rendez-vous et documents.
-                </AlertDescription>
-              </Alert>
-              <Button
-                type="button"
-                variant="outline"
-                className="border-red-300 text-red-600 hover:bg-red-50"
-                onClick={() => window.open('mailto:minagepi@gmail.com?subject=Demande%20de%20suppression%20de%20compte&body=Bonjour%2C%0A%0AJe%20souhaite%20demander%20la%20suppression%20de%20mon%20compte%20et%20de%20toutes%20mes%20donn%C3%A9es%20associ%C3%A9es.%0A%0AEmail%20du%20compte%20%3A%20' + encodeURIComponent(user?.email || '') + '%0A%0AMerci.', '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Demander la suppression de mon compte
-              </Button>
-            </CardContent>
-          </Card>
+          <SuppressionCompte user={user} />
 
           <div className="mt-8 flex justify-end">
             <Button

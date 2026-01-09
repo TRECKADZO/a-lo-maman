@@ -55,8 +55,10 @@ import Parametres from './pages/Parametres';
 import Politique from './pages/Politique';
 import PortailClinique from './pages/PortailClinique';
 import PostPartum from './pages/PostPartum';
+import ProfilCentrePublic from './pages/ProfilCentrePublic';
 import ProfilProfessionnel from './pages/ProfilProfessionnel';
 import QuestionsSpecialistes from './pages/QuestionsSpecialistes';
+import RechercherCentres from './pages/RechercherCentres';
 import Ressources from './pages/Ressources';
 import SelectionCompte from './pages/SelectionCompte';
 import SuiviSommeil from './pages/SuiviSommeil';
@@ -67,8 +69,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import ProfilCentrePublic from './pages/ProfilCentrePublic';
-import RechercherCentres from './pages/RechercherCentres';
 import __Layout from './Layout.jsx';
 
 
@@ -130,8 +130,10 @@ export const PAGES = {
     "Politique": Politique,
     "PortailClinique": PortailClinique,
     "PostPartum": PostPartum,
+    "ProfilCentrePublic": ProfilCentrePublic,
     "ProfilProfessionnel": ProfilProfessionnel,
     "QuestionsSpecialistes": QuestionsSpecialistes,
+    "RechercherCentres": RechercherCentres,
     "Ressources": Ressources,
     "SelectionCompte": SelectionCompte,
     "SuiviSommeil": SuiviSommeil,
@@ -142,8 +144,6 @@ export const PAGES = {
     "Tests": Tests,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "ProfilCentrePublic": ProfilCentrePublic,
-    "RechercherCentres": RechercherCentres,
 }
 
 export const pagesConfig = {

@@ -97,42 +97,11 @@ export default function SelectionCompte() {
         window.location.href = createPageUrl('Dashboard');
         
       } else if (selectedType === 'centre_sante') {
-        console.log('🏥 CRÉATION PROFIL CENTRE DE SANTÉ');
+        console.log('🏥 REDIRECTION VERS INSCRIPTION CLINIQUE');
         
-        if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
-          throw new Error('Nom du centre invalide (min 3 caractères)');
-        }
-        if (!formData.specialite) throw new Error('Type d\'établissement manquant');
-        if (!formData.telephone?.trim() || formData.telephone.trim().length < 8) {
-          throw new Error('Téléphone invalide (min 8 caractères)');
-        }
-        if (!formData.ville?.trim()) throw new Error('Ville manquante');
-        if (!formData.region) throw new Error('Région manquante');
-
-        const centreData = {
-          nom: formData.nom_complet.trim(),
-          type_etablissement: formData.specialite,
-          telephone: formData.telephone.trim(),
-          email_contact: user.email,
-          ville: formData.ville.trim(),
-          region: formData.region,
-          administrateur_email: user.email,
-          administrateurs: [user.email],
-          statut_validation: 'approuve',
-          onboarding_completed: false
-        };
-
-        console.log('📦 Données Centre:', centreData);
-        const centre = await base44.entities.Clinique.create(centreData);
-        console.log('✅ Centre créé:', centre.id);
-
-        // Invalider le cache et attendre la synchronisation
-        await queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
-        console.log('🔄 Attente de synchronisation (3s)...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        console.log('🔄 Rechargement de la page...');
-        window.location.href = createPageUrl('Dashboard');
+        // Rediriger directement vers la page d'inscription détaillée
+        navigate(createPageUrl('InscriptionClinique'));
+        return;
         
       } else {
         console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');
@@ -397,46 +366,23 @@ export default function SelectionCompte() {
                 )}
 
                 {selectedType === 'centre_sante' && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="nom_complet" className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        Nom du centre *
-                      </Label>
-                      <Input
-                        id="nom_complet"
-                        value={formData.nom_complet}
-                        onChange={(e) => handleChange('nom_complet', e.target.value)}
-                        placeholder="PMI du Plateau"
-                        required
-                        disabled={loading}
-                      />
+                  <div className="space-y-4 py-4">
+                    <div className="text-center">
+                      <p className="text-gray-700 mb-4">
+                        Vous allez être redirigé vers le formulaire d'inscription détaillé pour votre établissement de santé.
+                      </p>
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-purple-800 font-semibold mb-2">
+                          📋 Préparez les documents suivants :
+                        </p>
+                        <ul className="text-xs text-purple-700 space-y-1 text-left">
+                          <li>• Agrément MSP valide</li>
+                          <li>• Registre de commerce</li>
+                          <li>• Informations complètes du centre</li>
+                        </ul>
+                      </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="specialite" className="flex items-center gap-2">
-                        <Radio className="w-4 h-4" />
-                        Type d'établissement *
-                      </Label>
-                      <Select
-                        value={formData.specialite}
-                        onValueChange={(value) => handleChange('specialite', value)}
-                        required
-                        disabled={loading}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pmi">PMI</SelectItem>
-                          <SelectItem value="clinique_privee">Clinique privée</SelectItem>
-                          <SelectItem value="hopital_public">Hôpital public</SelectItem>
-                          <SelectItem value="maternite">Maternité</SelectItem>
-                          <SelectItem value="centre_sante">Centre de santé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </>
+                  </div>
                 )}
 
                 {selectedType !== 'centre_sante' && (

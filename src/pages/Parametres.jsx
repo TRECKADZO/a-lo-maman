@@ -17,6 +17,9 @@ import EncryptionSetup from '@/components/security/EncryptionSetup';
 import GestionConsentements from '@/components/security/GestionConsentements';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
 import CalendarSyncSettings from '@/components/teleconsultation/CalendarSyncSettings';
+import ExportDonneesPersonnelles from '@/components/parametres/ExportDonneesPersonnelles';
+import SuppressionCompte from '@/components/parametres/SuppressionCompte';
+import ContactDPO from '@/components/parametres/ContactDPO';
 
 const GROUPES_SANGUINS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -715,6 +718,8 @@ export default function Parametres() {
 
           <GestionConsentements user={user} />
 
+          <ExportDonneesPersonnelles />
+
           <ExportDonneesGDPR user={user} />
 
           {/* Section Gestion des données */}
@@ -773,7 +778,9 @@ export default function Parametres() {
             </CardContent>
           </Card>
 
-          <SuppressionCompte user={user} />
+          <SuppressionCompte />
+
+          <ContactDPO />
 
           <div className="mt-8 flex justify-end">
             <Button

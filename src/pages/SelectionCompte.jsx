@@ -119,7 +119,6 @@ export default function SelectionCompte() {
           administrateur_email: user.email,
           administrateurs: [user.email],
           statut_validation: 'en_attente',
-          api_key: 'PENDING_VALIDATION',
         };
 
         console.log('📦 Données Centre:', centreData);

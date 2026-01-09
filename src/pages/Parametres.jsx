@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import NotificationPreferences from '@/components/notifications/NotificationPreferences';
 import EncryptionSetup from '@/components/security/EncryptionSetup';
+import GestionConsentements from '@/components/security/GestionConsentements';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
 import CalendarSyncSettings from '@/components/teleconsultation/CalendarSyncSettings';
 
@@ -711,6 +712,8 @@ export default function Parametres() {
           <CalendarSyncSettings />
 
           <EncryptionSetup />
+
+          <GestionConsentements user={user} />
 
           <ExportDonneesGDPR user={user} />
 

@@ -31,14 +31,15 @@ export default function AuthGuard({ children }) {
   const { data: profiles, isLoading: profilesLoading } = useQuery({
     queryKey: ['user_profiles', user?.email],
     queryFn: async () => {
-      if (!user) return { maman: null, pro: null };
+      if (!user) return { maman: null, pro: null, centre: null };
 
       console.log('🔍 AuthGuard - Fetching profiles for:', user.email);
 
-      // Fetch les deux profils en parallèle
-      const [mamanProfiles, proProfiles] = await Promise.all([
+      // Fetch les trois profils en parallèle
+      const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
-        base44.entities.Professionnel.list().catch(() => []) // List all puis filter
+        base44.entities.Professionnel.list().catch(() => []),
+        base44.entities.Clinique.filter({ administrateur_email: user.email }).catch(() => [])
       ]);
 
       // Filter côté client pour le professionnel (plus fiable)
@@ -47,13 +48,16 @@ export default function AuthGuard({ children }) {
       console.log('📊 AuthGuard - Results:', {
         mamanCount: mamanProfiles.length,
         proCount: proProfil ? 1 : 0,
+        centreCount: centreProfiles.length,
         mamanProfile: mamanProfiles[0]?.id,
-        proProfile: proProfil?.id
+        proProfile: proProfil?.id,
+        centreProfile: centreProfiles[0]?.id
       });
 
       return {
         maman: mamanProfiles[0] || null,
-        pro: proProfil || null
+        pro: proProfil || null,
+        centre: centreProfiles[0] || null
       };
     },
     enabled: !!user,
@@ -62,7 +66,7 @@ export default function AuthGuard({ children }) {
   });
 
   // 3. Déterminer le profil actif
-  const activeProfile = profiles?.pro || profiles?.maman;
+  const activeProfile = profiles?.pro || profiles?.maman || profiles?.centre;
   const isSpecialist = !!profiles?.pro;
 
   // 4. Gérer les redirections
@@ -72,7 +76,7 @@ export default function AuthGuard({ children }) {
     console.log('🛡️ AuthGuard - Auth state:', {
       hasUser: !!user,
       hasProfile: !!activeProfile,
-      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : 'NONE')
+      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE'))
     });
 
     // Pas d'utilisateur -> Intro

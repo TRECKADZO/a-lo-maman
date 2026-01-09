@@ -248,18 +248,20 @@ export default function Layout({ children, currentPageName }) {
   const { data: profiles } = useQuery({
     queryKey: ['user_profiles', user?.email],
     queryFn: async () => {
-      if (!user) return { maman: null, pro: null };
+      if (!user) return { maman: null, pro: null, centre: null };
       
-      const [mamanProfiles, proProfiles] = await Promise.all([
+      const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
-        base44.entities.Professionnel.list().catch(() => [])
+        base44.entities.Professionnel.list().catch(() => []),
+        base44.entities.Clinique.filter({ administrateur_email: user.email }).catch(() => [])
       ]);
       
       const proProfil = proProfiles.find(p => p.email === user.email);
       
       return {
         maman: mamanProfiles[0] || null,
-        pro: proProfil || null
+        pro: proProfil || null,
+        centre: centreProfiles[0] || null
       };
     },
     enabled: !!user,
@@ -267,8 +269,9 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const isSpecialist = !!profiles?.pro;
+  const isCentre = !!profiles?.centre;
   const isAdmin = user?.role === 'admin';
-  const currentProfile = profiles?.pro || profiles?.maman;
+  const currentProfile = profiles?.pro || profiles?.maman || profiles?.centre;
   const lang = currentProfile?.langue_preferee === 'anglais' ? 'en' : 'fr';
   const theme = currentProfile?.theme_prefere || 'clair';
 
@@ -362,7 +365,16 @@ export default function Layout({ children, currentPageName }) {
     return <>{children}</>;
   }
 
-  if (!user || !currentProfile) {
+  if (!user) {
+    return <>{children}</>;
+  }
+
+  // Pour les centres de santé, rediriger vers AdminCentres
+  if (isCentre && !isAdmin && currentPageName === 'Dashboard') {
+    return <>{children}</>;
+  }
+
+  if (!currentProfile) {
     return <>{children}</>;
   }
 

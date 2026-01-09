@@ -429,22 +429,7 @@ export default function Accueil() {
             })}
           </div>
 
-          <div className="mt-12 p-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200">
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <p className="text-3xl font-bold text-indigo-600 mb-2">FHIR v4.0</p>
-                <p className="text-sm text-gray-700 font-medium">Standard d'interopérabilité healthcare</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-purple-600 mb-2">RGPD</p>
-                <p className="text-sm text-gray-700 font-medium">Conformité protection données</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-pink-600 mb-2">ISO 27001</p>
-                <p className="text-sm text-gray-700 font-medium">Sécurité information certifiée</p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -584,7 +569,7 @@ export default function Accueil() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: Lock, title: "Chiffrement AES-256", desc: "Toutes vos données médicales sont chiffrées avec le standard militaire", color: "from-green-500 to-emerald-500", bg: "from-green-50 to-emerald-50" },
-              { icon: Shield, title: "Conformité FHIR & RGPD", desc: "Interopérabilité certifiée avec hôpitaux et respect total du RGPD", color: "from-blue-500 to-cyan-500", bg: "from-blue-50 to-cyan-50" },
+              { icon: Shield, title: "Sécurité Médicale", desc: "Protection maximale de vos données médicales avec contrôles d'accès stricts", color: "from-blue-500 to-cyan-500", bg: "from-blue-50 to-cyan-50" },
               { icon: FileText, title: "Autorisations DMP", desc: "Contrôlez précisément qui accède à vos documents médicaux avec traçabilité", color: "from-purple-500 to-violet-500", bg: "from-purple-50 to-violet-50" }
             ].map((item, i) => (
               <Card key={i} className={`border-none shadow-xl bg-gradient-to-br ${item.bg}`}>

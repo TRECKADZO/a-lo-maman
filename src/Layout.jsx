@@ -45,6 +45,7 @@ import { base44 } from "@/api/base44Client";
 import InstallPWA from "@/components/general/InstallPWA";
 import InstallPWADesktop from "@/components/general/InstallPWADesktop";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
+import BottomNavMobile from "@/components/navigation/BottomNavMobile";
 import FloatingChatButton from "@/components/chatbot/FloatingChatButton";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import SupportFloatingButton from "@/components/support/SupportFloatingButton";
@@ -538,8 +539,7 @@ export default function Layout({ children, currentPageName }) {
             style={{ 
               WebkitOverflowScrolling: 'touch',
               overscrollBehaviorY: 'contain',
-              touchAction: 'pan-y',
-              paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))'
+              touchAction: 'pan-y'
             }}
           >
             {children}

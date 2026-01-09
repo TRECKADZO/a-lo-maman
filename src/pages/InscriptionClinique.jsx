@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useQuery } from '@tanstack/react-query';
 
 const regions = [
   "Abidjan", "Agnéby-Tiassa", "Bafing", "Bagoué", "Bélier", "Béré",
@@ -26,6 +27,11 @@ const regions = [
 export default function InscriptionClinique() {
   const navigate = useNavigate();
   const [etape, setEtape] = useState(1);
+  
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
   const [formData, setFormData] = useState({
     nom: '',
     type_etablissement: 'clinique_privee',
@@ -90,15 +96,22 @@ export default function InscriptionClinique() {
 
   const soumettreDemande = useMutation({
     mutationFn: async () => {
+      if (!user) {
+        throw new Error('Utilisateur non connecté');
+      }
+
       const demande = {
         ...formData,
+        administrateur_email: user.email,
+        administrateurs: [user.email],
+        email_contact: formData.email_contact || user.email,
         statut_validation: 'en_attente',
         date_demande: new Date().toISOString(),
-        api_key: 'PENDING_VALIDATION', // Sera générée après validation
-        api_fhir_enabled: formData.scopes_demandes.includes('fhir:*'),
-        api_scopes: formData.scopes_demandes
+        onboarding_completed: false
       };
 
+      console.log('📤 Envoi demande:', demande);
+      
       // Créer la demande (nécessite validation admin)
       return await base44.entities.Clinique.create(demande);
     },
@@ -106,8 +119,9 @@ export default function InscriptionClinique() {
       toast.success('Demande envoyée ! Vous recevrez un email sous 48h.');
       setEtape(4);
     },
-    onError: () => {
-      toast.error('Erreur lors de l\'envoi');
+    onError: (error) => {
+      console.error('❌ Erreur soumission:', error);
+      toast.error(error.message || 'Erreur lors de l\'envoi');
     }
   });
 
@@ -321,7 +335,7 @@ export default function InscriptionClinique() {
 
                 <Button
                   onClick={() => setEtape(2)}
-                  disabled={!formData.nom || !formData.email_contact || !formData.numero_agrement}
+                  disabled={!formData.nom || !formData.region || !formData.ville || !formData.numero_agrement || !formData.telephone}
                   className="w-full bg-teal-600 hover:bg-teal-700"
                 >
                   Continuer →

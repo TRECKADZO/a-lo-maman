@@ -20,7 +20,8 @@ export default function ValidationCliniques() {
     queryKey: ['demandes_cliniques'],
     queryFn: async () => {
       const cliniques = await base44.entities.Clinique.list();
-      return cliniques.filter(c => c.statut_validation === 'en_attente');
+      // Afficher les centres approuvés et en attente pour vérification manuelle
+      return cliniques.filter(c => c.statut_validation === 'en_attente' || c.statut_validation === 'approuve');
     },
     enabled: user?.role === 'admin'
   });

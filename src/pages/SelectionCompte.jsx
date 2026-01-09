@@ -125,13 +125,11 @@ export default function SelectionCompte() {
         const centre = await base44.entities.Clinique.create(centreData);
         console.log('✅ Centre créé:', centre.id);
         
-        // Invalider le cache et attendre la synchronisation
-        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
-        console.log('🔄 Attente de synchronisation (2s)...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        console.log('🔄 Rechargement de la page...');
-        window.location.href = createPageUrl('Dashboard');
+        // Déconnexion et redirection vers connexion
+        localStorage.setItem('centre_validation_message', 'Votre demande d\'inscription est en attente de validation par notre équipe. Vous serez notifié par email une fois votre centre approuvé.');
+        await base44.auth.logout();
+        console.log('🔄 Redirection vers connexion...');
+        window.location.href = createPageUrl('Connexion');
         
       } else {
         console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');

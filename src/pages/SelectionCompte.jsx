@@ -119,7 +119,7 @@ export default function SelectionCompte() {
           administrateur_email: user.email,
           administrateurs: [user.email],
           statut_validation: 'approuve',
-          onboarding_completed: false,
+          onboarding_completed: false
         };
 
         console.log('📦 Données Centre:', centreData);

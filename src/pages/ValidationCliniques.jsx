@@ -29,13 +29,8 @@ export default function ValidationCliniques() {
   const validerDemande = useMutation({
     mutationFn: async ({ cliniqueId, approuver }) => {
       if (approuver) {
-        const apiKey = 'ak_' + crypto.randomUUID().replace(/-/g, '');
         await base44.entities.Clinique.update(cliniqueId, {
-          api_key: apiKey,
-          api_key_generated_at: new Date().toISOString(),
-          statut_validation: 'approuve',
-          api_fhir_enabled: true,
-          fhir_endpoint: window.location.origin + '/functions/fhirEndpointEnhanced'
+          statut_validation: 'approuve'
         });
 
         // Envoyer email de confirmation
@@ -46,10 +41,7 @@ export default function ValidationCliniques() {
           body: `
             <h2>Bienvenue dans le réseau A'lo Maman !</h2>
             <p>Votre établissement <strong>${clinique.nom}</strong> a été validé.</p>
-            <h3>Vos accès API :</h3>
-            <p><strong>Clé API :</strong> <code>${apiKey}</code></p>
-            <p><strong>Endpoint FHIR :</strong> ${window.location.origin}/functions/fhirEndpointEnhanced</p>
-            <p>Connectez-vous sur votre portail pour gérer vos intégrations.</p>
+            <p>Connectez-vous sur votre portail pour compléter votre profil et commencer à gérer vos services.</p>
           `
         });
       } else {
@@ -136,14 +128,7 @@ export default function ValidationCliniques() {
                       </div>
                     </div>
 
-                    <div>
-                      <p className="text-sm font-semibold mb-2">Scopes demandés:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {demande.api_scopes?.map(s => (
-                          <Badge key={s} className="bg-purple-100 text-purple-800">{s}</Badge>
-                        ))}
-                      </div>
-                    </div>
+
 
                     {demande.document_agrement && (
                       <div className="flex gap-2">

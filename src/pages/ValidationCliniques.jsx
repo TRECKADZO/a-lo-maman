@@ -28,22 +28,43 @@ export default function ValidationCliniques() {
 
   const validerDemande = useMutation({
     mutationFn: async ({ cliniqueId, approuver }) => {
+      const clinique = demandes.find(d => d.id === cliniqueId);
+      
       if (approuver) {
+        // 1. Mettre à jour le statut
         await base44.entities.Clinique.update(cliniqueId, {
-          statut_validation: 'approuve'
+          statut_validation: 'approuve',
+          onboarding_completed: true
         });
 
-        // Envoyer email de confirmation
-        const clinique = demandes.find(d => d.id === cliniqueId);
-        await base44.integrations.Core.SendEmail({
-          to: clinique.email_contact,
-          subject: '✅ Votre clinique est validée - A\'lo Maman',
-          body: `
-            <h2>Bienvenue dans le réseau A'lo Maman !</h2>
-            <p>Votre établissement <strong>${clinique.nom}</strong> a été validé.</p>
-            <p>Connectez-vous sur votre portail pour compléter votre profil et commencer à gérer vos services.</p>
-          `
-        });
+        // 2. Inviter l'administrateur comme user de l'app
+        try {
+          if (clinique.administrateur_email) {
+            await base44.users.inviteUser(clinique.administrateur_email, 'user');
+            console.log('✅ Utilisateur invité:', clinique.administrateur_email);
+          }
+        } catch (error) {
+          console.warn('⚠️ Erreur invitation utilisateur:', error);
+        }
+
+        // 3. Envoyer email de confirmation
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: clinique.email_contact,
+            subject: '✅ Votre établissement est validé - A\'lo Maman',
+            body: `
+              <h2>Bienvenue dans le réseau A'lo Maman !</h2>
+              <p>Votre établissement <strong>${clinique.nom}</strong> a été validé avec succès.</p>
+              <p><strong>Prochaine étape:</strong> Connectez-vous avec l'email: <strong>${clinique.administrateur_email}</strong></p>
+              <p>Vous recevrez un email d'invitation pour créer votre mot de passe.</p>
+              <p>Une fois connecté, vous pourrez accéder à votre tableau de bord et gérer vos services.</p>
+              <br>
+              <p>Code d'invitation du centre: <strong>${clinique.code_invitation}</strong></p>
+            `
+          });
+        } catch (error) {
+          console.warn('⚠️ Erreur envoi email:', error);
+        }
       } else {
         await base44.entities.Clinique.update(cliniqueId, {
           statut_validation: 'rejete'
@@ -52,7 +73,11 @@ export default function ValidationCliniques() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries(['demandes_cliniques']);
-      toast.success(variables.approuver ? 'Demande approuvée' : 'Demande rejetée');
+      toast.success(variables.approuver ? '✅ Demande approuvée et invitation envoyée' : '❌ Demande rejetée');
+    },
+    onError: (error) => {
+      console.error('❌ Erreur validation:', error);
+      toast.error('Erreur: ' + error.message);
     }
   });
 

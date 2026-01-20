@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Stethoscope, Loader2, User, MapPin, Phone, AlertCircle, CheckCircle, Radio } from 'lucide-react';
+import { Heart, Stethoscope, Loader2, User, MapPin, Phone, AlertCircle, CheckCircle, Radio, Building2, FileText, Mail } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -42,7 +42,15 @@ export default function SelectionCompte() {
     specialite: '',
     nom_complet: '',
     biographie: '',
-    acceptConditions: false
+    acceptConditions: false,
+    // Centre de santé
+    nom_centre: '',
+    type_etablissement: 'clinique_privee',
+    numero_agrement: '',
+    adresse: '',
+    email_contact: '',
+    administrateur_nom: '',
+    administrateur_telephone: ''
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -97,11 +105,50 @@ export default function SelectionCompte() {
         window.location.href = createPageUrl('Dashboard');
         
       } else if (selectedType === 'centre_sante') {
-        console.log('🏥 REDIRECTION VERS INSCRIPTION CLINIQUE');
+        console.log('🏥 CRÉATION PROFIL CENTRE');
         
-        // Rediriger directement vers la page d'inscription détaillée
-        navigate(createPageUrl('InscriptionClinique'));
-        return;
+        // Validation
+        if (!formData.nom_centre?.trim()) throw new Error('Nom du centre manquant');
+        if (!formData.numero_agrement?.trim()) throw new Error('Numéro d\'agrément manquant');
+        if (!formData.region) throw new Error('Région manquante');
+        if (!formData.ville?.trim()) throw new Error('Ville manquante');
+        if (!formData.adresse?.trim()) throw new Error('Adresse manquante');
+        if (!formData.telephone?.trim()) throw new Error('Téléphone manquant');
+        if (!formData.administrateur_nom?.trim()) throw new Error('Nom administrateur manquant');
+        if (!formData.administrateur_telephone?.trim()) throw new Error('Téléphone administrateur manquant');
+
+        const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
+        const centreData = {
+          nom: formData.nom_centre.trim(),
+          type_etablissement: formData.type_etablissement,
+          numero_agrement: formData.numero_agrement.trim(),
+          region: formData.region,
+          ville: formData.ville.trim(),
+          adresse: formData.adresse.trim(),
+          telephone: formData.telephone.trim(),
+          email_contact: formData.email_contact?.trim() || user.email,
+          administrateur_nom: formData.administrateur_nom.trim(),
+          administrateur_email: user.email,
+          administrateur_telephone: formData.administrateur_telephone.trim(),
+          administrateurs: [user.email],
+          code_invitation: codeInvitation,
+          statut_validation: 'en_attente',
+          date_demande: new Date().toISOString(),
+          onboarding_completed: false
+        };
+
+        console.log('📦 Données Centre:', centreData);
+        const profile = await base44.entities.Clinique.create(centreData);
+        console.log('✅ Centre créé:', profile.id);
+        
+        // Invalider le cache et attendre
+        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+        console.log('🔄 Attente de synchronisation (2s)...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        console.log('🔄 Rechargement de la page...');
+        window.location.href = createPageUrl('Dashboard');
         
       } else {
         console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');
@@ -366,23 +413,178 @@ export default function SelectionCompte() {
                 )}
 
                 {selectedType === 'centre_sante' && (
-                  <div className="space-y-4 py-4">
-                    <div className="text-center">
-                      <p className="text-gray-700 mb-4">
-                        Vous allez être redirigé vers le formulaire d'inscription détaillé pour votre établissement de santé.
-                      </p>
-                      <div className="p-4 bg-purple-50 rounded-lg">
-                        <p className="text-sm text-purple-800 font-semibold mb-2">
-                          📋 Préparez les documents suivants :
-                        </p>
-                        <ul className="text-xs text-purple-700 space-y-1 text-left">
-                          <li>• Agrément MSP valide</li>
-                          <li>• Registre de commerce</li>
-                          <li>• Informations complètes du centre</li>
-                        </ul>
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="nom_centre" className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
+                        Nom de l'établissement *
+                      </Label>
+                      <Input
+                        id="nom_centre"
+                        value={formData.nom_centre}
+                        onChange={(e) => handleChange('nom_centre', e.target.value)}
+                        placeholder="CHU Cocody"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="type_etablissement">Type d'établissement *</Label>
+                      <Select
+                        value={formData.type_etablissement}
+                        onValueChange={(value) => handleChange('type_etablissement', value)}
+                        disabled={loading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="clinique_privee">Clinique privée</SelectItem>
+                          <SelectItem value="hopital_public">Hôpital public</SelectItem>
+                          <SelectItem value="centre_sante">Centre de santé</SelectItem>
+                          <SelectItem value="maternite">Maternité</SelectItem>
+                          <SelectItem value="pmi">PMI</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="numero_agrement" className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        Numéro d'agrément MSP *
+                      </Label>
+                      <Input
+                        id="numero_agrement"
+                        value={formData.numero_agrement}
+                        onChange={(e) => handleChange('numero_agrement', e.target.value)}
+                        placeholder="AGR/MSP/2024/..."
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="region_centre" className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          Région *
+                        </Label>
+                        <Select
+                          value={formData.region}
+                          onValueChange={(value) => handleChange('region', value)}
+                          disabled={loading}
+                          required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {regions.map(r => (
+                              <SelectItem key={r} value={r}>{r}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="ville_centre">Ville *</Label>
+                        <Input
+                          id="ville_centre"
+                          value={formData.ville}
+                          onChange={(e) => handleChange('ville', e.target.value)}
+                          placeholder="Cocody"
+                          required
+                          disabled={loading}
+                        />
                       </div>
                     </div>
-                  </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="adresse">Adresse complète *</Label>
+                      <textarea
+                        id="adresse"
+                        value={formData.adresse}
+                        onChange={(e) => handleChange('adresse', e.target.value)}
+                        placeholder="II Plateaux, Boulevard Latrille..."
+                        rows={2}
+                        required
+                        disabled={loading}
+                        className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="telephone_centre" className="flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          Téléphone du centre *
+                        </Label>
+                        <Input
+                          id="telephone_centre"
+                          type="tel"
+                          value={formData.telephone}
+                          onChange={(e) => handleChange('telephone', e.target.value)}
+                          placeholder="+225 XX XX XX XX XX"
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="email_contact" className="flex items-center gap-2">
+                          <Mail className="w-4 h-4" />
+                          Email de contact
+                        </Label>
+                        <Input
+                          id="email_contact"
+                          type="email"
+                          value={formData.email_contact}
+                          onChange={(e) => handleChange('email_contact', e.target.value)}
+                          placeholder={user.email}
+                          disabled={loading}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="border-t pt-4 mt-4">
+                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Administrateur principal
+                      </h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="administrateur_nom">Nom complet *</Label>
+                          <Input
+                            id="administrateur_nom"
+                            value={formData.administrateur_nom}
+                            onChange={(e) => handleChange('administrateur_nom', e.target.value)}
+                            placeholder="Dr. Koffi Kouassi"
+                            required
+                            disabled={loading}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="administrateur_telephone">Téléphone *</Label>
+                          <Input
+                            id="administrateur_telephone"
+                            type="tel"
+                            value={formData.administrateur_telephone}
+                            onChange={(e) => handleChange('administrateur_telephone', e.target.value)}
+                            placeholder="+225..."
+                            required
+                            disabled={loading}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg mt-4">
+                      <p className="text-xs text-blue-800">
+                        ℹ️ Votre demande sera examinée sous 48h. Vous recevrez un email de confirmation.
+                      </p>
+                    </div>
+                  </>
                 )}
 
                 {selectedType !== 'centre_sante' && (

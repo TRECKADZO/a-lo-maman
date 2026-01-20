@@ -70,6 +70,8 @@ export default function AuthGuard({ children }) {
     enabled: !!user,
     retry: false,
     staleTime: 0,
+    // Forcer le refetch si on vient de créer un centre
+    refetchOnMount: true,
   });
 
   // 3. Déterminer le profil actif

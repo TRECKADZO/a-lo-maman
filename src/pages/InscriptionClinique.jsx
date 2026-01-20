@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Upload, CheckCircle, Loader2, ArrowRight, ArrowLeft, MapPin, Phone, Mail, FileText, Shield } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -44,6 +44,7 @@ const SERVICES = [
 
 export default function InscriptionClinique() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [etape, setEtape] = useState(1);
   const [uploadingDoc, setUploadingDoc] = useState(null);
   
@@ -158,13 +159,16 @@ export default function InscriptionClinique() {
       console.log('🎉 Centre créé avec succès:', centreCreated);
       setEtape(6);
       
-      // Invalider le cache et rediriger après un délai plus long
+      // Invalider le cache pour forcer le rechargement des profils
+      queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+      queryClient.invalidateQueries({ queryKey: ['check_centre'] });
+      
+      // Rediriger après un délai
       setTimeout(() => {
         console.log('🔄 Redirection vers Dashboard...');
-        // Force un reload complet pour que Dashboard refetch les profils
-        // Ajouter un paramètre pour forcer le refetch
-        window.location.href = createPageUrl('Dashboard') + '?t=' + Date.now();
-      }, 3500);
+        // Force un reload complet avec paramètre pour bypasser le cache
+        window.location.href = createPageUrl('Dashboard') + '?new_centre=true&t=' + Date.now();
+      }, 2500);
     },
     onError: (error) => {
       console.error('❌ Erreur création:', error);

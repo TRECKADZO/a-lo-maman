@@ -59,10 +59,36 @@ export default function SelectionCompte() {
   const [centreFound, setCentreFound] = useState(null);
   const [verifyingCode, setVerifyingCode] = useState(false);
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
+    retry: false,
   });
+
+  // Vérifier si l'utilisateur a déjà un centre de santé
+  const { data: centreExistant } = useQuery({
+    queryKey: ['check_centre', user?.email],
+    queryFn: async () => {
+      if (!user) return null;
+      const centres = await base44.entities.Clinique.filter({
+        $or: [
+          { administrateurs: { $in: [user.email] } },
+          { administrateur_email: user.email },
+          { created_by: user.email }
+        ]
+      });
+      return centres[0] || null;
+    },
+    enabled: !!user,
+    retry: false,
+  });
+
+  // Si un centre existe déjà, rediriger vers le Dashboard
+  React.useEffect(() => {
+    if (centreExistant && !userLoading) {
+      navigate(createPageUrl('Dashboard'), { replace: true });
+    }
+  }, [centreExistant, userLoading, navigate]);
 
   const verifierCodeCentre = async () => {
     if (codeInvitation.length < 4) return;
@@ -231,10 +257,13 @@ export default function SelectionCompte() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  if (!user) {
+  if (!user || centreExistant) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-pink-500 mx-auto mb-4" />
+          <p className="text-gray-600">{centreExistant ? 'Redirection vers votre centre...' : 'Chargement...'}</p>
+        </div>
       </div>
     );
   }

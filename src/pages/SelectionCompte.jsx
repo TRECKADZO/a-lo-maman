@@ -240,33 +240,33 @@ export default function SelectionCompte() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 sm:p-6 md:p-8">
       <div className="w-full max-w-4xl">
         {!showForm ? (
-          <div className="text-center space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <div className="text-center space-y-6 sm:space-y-8">
+            <div className="space-y-3 sm:space-y-4 px-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Bienvenue sur A'lo Maman ! 👋
               </h1>
-              <p className="text-xl text-gray-600">
+              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
                 Bonjour <strong>{user.full_name}</strong>, choisissez votre type de compte :
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               <Card 
-                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group"
+                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group active:scale-95"
                 onClick={() => handleSelectType('maman')}
               >
-                <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Heart className="w-12 h-12 text-white fill-white" />
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-white fill-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Je suis une Maman</h2>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Je suis une Maman</h2>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
                     Suivi de grossesse, carnets de santé de vos enfants, téléconsultations et communauté
                   </p>
-                  <div className="mt-6 space-y-2 text-sm text-gray-500">
+                  <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
                     <p>✓ Gratuit et complet</p>
                     <p>✓ Suivi grossesse personnalisé</p>
                     <p>✓ Carnets de santé numériques</p>
@@ -275,18 +275,18 @@ export default function SelectionCompte() {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-teal-400 group"
+                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-teal-400 group active:scale-95"
                 onClick={() => handleSelectType('professionnel')}
               >
-                <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Stethoscope className="w-12 h-12 text-white" />
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Stethoscope className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Je suis Professionnel</h2>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Je suis Professionnel</h2>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
                     Gynécologue, pédiatre, sage-femme, médecin ou infirmier(ère)
                   </p>
-                  <div className="mt-6 space-y-2 text-sm text-gray-500">
+                  <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
                     <p>✓ Gratuit pour les professionnels</p>
                     <p>✓ Gestion d'agenda en ligne</p>
                     <p>✓ Téléconsultations sécurisées</p>
@@ -296,18 +296,18 @@ export default function SelectionCompte() {
 
               <Button
                 variant="outline"
-                className="h-auto p-0 border-2 hover:shadow-2xl transition-all duration-300 hover:border-purple-400 group"
+                className="h-auto p-0 border-2 hover:shadow-2xl transition-all duration-300 hover:border-purple-400 group active:scale-95"
                 onClick={() => navigate(createPageUrl('InscriptionClinique'))}
               >
-                <CardContent className="p-8 text-center w-full">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Building2 className="w-12 h-12 text-white" />
+                <CardContent className="p-6 sm:p-8 text-center w-full">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Building2 className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre de Santé</h2>
-                    <p className="text-gray-600 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Centre de Santé</h2>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
                       PMI, clinique, hôpital ou centre offrant des services de maternité
                     </p>
-                    <div className="mt-6 space-y-2 text-sm text-gray-500">
+                    <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
                       <p>✓ Gestion des rendez-vous</p>
                       <p>✓ Profil public détaillé</p>
                       <p>✓ Intégration plateforme</p>
@@ -318,7 +318,7 @@ export default function SelectionCompte() {
           </div>
         ) : (
           <Card className="shadow-2xl border-none">
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-6 md:p-8">
               <div className="mb-6">
                 <Button
                   variant="ghost"
@@ -333,25 +333,25 @@ export default function SelectionCompte() {
                 >
                   ← Retour
                 </Button>
-                <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3 flex-wrap">
                  {selectedType === 'maman' ? (
                    <>
-                     <Heart className="w-8 h-8 text-pink-500" />
-                     Créer mon compte Maman
+                     <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500 flex-shrink-0" />
+                     <span>Créer mon compte Maman</span>
                    </>
                  ) : selectedType === 'centre_sante' ? (
                    <>
-                     <Radio className="w-8 h-8 text-purple-500" />
-                     Créer mon compte Centre de Santé
+                     <Radio className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 flex-shrink-0" />
+                     <span>Créer mon compte Centre de Santé</span>
                    </>
                  ) : (
                    <>
-                     <Stethoscope className="w-8 h-8 text-teal-500" />
-                     Créer mon compte Professionnel
+                     <Stethoscope className="w-6 h-6 sm:w-8 sm:h-8 text-teal-500 flex-shrink-0" />
+                     <span>Créer mon compte Professionnel</span>
                    </>
                  )}
                 </h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-sm sm:text-base text-gray-600 mt-2">
                   {selectedType === 'maman' 
                     ? 'Quelques informations pour personnaliser votre expérience'
                     : selectedType === 'centre_sante'
@@ -376,22 +376,22 @@ export default function SelectionCompte() {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {selectedType === 'professionnel' && (
                   <>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl">
-                      <Label htmlFor="code_centre" className="text-sm font-semibold text-purple-900 flex items-center gap-2 mb-2">
-                        <Building2 className="w-4 h-4" />
-                        Code d'invitation centre (optionnel)
+                    <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl">
+                      <Label htmlFor="code_centre" className="text-xs sm:text-sm font-semibold text-purple-900 flex items-center gap-2 mb-2">
+                        <Building2 className="w-4 h-4 flex-shrink-0" />
+                        <span>Code d'invitation centre (optionnel)</span>
                       </Label>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <Input
                           id="code_centre"
                           value={codeInvitation}
                           onChange={(e) => setCodeInvitation(e.target.value.toUpperCase())}
                           placeholder="ABCD12"
                           maxLength={6}
-                          className="font-mono text-lg tracking-wider"
+                          className="font-mono text-base sm:text-lg tracking-wider flex-1"
                           disabled={loading}
                         />
                         <Button
@@ -399,21 +399,21 @@ export default function SelectionCompte() {
                           variant="outline"
                           onClick={verifierCodeCentre}
                           disabled={codeInvitation.length < 4 || verifyingCode || loading}
-                          className="px-6"
+                          className="px-4 sm:px-6 w-full sm:w-auto"
                         >
                           {verifyingCode ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Vérifier'}
                         </Button>
                       </div>
                       {centreFound && (
-                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                          <div className="text-sm">
-                            <p className="text-green-900 font-semibold">{centreFound.nom}</p>
-                            <p className="text-green-700">{centreFound.ville}, {centreFound.region}</p>
+                        <div className="mt-2 sm:mt-3 p-2.5 sm:p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <div className="text-xs sm:text-sm min-w-0">
+                            <p className="text-green-900 font-semibold truncate">{centreFound.nom}</p>
+                            <p className="text-green-700 text-xs">{centreFound.ville}, {centreFound.region}</p>
                           </div>
                         </div>
                       )}
-                      <p className="text-xs text-purple-700 mt-2">
+                      <p className="text-[11px] sm:text-xs text-purple-700 mt-2">
                         💡 Si vous avez un code, vous serez automatiquement lié au centre
                       </p>
                     </div>
@@ -542,13 +542,14 @@ export default function SelectionCompte() {
                 )}
 
                 {/* Conditions */}
-                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg">
                   <Checkbox
                     id="conditions"
                     checked={formData.acceptConditions}
                     onCheckedChange={(checked) => handleChange('acceptConditions', checked)}
+                    className="mt-0.5"
                   />
-                  <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
+                  <label htmlFor="conditions" className="text-xs sm:text-sm text-gray-700 cursor-pointer leading-relaxed">
                     J'accepte les{" "}
                     <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
                       conditions d'utilisation
@@ -565,7 +566,7 @@ export default function SelectionCompte() {
                   </label>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
                   <Button
                     type="button"
                     variant="outline"
@@ -576,14 +577,14 @@ export default function SelectionCompte() {
                       setSuccess(false);
                     }}
                     disabled={loading}
-                    className="flex-1"
+                    className="flex-1 text-sm sm:text-base"
                   >
                     Annuler
                   </Button>
                   <Button
                     type="submit"
                     disabled={loading || success}
-                    className={`flex-1 ${
+                    className={`flex-1 text-sm sm:text-base ${
                       selectedType === 'maman' ? 'bg-pink-600 hover:bg-pink-700' : 
                       'bg-teal-600 hover:bg-teal-700'
                     }`}
@@ -591,7 +592,8 @@ export default function SelectionCompte() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Création en cours...
+                        <span className="hidden sm:inline">Création en cours...</span>
+                        <span className="sm:hidden">Création...</span>
                       </>
                     ) : success ? (
                       <>

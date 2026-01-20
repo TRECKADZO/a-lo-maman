@@ -59,6 +59,7 @@ import FeedbackWidget from "@/components/analytics/FeedbackWidget";
 import OfflineManager from "@/components/offline/OfflineManager";
 import ServiceWorkerRegistration from "@/components/offline/ServiceWorkerRegistration";
 import PersonnaliserNavigation from "@/components/navigation/PersonnaliserNavigation";
+import SecurityMonitor from "@/components/security/SecurityMonitor";
 
 const getNavigationItems = (lang, isSpecialist, isAdmin) => {
     if (isAdmin) {
@@ -601,6 +602,7 @@ export default function Layout({ children, currentPageName }) {
           <MessageNotifications />
           <RappelsChecker />
           <VaccinNotificationService />
+          <SecurityMonitor />
         </ABTestProvider>
 
         {showPersonnaliserNav && (

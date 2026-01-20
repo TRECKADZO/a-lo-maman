@@ -95,30 +95,38 @@ export default function AdminPortailCentre() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-100">
       <div className="p-4 md:p-8 pb-24 md:pb-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Building2 className="w-8 h-8 text-purple-600" />
-                {centre.nom}
-              </h1>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                <Badge className="bg-purple-100 text-purple-800">
-                  {centre.type_etablissement.replace(/_/g, ' ')}
-                </Badge>
-                <Badge variant="outline">
-                  <MapPin className="w-3 h-3 mr-1" />
-                  {centre.ville}, {centre.region}
-                </Badge>
-                {centre.actif && (
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Actif
-                  </Badge>
-                )}
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header professionnel de classe mondiale */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-8 md:p-10 shadow-2xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+            <div className="absolute inset-0 bg-grid-white/5 bg-[size:30px_30px]" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center shadow-2xl border border-white/30">
+                  <Building2 className="w-11 h-11 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
+                    {centre.nom}
+                  </h1>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Badge className="bg-white/20 text-white border-white/40 backdrop-blur-sm px-3 py-1.5 text-sm">
+                      {centre.type_etablissement.replace(/_/g, ' ')}
+                    </Badge>
+                    <div className="flex items-center gap-1.5 text-white/90">
+                      <MapPin className="w-4 h-4" />
+                      <span className="text-sm font-medium">{centre.ville}, {centre.region}</span>
+                    </div>
+                    {centre.actif && (
+                      <Badge className="bg-green-500/30 text-green-100 border-green-400/40 backdrop-blur-sm px-3 py-1.5 text-sm">
+                        <div className="w-2 h-2 bg-green-400 rounded-full mr-1.5 animate-pulse" />
+                        Actif
+                      </Badge>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -134,81 +142,115 @@ export default function AdminPortailCentre() {
             </Alert>
           )}
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Employés</p>
-                    <p className="text-3xl font-bold text-purple-600">{statsRapides.total_membres}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {statsRapides.membres_actifs} actifs
-                    </p>
+          {/* Stats Cards premium */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-purple-50 via-indigo-50 to-white hover:scale-105 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardContent className="p-6 relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <Users className="w-7 h-7 text-white" />
                   </div>
-                  <Users className="w-12 h-12 text-purple-200" />
+                  <TrendingUp className="w-5 h-5 text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Employés</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-1">
+                    {statsRapides.total_membres}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {statsRapides.membres_actifs} actifs
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Services</p>
-                    <p className="text-3xl font-bold text-blue-600">{statsRapides.services}</p>
+            <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-blue-50 via-cyan-50 to-white hover:scale-105 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardContent className="p-6 relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <Activity className="w-7 h-7 text-white" />
                   </div>
-                  <Activity className="w-12 h-12 text-blue-200" />
+                  <BarChart3 className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Services</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                    {statsRapides.services}
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">RDV ce mois</p>
-                    <p className="text-3xl font-bold text-green-600">{statsRapides.rdv_mois}</p>
+            <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-emerald-50 via-green-50 to-white hover:scale-105 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardContent className="p-6 relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <Calendar className="w-7 h-7 text-white" />
                   </div>
-                  <Calendar className="w-12 h-12 text-green-200" />
+                  <Clock className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">RDV ce mois</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+                    {statsRapides.rdv_mois}
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Capacité</p>
-                    <p className="text-3xl font-bold text-orange-600">
-                      {centre.capacite_lits || 'N/A'}
-                    </p>
-                    {centre.capacite_lits && (
-                      <p className="text-xs text-gray-500 mt-1">lits</p>
-                    )}
+            <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-gradient-to-br from-orange-50 via-amber-50 to-white hover:scale-105 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardContent className="p-6 relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <TrendingUp className="w-7 h-7 text-white" />
                   </div>
-                  <TrendingUp className="w-12 h-12 text-orange-200" />
+                  <Activity className="w-5 h-5 text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Capacité</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-1">
+                    {centre.capacite_lits || 'N/A'}
+                  </p>
+                  {centre.capacite_lits && (
+                    <p className="text-xs text-gray-500">lits disponibles</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Tabs */}
+          {/* Tabs moderne */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-              <TabsTrigger value="dashboard">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-xl border-0 h-auto">
+              <TabsTrigger 
+                value="dashboard"
+                className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-indigo-600 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-xl py-3.5 transition-all duration-300 data-[state=active]:shadow-lg font-medium"
+              >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="employes">
+              <TabsTrigger 
+                value="employes"
+                className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white rounded-xl py-3.5 transition-all duration-300 data-[state=active]:shadow-lg font-medium"
+              >
                 <Users className="w-4 h-4 mr-2" />
                 Employés
               </TabsTrigger>
-              <TabsTrigger value="services">
+              <TabsTrigger 
+                value="services"
+                className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-xl py-3.5 transition-all duration-300 data-[state=active]:shadow-lg font-medium"
+              >
                 <Activity className="w-4 h-4 mr-2" />
                 Services
               </TabsTrigger>
-              <TabsTrigger value="statistiques">
+              <TabsTrigger 
+                value="statistiques"
+                className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-600 data-[state=active]:to-green-600 data-[state=active]:text-white rounded-xl py-3.5 transition-all duration-300 data-[state=active]:shadow-lg font-medium"
+              >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Statistiques
               </TabsTrigger>

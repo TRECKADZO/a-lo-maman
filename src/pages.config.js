@@ -7,6 +7,7 @@ import AdminFHIR from './pages/AdminFHIR';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminGestionCentres from './pages/AdminGestionCentres';
 import AdminLiveChat from './pages/AdminLiveChat';
+import AdminPortailCentre from './pages/AdminPortailCentre';
 import Analytics from './pages/Analytics';
 import AssistantIA from './pages/AssistantIA';
 import AssistantIAPro from './pages/AssistantIAPro';
@@ -76,7 +77,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import TestsSecurite from './pages/TestsSecurite';
 import VideoConsultation from './pages/VideoConsultation';
-import AdminPortailCentre from './pages/AdminPortailCentre';
 import __Layout from './Layout.jsx';
 
 
@@ -90,6 +90,7 @@ export const PAGES = {
     "AdminFeedback": AdminFeedback,
     "AdminGestionCentres": AdminGestionCentres,
     "AdminLiveChat": AdminLiveChat,
+    "AdminPortailCentre": AdminPortailCentre,
     "Analytics": Analytics,
     "AssistantIA": AssistantIA,
     "AssistantIAPro": AssistantIAPro,
@@ -159,7 +160,6 @@ export const PAGES = {
     "Tests": Tests,
     "TestsSecurite": TestsSecurite,
     "VideoConsultation": VideoConsultation,
-    "AdminPortailCentre": AdminPortailCentre,
 }
 
 export const pagesConfig = {

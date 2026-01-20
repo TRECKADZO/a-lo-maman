@@ -55,11 +55,38 @@ export default function SelectionCompte() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [codeInvitation, setCodeInvitation] = useState('');
+  const [centreFound, setCentreFound] = useState(null);
+  const [verifyingCode, setVerifyingCode] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
   });
+
+  const verifierCodeCentre = async () => {
+    if (codeInvitation.length < 4) return;
+    
+    setVerifyingCode(true);
+    try {
+      const centres = await base44.entities.Clinique.filter({
+        code_invitation: codeInvitation.toUpperCase()
+      });
+      
+      if (centres.length === 0) {
+        setError('Code invalide ou centre non trouvé');
+        setCentreFound(null);
+      } else {
+        setCentreFound(centres[0]);
+        setError(null);
+      }
+    } catch (err) {
+      setError('Erreur lors de la vérification du code');
+      setCentreFound(null);
+    } finally {
+      setVerifyingCode(false);
+    }
+  };
 
   const handleCreateProfile = async () => {
     console.log('🔴 === CRÉATION PROFIL - DÉBUT ===');
@@ -144,6 +171,32 @@ export default function SelectionCompte() {
         console.log('⏳ Appel API...');
         const profile = await base44.entities.Professionnel.create(proData);
         console.log('✅ Professionnel créé:', profile.id);
+        
+        // Si code centre fourni, rejoindre automatiquement
+        if (centreFound) {
+          console.log('🏥 Liaison au centre:', centreFound.nom);
+          const membreData = {
+            centre_id: centreFound.id,
+            centre_nom: centreFound.nom,
+            user_email: user.email,
+            user_nom: proData.nom_complet,
+            role: 'medecin',
+            specialite: proData.specialite || '',
+            telephone: proData.telephone || '',
+            statut: 'actif',
+            date_acceptation: new Date().toISOString(),
+            permissions: {
+              voir_tous_patients: true,
+              modifier_patients: true,
+              voir_dossiers_medicaux: true,
+              creer_ordonnances: true,
+              gerer_rdv: true,
+              voir_rdv: true
+            }
+          };
+          await base44.entities.MembreCentre.create(membreData);
+          console.log('✅ Membre centre créé');
+        }
         
         // Invalider le cache et attendre la synchronisation
         queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
@@ -326,6 +379,45 @@ export default function SelectionCompte() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {selectedType === 'professionnel' && (
                   <>
+                    <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl">
+                      <Label htmlFor="code_centre" className="text-sm font-semibold text-purple-900 flex items-center gap-2 mb-2">
+                        <Building2 className="w-4 h-4" />
+                        Code d'invitation centre (optionnel)
+                      </Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="code_centre"
+                          value={codeInvitation}
+                          onChange={(e) => setCodeInvitation(e.target.value.toUpperCase())}
+                          placeholder="ABCD12"
+                          maxLength={6}
+                          className="font-mono text-lg tracking-wider"
+                          disabled={loading}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={verifierCodeCentre}
+                          disabled={codeInvitation.length < 4 || verifyingCode || loading}
+                          className="px-6"
+                        >
+                          {verifyingCode ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Vérifier'}
+                        </Button>
+                      </div>
+                      {centreFound && (
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <div className="text-sm">
+                            <p className="text-green-900 font-semibold">{centreFound.nom}</p>
+                            <p className="text-green-700">{centreFound.ville}, {centreFound.region}</p>
+                          </div>
+                        </div>
+                      )}
+                      <p className="text-xs text-purple-700 mt-2">
+                        💡 Si vous avez un code, vous serez automatiquement lié au centre
+                      </p>
+                    </div>
+
                     <div className="space-y-2">
                       <Label htmlFor="nom_complet" className="flex items-center gap-2">
                         <User className="w-4 h-4" />

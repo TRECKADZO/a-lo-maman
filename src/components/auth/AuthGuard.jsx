@@ -73,8 +73,10 @@ export default function AuthGuard({ children }) {
   });
 
   // 3. Déterminer le profil actif
-  const activeProfile = profiles?.pro || profiles?.maman || profiles?.centre;
+  const activeProfile = profiles?.centre || profiles?.pro || profiles?.maman;
   const isSpecialist = !!profiles?.pro;
+  const isCentre = !!profiles?.centre;
+  const isAdmin = user?.role === 'admin';
 
   // 4. Gérer les redirections
   React.useEffect(() => {
@@ -83,7 +85,8 @@ export default function AuthGuard({ children }) {
     console.log('🛡️ AuthGuard - Auth state:', {
       hasUser: !!user,
       hasProfile: !!activeProfile,
-      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE'))
+      profileType: isCentre ? 'CENTRE' : (isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : 'NONE')),
+      isAdmin
     });
 
     // Pas d'utilisateur -> Intro
@@ -94,14 +97,15 @@ export default function AuthGuard({ children }) {
     }
 
     // Utilisateur mais pas de profil -> SelectionCompte
-    if (!activeProfile) {
+    // SAUF si c'est un admin (qui a toujours accès)
+    if (!activeProfile && !isAdmin) {
       console.log('➡️ AuthGuard - No profile, redirect to SelectionCompte');
       navigate(createPageUrl('SelectionCompte'), { replace: true });
       return;
     }
 
     console.log('✅ AuthGuard - Access granted!');
-  }, [user, activeProfile, userLoading, profilesLoading, navigate, isSpecialist, profiles]);
+  }, [user, activeProfile, userLoading, profilesLoading, navigate, isSpecialist, profiles, isCentre, isAdmin]);
 
   // 5. Afficher le loader pendant le chargement
   if (userLoading || profilesLoading) {

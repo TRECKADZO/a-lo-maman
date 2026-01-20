@@ -46,6 +46,8 @@ import AjouterNoteEvolution from "../components/patients/AjouterNoteEvolution";
 import CreerRappelSuivi from "../components/patients/CreerRappelSuivi";
 import ConsulterDMPProfessionnel from "../components/dmp/ConsulterDMPProfessionnel";
 import PublierDMPProfessionnel from "../components/dmp/PublierDMPProfessionnel";
+import ExtractionDocumentIA from "../components/dmp/ExtractionDocumentIA";
+import ResumeMedicalIA from "../components/dmp/ResumeMedicalIA";
 
 export default function DossierPatient() {
   const location = useLocation();
@@ -511,6 +513,18 @@ export default function DossierPatient() {
 
           {/* DMP - Dossier Médical Partagé */}
           <TabsContent value="dmp" className="space-y-6">
+            {/* Résumé médical intelligent */}
+            <ResumeMedicalIA patientEmail={enfant.created_by} />
+
+            {/* Extraction automatique par IA */}
+            <ExtractionDocumentIA
+              patientEmail={enfant.created_by}
+              enfantId={enfant.id}
+              onExtractionComplete={() => {
+                queryClient.invalidateQueries({ queryKey: ['documents_patient', enfant.created_by] });
+              }}
+            />
+
             <ConsulterDMPProfessionnel
               patientEmail={enfant.created_by}
               professionnelId={profilPro?.id}

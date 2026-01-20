@@ -77,6 +77,7 @@ import Tests from './pages/Tests';
 import TestsSecurite from './pages/TestsSecurite';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
+import AdminPortailCentre from './pages/AdminPortailCentre';
 import __Layout from './Layout.jsx';
 
 
@@ -160,6 +161,7 @@ export const PAGES = {
     "TestsSecurite": TestsSecurite,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
+    "AdminPortailCentre": AdminPortailCentre,
 }
 
 export const pagesConfig = {

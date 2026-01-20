@@ -29,7 +29,8 @@ export default function Dashboard() {
         base44.entities.Clinique.filter({
           $or: [
             { administrateurs: { $in: [user.email] } },
-            { administrateur_email: user.email }
+            { administrateur_email: user.email },
+            { created_by: user.email }
           ]
         }).catch(() => [])
       ]);
@@ -38,6 +39,10 @@ export default function Dashboard() {
       
       const proProfil = proProfiles.find(p => p.email === user.email);
       const centreProfil = centreProfiles[0] || null;
+      
+      if (centreProfil) {
+        console.log('✅ Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
+      }
       
       return {
         maman: mamanProfiles[0] || null,
@@ -49,6 +54,7 @@ export default function Dashboard() {
     staleTime: 0,
     refetchOnMount: 'always',
     cacheTime: 0,
+    refetchOnWindowFocus: true,
   });
 
   if (isLoading) {

@@ -303,9 +303,9 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const isAdmin = user?.role === 'admin';
-  const isSpecialist = !!profiles?.pro;
   const isCentre = !!profiles?.centre && !isAdmin;
-  const currentProfile = profiles?.pro || profiles?.maman || profiles?.centre;
+  const isSpecialist = !isCentre && !!profiles?.pro; // Specialist seulement si pas centre
+  const currentProfile = profiles?.centre || profiles?.pro || profiles?.maman; // Centre en priorité
   const lang = currentProfile?.langue_preferee === 'anglais' ? 'en' : 'fr';
   const theme = currentProfile?.theme_prefere || 'clair';
 

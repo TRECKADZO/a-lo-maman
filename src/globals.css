@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide Base44 badge */
+#base44-badge {
+  display: none !important;
+}
+
 /* Variables CSS pour l'expérience mobile native */
 :root {
   --safe-area-inset-top: env(safe-area-inset-top, 0px);

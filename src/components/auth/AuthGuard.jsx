@@ -125,8 +125,18 @@ export default function AuthGuard({ children }) {
     );
   }
 
-  // 6. Si pas d'utilisateur ou pas de profil, ne rien afficher (redirection en cours)
-  if (!user || !activeProfile) {
+  // 6. Si pas d'utilisateur, ne rien afficher (redirection en cours)
+  // MAIS: Si admin, toujours autoriser même sans profil
+  if (!user) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+      </div>
+    );
+  }
+
+  // Si pas de profil ET pas admin, ne rien afficher (redirection en cours)
+  if (!activeProfile && !isAdmin) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-pink-500" />

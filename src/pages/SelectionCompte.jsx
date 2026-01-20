@@ -157,80 +157,84 @@ export default function SelectionCompte() {
         console.log('🔄 Rechargement de la page...');
         window.location.href = createPageUrl('Dashboard');
         
+      } else if (selectedType === 'centre_sante') {
+       console.log('🏥 CRÉATION CENTRE DE SANTÉ');
+       // Rediriger vers InscriptionClinique
+       navigate(createPageUrl('InscriptionClinique'), { replace: true });
       } else {
-        console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');
-        
-        // Validation
-        if (!formData.specialite) throw new Error('Spécialité manquante');
-        if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
-          throw new Error('Nom complet invalide (min 3 caractères)');
-        }
-        if (!formData.telephone?.trim() || formData.telephone.trim().length < 8) {
-          throw new Error('Téléphone invalide (min 8 caractères)');
-        }
-        if (!formData.ville?.trim()) throw new Error('Ville manquante');
-        if (!formData.region) throw new Error('Région manquante');
-        if (!formData.biographie?.trim() || formData.biographie.trim().length < 50) {
-          throw new Error('Biographie trop courte (min 50 caractères)');
-        }
+       console.log('👨‍⚕️ CRÉATION PROFIL PROFESSIONNEL');
 
-        const proData = {
-          nom_complet: formData.nom_complet.trim(),
-          email: user.email,
-          specialite: formData.specialite,
-          telephone: formData.telephone.trim(),
-          ville: formData.ville.trim(),
-          region: formData.region,
-          biographie: formData.biographie.trim(),
-          langue_preferee: 'francais',
-          theme_prefere: 'clair',
-          accepte_cmu: true,
-          onboarding_completed: false,
-        };
+       // Validation
+       if (!formData.specialite) throw new Error('Spécialité manquante');
+       if (!formData.nom_complet?.trim() || formData.nom_complet.trim().length < 3) {
+         throw new Error('Nom complet invalide (min 3 caractères)');
+       }
+       if (!formData.telephone?.trim() || formData.telephone.trim().length < 8) {
+         throw new Error('Téléphone invalide (min 8 caractères)');
+       }
+       if (!formData.ville?.trim()) throw new Error('Ville manquante');
+       if (!formData.region) throw new Error('Région manquante');
+       if (!formData.biographie?.trim() || formData.biographie.trim().length < 50) {
+         throw new Error('Biographie trop courte (min 50 caractères)');
+       }
 
-        console.log('📦 Données Professionnel:', {
-          nom_complet: proData.nom_complet,
-          email: proData.email,
-          specialite: proData.specialite,
-        });
-        
-        console.log('⏳ Appel API...');
-        const profile = await base44.entities.Professionnel.create(proData);
-        console.log('✅ Professionnel créé:', profile.id);
-        
-        // Si code centre fourni, rejoindre automatiquement
-        if (centreFound) {
-          console.log('🏥 Liaison au centre:', centreFound.nom);
-          const membreData = {
-            centre_id: centreFound.id,
-            centre_nom: centreFound.nom,
-            user_email: user.email,
-            user_nom: proData.nom_complet,
-            role: 'medecin',
-            specialite: proData.specialite || '',
-            telephone: proData.telephone || '',
-            statut: 'actif',
-            date_acceptation: new Date().toISOString(),
-            permissions: {
-              voir_tous_patients: true,
-              modifier_patients: true,
-              voir_dossiers_medicaux: true,
-              creer_ordonnances: true,
-              gerer_rdv: true,
-              voir_rdv: true
-            }
-          };
-          await base44.entities.MembreCentre.create(membreData);
-          console.log('✅ Membre centre créé');
-        }
-        
-        // Invalider le cache et attendre la synchronisation
-        queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
-        console.log('🔄 Attente de synchronisation (2s)...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        console.log('🔄 Rechargement de la page...');
-        window.location.href = createPageUrl('Dashboard');
+       const proData = {
+         nom_complet: formData.nom_complet.trim(),
+         email: user.email,
+         specialite: formData.specialite,
+         telephone: formData.telephone.trim(),
+         ville: formData.ville.trim(),
+         region: formData.region,
+         biographie: formData.biographie.trim(),
+         langue_preferee: 'francais',
+         theme_prefere: 'clair',
+         accepte_cmu: true,
+         onboarding_completed: false,
+       };
+
+       console.log('📦 Données Professionnel:', {
+         nom_complet: proData.nom_complet,
+         email: proData.email,
+         specialite: proData.specialite,
+       });
+
+       console.log('⏳ Appel API...');
+       const profile = await base44.entities.Professionnel.create(proData);
+       console.log('✅ Professionnel créé:', profile.id);
+
+       // Si code centre fourni, rejoindre automatiquement
+       if (centreFound) {
+         console.log('🏥 Liaison au centre:', centreFound.nom);
+         const membreData = {
+           centre_id: centreFound.id,
+           centre_nom: centreFound.nom,
+           user_email: user.email,
+           user_nom: proData.nom_complet,
+           role: 'medecin',
+           specialite: proData.specialite || '',
+           telephone: proData.telephone || '',
+           statut: 'actif',
+           date_acceptation: new Date().toISOString(),
+           permissions: {
+             voir_tous_patients: true,
+             modifier_patients: true,
+             voir_dossiers_medicaux: true,
+             creer_ordonnances: true,
+             gerer_rdv: true,
+             voir_rdv: true
+           }
+         };
+         await base44.entities.MembreCentre.create(membreData);
+         console.log('✅ Membre centre créé');
+       }
+
+       // Invalider le cache et attendre la synchronisation
+       queryClient.invalidateQueries({ queryKey: ['user_profiles'] });
+       console.log('🔄 Attente de synchronisation (2s)...');
+       await new Promise(resolve => setTimeout(resolve, 2000));
+
+       console.log('🔄 Rechargement de la page...');
+       window.location.href = createPageUrl('Dashboard');
       }
       
     } catch (err) {
@@ -490,9 +494,18 @@ export default function SelectionCompte() {
 
 
 
+                {selectedType === 'centre_sante' && (
+                   <>
+                     {/* Centre de santé affichera le formulaire depuis InscriptionClinique */}
+                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                       <p className="text-blue-900">Vous serez redirigé vers le formulaire d'inscription du centre...</p>
+                     </div>
+                   </>
+                )}
+
                 {selectedType !== 'centre_sante' && (
-                  <>
-                    <div className="grid md:grid-cols-2 gap-4">
+                   <>
+                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="telephone" className="flex items-center gap-2">
                           <Phone className="w-4 h-4" />

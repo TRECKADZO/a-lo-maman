@@ -27,6 +27,7 @@ import { createPageUrl } from '@/utils';
 import OnboardingProfessionnel from '../components/onboarding/OnboardingProfessionnel';
 import MetricsCharts from '../components/dashboard-pro/MetricsCharts';
 import AlertesRisqueIA from '../components/dashboard-pro/AlertesRisqueIA';
+import RecommandationsPatientsIA from '../components/dmp/RecommandationsPatientsIA';
 
 export default function DashboardProfessionnel() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -301,6 +302,13 @@ export default function DashboardProfessionnel() {
 
         {/* Alertes IA */}
         <AlertesRisqueIA profesionnelEmail={user?.email} />
+
+        {/* Recommandations de patients par IA */}
+        <RecommandationsPatientsIA 
+          professionnelId={profilPro?.id}
+          specialite={profilPro?.specialite}
+          contextConsultation="suivi_general"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="shadow-lg border-none bg-gradient-to-r from-purple-50 to-indigo-50">

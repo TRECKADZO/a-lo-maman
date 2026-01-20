@@ -21,13 +21,6 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!user) return { maman: null, pro: null, centre: null };
       
-      // Si centre vient d'être créé, attendre un peu pour être sûr que la base de données est à jour
-      const centreJustCreated = localStorage.getItem('centre_just_created') === 'true';
-      if (centreJustCreated) {
-        console.log('⏳ Centre vient d\'être créé, attente de synchronisation...');
-        await new Promise(resolve => setTimeout(resolve, 1500));
-      }
-      
       console.log('🔍 Récupération profils pour:', user.email);
       
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([

@@ -72,8 +72,8 @@ export default function AuthGuard({ children }) {
     staleTime: 0,
   });
 
-  // 3. Déterminer le profil actif
-  const activeProfile = profiles?.pro || profiles?.maman || profiles?.centre;
+  // 3. Déterminer le profil actif (priorité: centre, puis pro, puis maman)
+  const activeProfile = profiles?.centre || profiles?.pro || profiles?.maman;
   const isSpecialist = !!profiles?.pro;
 
   // 4. Gérer les redirections

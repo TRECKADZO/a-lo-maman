@@ -196,8 +196,8 @@ export default function MesPatients() {
 
   return (
     <AuthGuard>
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
-        <div className="space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+        <div className="space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
           <div>
             <h1 className="text-2xl md:text-4xl font-bold text-gray-900 flex items-center gap-3 mb-2">
               <div className="p-3 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl shadow-lg">

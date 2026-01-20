@@ -79,8 +79,8 @@ export default function Enfants() {
 
   return (
     <PageTransition type="fade">
-      <div className="min-h-full bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8 pb-24 lg:pb-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+        <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
           {/* Header optimisé */}
           <CardTransition>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

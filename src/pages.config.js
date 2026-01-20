@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 import AssistantIA from './pages/AssistantIA';
 import AssistantIAPro from './pages/AssistantIAPro';
 import AuditApp from './pages/AuditApp';
+import AuditSecurite from './pages/AuditSecurite';
 import AuditSysteme from './pages/AuditSysteme';
 import Calendrier from './pages/Calendrier';
 import CalendrierCentre from './pages/CalendrierCentre';
@@ -76,7 +77,6 @@ import Tests from './pages/Tests';
 import TestsSecurite from './pages/TestsSecurite';
 import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
-import AuditSecurite from './pages/AuditSecurite';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +94,7 @@ export const PAGES = {
     "AssistantIA": AssistantIA,
     "AssistantIAPro": AssistantIAPro,
     "AuditApp": AuditApp,
+    "AuditSecurite": AuditSecurite,
     "AuditSysteme": AuditSysteme,
     "Calendrier": Calendrier,
     "CalendrierCentre": CalendrierCentre,
@@ -159,7 +160,6 @@ export const PAGES = {
     "TestsSecurite": TestsSecurite,
     "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
-    "AuditSecurite": AuditSecurite,
 }
 
 export const pagesConfig = {

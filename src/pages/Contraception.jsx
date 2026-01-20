@@ -110,8 +110,8 @@ export default function Contraception() {
   return (
     <AuthGuard>
       <PageTransition type="fade">
-        <div className="bg-gradient-to-br from-rose-50 via-white to-pink-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
-          <div className="p-4 md:p-8 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-br from-rose-50 via-white to-pink-50 min-h-screen">
+          <div className="p-4 md:p-8 space-y-4 md:space-y-6 max-w-7xl mx-auto pb-24 lg:pb-8">
             {/* Header optimisé mobile */}
             <CardTransition>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
@@ -225,7 +224,7 @@ export default function MonAgenda() {
     <AuthGuard>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50 dark:from-gray-900 dark:to-gray-950">
         {/* Header avec stats */}
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 pb-24 lg:pb-6">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 pb-24 lg:pb-8">
           <div className="space-y-4">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>

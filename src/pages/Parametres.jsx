@@ -361,8 +361,8 @@ export default function Parametres() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900 dark:to-gray-950">
+      <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-8 pb-24 lg:pb-8">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-3">
             <Settings className="w-10 h-10 text-gray-500" />

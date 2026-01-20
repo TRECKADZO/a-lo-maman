@@ -251,7 +251,7 @@ export default function Grossesse() {
   }
 
   return (
-    <div className="bg-gray-50 pb-24 md:pb-8" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
+    <div className="bg-gray-50 min-h-screen pb-24 lg:pb-8">
       {info && (
         <>
           {/* Header compact mobile-first */}

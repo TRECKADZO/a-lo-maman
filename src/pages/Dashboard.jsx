@@ -21,7 +21,7 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!user) return { maman: null, pro: null, centre: null };
       
-      console.log('🔍 Récupération profils pour:', user.email);
+      console.log('🔍 Dashboard - Récupération profils pour:', user.email);
       
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
@@ -35,13 +35,13 @@ export default function Dashboard() {
         }).catch(() => [])
       ]);
       
-      console.log('📊 Centres trouvés:', centreProfiles);
+      console.log('📊 Dashboard - Centres trouvés:', centreProfiles);
       
       const proProfil = proProfiles.find(p => p.email === user.email);
       const centreProfil = centreProfiles[0] || null;
       
       if (centreProfil) {
-        console.log('✅ Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
+        console.log('✅ Dashboard - Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
       }
       
       return {
@@ -65,11 +65,12 @@ export default function Dashboard() {
     );
   }
 
-  const isSpecialist = !!profiles?.pro;
+  const isAdmin = user?.role === 'admin';
   const profilCentre = profiles?.centre;
+  const isSpecialist = !profilCentre && !!profiles?.pro; // Specialist uniquement si pas de centre
 
-  // Affichage pour centres de santé
-  if (profilCentre) {
+  // PRIORITÉ 1: Affichage pour centres de santé (même si pro existe aussi)
+  if (profilCentre && !isAdmin) {
     // Vérifier si onboarding est complété
     const needsOnboarding = profilCentre.statut_validation === 'approuve' && !profilCentre.onboarding_completed;
 

@@ -135,7 +135,7 @@ export default function InscriptionClinique() {
         telephone: formData.telephone,
         email_contact: formData.email_contact || user.email,
         administrateur_nom: formData.administrateur_nom,
-        administrateur_email: user.email,
+        administrateur_email: formData.administrateur_email || user.email,
         administrateur_telephone: formData.administrateur_telephone,
         administrateurs: [user.email],
         services_offerts: formData.services_offerts,
@@ -144,26 +144,32 @@ export default function InscriptionClinique() {
         document_registre_commerce: formData.document_registre_commerce,
         code_invitation: codeInvitation,
         statut_validation: 'approuve',
+        actif: true,
         date_demande: new Date().toISOString(),
         onboarding_completed: false
       };
 
-      return await base44.entities.Clinique.create(demande);
+      console.log('🏥 Création centre:', demande);
+      const result = await base44.entities.Clinique.create(demande);
+      console.log('✅ Centre créé:', result);
+      return result;
     },
     onSuccess: () => {
-      // Rediriger vers le Dashboard après création
+      console.log('🎉 Succès - Redirection Dashboard');
+      setEtape(6);
       setTimeout(() => {
         window.location.href = createPageUrl('Dashboard');
       }, 2000);
     },
     onError: (error) => {
+      console.error('❌ Erreur création:', error);
       alert('Erreur : ' + error.message);
     }
   });
 
-  const peutContinuerEtape1 = formData.nom && formData.type_etablissement && formData.numero_agrement && formData.description;
-  const peutContinuerEtape2 = formData.region && formData.ville && formData.adresse && formData.telephone;
-  const peutContinuerEtape3 = formData.administrateur_nom && formData.administrateur_email && formData.administrateur_telephone;
+  const peutContinuerEtape1 = formData.nom?.trim() && formData.type_etablissement && formData.numero_agrement?.trim() && formData.description?.trim();
+  const peutContinuerEtape2 = formData.region && formData.ville?.trim() && formData.adresse?.trim() && formData.telephone?.trim();
+  const peutContinuerEtape3 = formData.administrateur_nom?.trim() && formData.administrateur_telephone?.trim();
   const peutContinuerEtape4 = formData.services_offerts.length > 0;
   const peutContinuerEtape5 = formData.document_agrement && formData.document_registre_commerce;
 
@@ -442,15 +448,18 @@ export default function InscriptionClinique() {
                 </div>
 
                 <div>
-                  <Label htmlFor="admin_email">Email professionnel *</Label>
+                  <Label htmlFor="admin_email">Email professionnel</Label>
                   <Input
                     id="admin_email"
                     type="email"
-                    placeholder="admin@clinique.ci"
-                    value={formData.administrateur_email}
+                    placeholder={user?.email || "admin@clinique.ci"}
+                    value={formData.administrateur_email || user?.email}
                     onChange={(e) => updateField('administrateur_email', e.target.value)}
                     className="mt-1"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Par défaut : {user?.email}
+                  </p>
                 </div>
 
                 <div>

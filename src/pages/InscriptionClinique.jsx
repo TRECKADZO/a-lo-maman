@@ -97,15 +97,17 @@ export default function InscriptionClinique() {
       };
 
       console.log('🏥 Création centre:', centreData);
-      await base44.entities.Clinique.create(centreData);
-      console.log('✅ Centre créé avec succès');
+      const newCentre = await base44.entities.Clinique.create(centreData);
+      console.log('✅ Centre créé avec succès:', newCentre.id);
       
-      // Stocker un flag pour éviter la redirection vers SelectionCompte
+      // Stocker le flag et l'ID du centre créé
       localStorage.setItem('centre_just_created', 'true');
+      localStorage.setItem('centre_created_id', newCentre.id);
       
+      // Attendre un délai plus court avant redirection
       setTimeout(() => {
-        window.location.href = createPageUrl('Dashboard') + '?t=' + Date.now();
-      }, 2000);
+        window.location.href = createPageUrl('Dashboard') + '?centre_new=1&t=' + Date.now();
+      }, 1500);
       
     } catch (err) {
       console.error('❌ Erreur création:', err);

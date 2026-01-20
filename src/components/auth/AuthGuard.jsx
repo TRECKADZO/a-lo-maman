@@ -92,7 +92,9 @@ export default function AuthGuard({ children }) {
 
     // Nettoyer le flag si profil trouvé
     if (centreJustCreated && activeProfile) {
+      console.log('🧹 Nettoyage flag centre_just_created');
       localStorage.removeItem('centre_just_created');
+      localStorage.removeItem('centre_created_id');
     }
 
     // Pas d'utilisateur -> Intro
@@ -102,8 +104,21 @@ export default function AuthGuard({ children }) {
       return;
     }
 
-    // Utilisateur mais pas de profil -> SelectionCompte (sauf si centre vient d'être créé)
-    if (!activeProfile && !centreJustCreated) {
+    // Si centre vient d'être créé mais pas encore chargé, attendre max 10s
+    if (centreJustCreated && !activeProfile) {
+      console.log('⏳ Centre en cours de chargement...');
+      const timeout = setTimeout(() => {
+        console.log('⚠️ Timeout - Nettoyage des flags et redirection');
+        localStorage.removeItem('centre_just_created');
+        localStorage.removeItem('centre_created_id');
+        navigate(createPageUrl('SelectionCompte'), { replace: true });
+      }, 10000);
+      
+      return () => clearTimeout(timeout);
+    }
+
+    // Utilisateur mais pas de profil -> SelectionCompte
+    if (!activeProfile) {
       console.log('➡️ AuthGuard - No profile, redirect to SelectionCompte');
       navigate(createPageUrl('SelectionCompte'), { replace: true });
       return;

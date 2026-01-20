@@ -42,10 +42,7 @@ export default function Dashboard() {
       
       if (centreProfil) {
         console.log('✅ Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
-        // Nettoyer le flag maintenant qu'on a le profil
-        if (centreJustCreated) {
-          localStorage.removeItem('centre_just_created');
-        }
+        localStorage.removeItem('centre_just_created');
       }
       
       return {

@@ -142,6 +142,17 @@
     scrollbar-width: none;
   }
 
+  /* Espace en bas de page pour éviter masquage par bottom nav */
+  .page-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 1024px) {
+    .page-content {
+      padding-bottom: 2rem;
+    }
+  }
+
   /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
     -ms-overflow-style: none;

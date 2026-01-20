@@ -536,14 +536,16 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Main Content - Scroll optimisé */}
           <main 
-            className="flex-1 overflow-y-auto overflow-x-hidden"
+            className="flex-1 overflow-y-auto overflow-x-hidden mobile-scroll"
             style={{ 
               WebkitOverflowScrolling: 'touch',
               overscrollBehaviorY: 'contain',
               touchAction: 'pan-y'
             }}
           >
-            {children}
+            <div className="page-content">
+              {children}
+            </div>
           </main>
           
           {/* Bottom Navigation avec safe area */}
@@ -579,9 +581,11 @@ export default function Layout({ children, currentPageName }) {
           <header className="bg-white/80 backdrop-blur-sm border-b px-8 py-4 flex items-center justify-end flex-shrink-0">
             <NotificationCenter />
           </header>
-          
-          <div className="flex-1 overflow-auto">
-            {children}
+
+          <div className="flex-1 overflow-auto mobile-scroll">
+            <div className="page-content">
+              {children}
+            </div>
           </div>
           
           <footer className="text-center p-4 border-t flex-shrink-0">

@@ -42,7 +42,8 @@ export default function AuthGuard({ children }) {
         base44.entities.Clinique.filter({
           $or: [
             { administrateurs: { $in: [user.email] } },
-            { administrateur_email: user.email }
+            { administrateur_email: user.email },
+            { created_by: user.email }
           ]
         }).catch(() => [])
       ]);

@@ -154,12 +154,14 @@ export default function InscriptionClinique() {
       console.log('✅ Centre créé:', result);
       return result;
     },
-    onSuccess: () => {
-      console.log('🎉 Succès - Redirection Dashboard');
+    onSuccess: (centreCreated) => {
+      console.log('🎉 Centre créé avec succès:', centreCreated);
       setEtape(6);
+      
+      // Force le rechargement complet pour rafraîchir les profils
       setTimeout(() => {
         window.location.href = createPageUrl('Dashboard');
-      }, 2000);
+      }, 2500);
     },
     onError: (error) => {
       console.error('❌ Erreur création:', error);

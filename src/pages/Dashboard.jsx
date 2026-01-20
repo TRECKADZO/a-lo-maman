@@ -21,6 +21,8 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!user) return { maman: null, pro: null, centre: null };
       
+      console.log('🔍 Récupération profils pour:', user.email);
+      
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
@@ -31,6 +33,8 @@ export default function Dashboard() {
           ]
         }).catch(() => [])
       ]);
+      
+      console.log('📊 Centres trouvés:', centreProfiles);
       
       const proProfil = proProfiles.find(p => p.email === user.email);
       const centreProfil = centreProfiles[0] || null;
@@ -43,7 +47,8 @@ export default function Dashboard() {
     },
     enabled: !!user,
     staleTime: 0,
-    refetchOnMount: true,
+    refetchOnMount: 'always',
+    cacheTime: 0,
   });
 
   if (isLoading) {

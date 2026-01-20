@@ -300,9 +300,9 @@ export default function Layout({ children, currentPageName }) {
     retry: false,
   });
 
+  const isAdmin = user?.role === 'admin';
   const isSpecialist = !!profiles?.pro;
   const isCentre = !!profiles?.centre && !isAdmin;
-  const isAdmin = user?.role === 'admin';
   const currentProfile = profiles?.pro || profiles?.maman || profiles?.centre;
   const lang = currentProfile?.langue_preferee === 'anglais' ? 'en' : 'fr';
   const theme = currentProfile?.theme_prefere || 'clair';

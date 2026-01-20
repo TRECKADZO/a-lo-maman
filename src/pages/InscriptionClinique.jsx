@@ -162,7 +162,8 @@ export default function InscriptionClinique() {
       setTimeout(() => {
         console.log('🔄 Redirection vers Dashboard...');
         // Force un reload complet pour que Dashboard refetch les profils
-        window.location.replace(createPageUrl('Dashboard'));
+        // Ajouter un paramètre pour forcer le refetch
+        window.location.href = createPageUrl('Dashboard') + '?t=' + Date.now();
       }, 3500);
     },
     onError: (error) => {

@@ -241,11 +241,12 @@ export default function SelectionCompte() {
                 </CardContent>
               </Card>
 
-              <Card 
-                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-purple-400 group"
+              <Button
+                variant="outline"
+                className="h-auto p-0 border-2 hover:shadow-2xl transition-all duration-300 hover:border-purple-400 group"
                 onClick={() => navigate(createPageUrl('InscriptionClinique'))}
               >
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-8 text-center w-full">
                   <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                     <Building2 className="w-12 h-12 text-white" />
                   </div>
@@ -259,7 +260,7 @@ export default function SelectionCompte() {
                       <p>✓ Intégration plateforme</p>
                     </div>
                 </CardContent>
-              </Card>
+              </Button>
             </div>
           </div>
         ) : (

@@ -158,11 +158,12 @@ export default function InscriptionClinique() {
       console.log('🎉 Centre créé avec succès:', centreCreated);
       setEtape(6);
       
-      // Invalider le cache des profils puis rediriger
+      // Invalider le cache et rediriger après un délai plus long
       setTimeout(() => {
+        console.log('🔄 Redirection vers Dashboard...');
         // Force un reload complet pour que Dashboard refetch les profils
         window.location.replace(createPageUrl('Dashboard'));
-      }, 3000);
+      }, 3500);
     },
     onError: (error) => {
       console.error('❌ Erreur création:', error);

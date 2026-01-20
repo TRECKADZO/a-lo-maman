@@ -75,7 +75,6 @@ import TeleEchographie from './pages/TeleEchographie';
 import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import TestsSecurite from './pages/TestsSecurite';
-import ValidationCliniques from './pages/ValidationCliniques';
 import VideoConsultation from './pages/VideoConsultation';
 import AdminPortailCentre from './pages/AdminPortailCentre';
 import __Layout from './Layout.jsx';
@@ -159,7 +158,6 @@ export const PAGES = {
     "Teleconsultation": Teleconsultation,
     "Tests": Tests,
     "TestsSecurite": TestsSecurite,
-    "ValidationCliniques": ValidationCliniques,
     "VideoConsultation": VideoConsultation,
     "AdminPortailCentre": AdminPortailCentre,
 }

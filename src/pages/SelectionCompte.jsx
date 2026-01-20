@@ -240,20 +240,21 @@ export default function SelectionCompte() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 sm:p-6 md:p-8">
-      <div className="w-full max-w-4xl">
-        {!showForm ? (
-          <div className="text-center space-y-6 sm:space-y-8">
-            <div className="space-y-3 sm:space-y-4 px-2">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Bienvenue sur A'lo Maman ! 👋
-              </h1>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-                Bonjour <strong>{user.full_name}</strong>, choisissez votre type de compte :
-              </p>
-            </div>
+    <div className="fixed inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto w-full flex items-start justify-center py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8">
+        <div className="w-full max-w-4xl">
+          {!showForm ? (
+            <div className="text-center space-y-6 sm:space-y-8">
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                  Bienvenue sur A'lo Maman ! 👋
+                </h1>
+                <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+                  Bonjour <strong>{user.full_name}</strong>, choisissez votre type de compte :
+                </p>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
               <Card 
                 className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group active:scale-95"
                 onClick={() => handleSelectType('maman')}
@@ -315,10 +316,10 @@ export default function SelectionCompte() {
                 </CardContent>
               </Button>
             </div>
-          </div>
-        ) : (
-          <Card className="shadow-2xl border-none">
-            <CardContent className="p-4 sm:p-6 md:p-8">
+            </div>
+            ) : (
+            <Card className="shadow-2xl border-none">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="mb-6">
                 <Button
                   variant="ghost"
@@ -419,43 +420,44 @@ export default function SelectionCompte() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="nom_complet" className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        Nom complet *
-                      </Label>
-                      <Input
-                        id="nom_complet"
-                        value={formData.nom_complet}
-                        onChange={(e) => handleChange('nom_complet', e.target.value)}
-                        placeholder="Dr. Jean Kouassi"
-                        required
-                        disabled={loading}
-                      />
-                    </div>
+                       <Label htmlFor="nom_complet" className="flex items-center gap-2 text-xs sm:text-sm">
+                         <User className="w-4 h-4 flex-shrink-0" />
+                         <span>Nom complet *</span>
+                       </Label>
+                       <Input
+                         id="nom_complet"
+                         value={formData.nom_complet}
+                         onChange={(e) => handleChange('nom_complet', e.target.value)}
+                         placeholder="Dr. Jean Kouassi"
+                         required
+                         disabled={loading}
+                         className="text-base"
+                       />
+                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="specialite" className="flex items-center gap-2">
-                        <Stethoscope className="w-4 h-4" />
-                        Spécialité *
-                      </Label>
-                      <Select
-                        value={formData.specialite}
-                        onValueChange={(value) => handleChange('specialite', value)}
-                        required
-                        disabled={loading}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner votre spécialité" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SPECIALITES.map(spec => (
-                            <SelectItem key={spec.value} value={spec.value}>
-                              {spec.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="specialite" className="flex items-center gap-2 text-xs sm:text-sm">
+                         <Stethoscope className="w-4 h-4 flex-shrink-0" />
+                         <span>Spécialité *</span>
+                       </Label>
+                       <Select
+                         value={formData.specialite}
+                         onValueChange={(value) => handleChange('specialite', value)}
+                         required
+                         disabled={loading}
+                       >
+                         <SelectTrigger className="text-base">
+                           <SelectValue placeholder="Sélectionner votre spécialité" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           {SPECIALITES.map(spec => (
+                             <SelectItem key={spec.value} value={spec.value}>
+                               {spec.label}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
                   </>
                 )}
 
@@ -463,11 +465,11 @@ export default function SelectionCompte() {
 
                 {selectedType !== 'centre_sante' && (
                   <>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="telephone" className="flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          Téléphone {selectedType === 'professionnel' && '*'}
+                        <Label htmlFor="telephone" className="flex items-center gap-2 text-xs sm:text-sm">
+                          <Phone className="w-4 h-4 flex-shrink-0" />
+                          <span>Téléphone {selectedType === 'professionnel' && '*'}</span>
                         </Label>
                         <Input
                           id="telephone"
@@ -477,13 +479,14 @@ export default function SelectionCompte() {
                           placeholder="+225 07 XX XX XX XX"
                           required={selectedType === 'professionnel'}
                           disabled={loading}
+                          className="text-base"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="region" className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4" />
-                          Région {selectedType === 'professionnel' && '*'}
+                        <Label htmlFor="region" className="flex items-center gap-2 text-xs sm:text-sm">
+                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                          <span>Région {selectedType === 'professionnel' && '*'}</span>
                         </Label>
                         <Select
                           value={formData.region}
@@ -491,7 +494,7 @@ export default function SelectionCompte() {
                           disabled={loading}
                           required={selectedType === 'professionnel'}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-base">
                             <SelectValue placeholder="Sélectionner" />
                           </SelectTrigger>
                           <SelectContent>
@@ -504,42 +507,43 @@ export default function SelectionCompte() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="ville" className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        Ville {selectedType === 'professionnel' && '*'}
-                      </Label>
-                      <Input
-                        id="ville"
-                        value={formData.ville}
-                        onChange={(e) => handleChange('ville', e.target.value)}
-                        placeholder="Abidjan"
-                        required={selectedType === 'professionnel'}
-                        disabled={loading}
-                      />
-                    </div>
+                       <Label htmlFor="ville" className="flex items-center gap-2 text-xs sm:text-sm">
+                         <MapPin className="w-4 h-4 flex-shrink-0" />
+                         <span>Ville {selectedType === 'professionnel' && '*'}</span>
+                       </Label>
+                       <Input
+                         id="ville"
+                         value={formData.ville}
+                         onChange={(e) => handleChange('ville', e.target.value)}
+                         placeholder="Abidjan"
+                         required={selectedType === 'professionnel'}
+                         disabled={loading}
+                         className="text-base"
+                       />
+                     </div>
                   </>
                 )}
 
                 {selectedType === 'professionnel' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="biographie">
-                      Présentation professionnelle * (minimum 50 caractères)
-                    </Label>
-                    <textarea
-                      id="biographie"
-                      value={formData.biographie}
-                      onChange={(e) => handleChange('biographie', e.target.value)}
-                      placeholder="Décrivez votre expérience, vos spécialisations, votre approche..."
-                      rows={4}
-                      required
-                      disabled={loading}
-                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    />
-                    <p className={`text-xs ${formData.biographie.length >= 50 ? 'text-green-600' : 'text-orange-600'}`}>
-                      {formData.biographie.length} / 50 caractères
-                    </p>
-                  </div>
-                )}
+                   <div className="space-y-2">
+                     <Label htmlFor="biographie" className="text-xs sm:text-sm">
+                       Présentation professionnelle * (minimum 50 caractères)
+                     </Label>
+                     <textarea
+                       id="biographie"
+                       value={formData.biographie}
+                       onChange={(e) => handleChange('biographie', e.target.value)}
+                       placeholder="Décrivez votre expérience, vos spécialisations, votre approche..."
+                       rows={3}
+                       required
+                       disabled={loading}
+                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base"
+                     />
+                     <p className={`text-xs ${formData.biographie.length >= 50 ? 'text-green-600' : 'text-orange-600'}`}>
+                       {formData.biographie.length} / 50 caractères
+                     </p>
+                   </div>
+                 )}
 
                 {/* Conditions */}
                 <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg">
@@ -608,8 +612,9 @@ export default function SelectionCompte() {
               </form>
             </CardContent>
           </Card>
-        )}
-      </div>
-    </div>
-  );
-}
+          )}
+          </div>
+          </div>
+          </div>
+          );
+          }

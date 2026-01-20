@@ -100,6 +100,9 @@ export default function InscriptionClinique() {
       await base44.entities.Clinique.create(centreData);
       console.log('✅ Centre créé avec succès');
       
+      // Stocker un flag pour éviter la redirection vers SelectionCompte
+      localStorage.setItem('centre_just_created', 'true');
+      
       setTimeout(() => {
         window.location.href = createPageUrl('Dashboard') + '?t=' + Date.now();
       }, 2000);

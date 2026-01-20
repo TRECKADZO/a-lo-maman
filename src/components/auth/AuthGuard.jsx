@@ -80,11 +80,20 @@ export default function AuthGuard({ children }) {
   React.useEffect(() => {
     if (userLoading || profilesLoading) return;
 
+    // Vérifier si un centre vient d'être créé
+    const centreJustCreated = localStorage.getItem('centre_just_created') === 'true';
+
     console.log('🛡️ AuthGuard - Auth state:', {
       hasUser: !!user,
       hasProfile: !!activeProfile,
-      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE'))
+      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE')),
+      centreJustCreated
     });
+
+    // Nettoyer le flag si profil trouvé
+    if (centreJustCreated && activeProfile) {
+      localStorage.removeItem('centre_just_created');
+    }
 
     // Pas d'utilisateur -> Intro
     if (!user) {
@@ -93,8 +102,8 @@ export default function AuthGuard({ children }) {
       return;
     }
 
-    // Utilisateur mais pas de profil -> SelectionCompte
-    if (!activeProfile) {
+    // Utilisateur mais pas de profil -> SelectionCompte (sauf si centre vient d'être créé)
+    if (!activeProfile && !centreJustCreated) {
       console.log('➡️ AuthGuard - No profile, redirect to SelectionCompte');
       navigate(createPageUrl('SelectionCompte'), { replace: true });
       return;

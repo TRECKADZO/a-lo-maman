@@ -200,8 +200,8 @@ export default function Teleconsultation() {
 
   if (cliniqueSelectionnee) {
     return (
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8">
-        <div className="max-w-7xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+        <div className="max-w-7xl mx-auto p-4 md:p-8 pb-24 lg:pb-8">
           <ReserverRDVClinique
             clinique={cliniqueSelectionnee}
             onBack={() => setCliniqueSelectionnee(null)}
@@ -213,8 +213,8 @@ export default function Teleconsultation() {
 
   if (professionnelSelectionne) {
     return (
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8">
-        <div className="max-w-5xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+        <div className="max-w-5xl mx-auto p-4 md:p-8 pb-24 lg:pb-8">
           <DetailsProfessionnel
             professionnel={professionnelSelectionne}
             onClose={() => setProfessionnelSelectionne(null)}
@@ -225,8 +225,8 @@ export default function Teleconsultation() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+      <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
         {/* Statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <Card className="shadow-lg border-none overflow-hidden">

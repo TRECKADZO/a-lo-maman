@@ -141,8 +141,8 @@ export default function Communaute() {
     const Icon = forum?.icon;
 
     return (
-      <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-gray-900 dark:to-gray-950">
+        <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <Button
               variant="outline"
@@ -197,8 +197,8 @@ export default function Communaute() {
   // VUE SPÉCIALISTE
   if (isSpecialist) {
     return (
-      <div className="min-h-full bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 dark:from-gray-900 dark:to-gray-950">
+        <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
             <div>
               <h1 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 break-words">
@@ -412,8 +412,8 @@ export default function Communaute() {
 
   // VUE MAMAN (existante)
   return (
-    <div className="min-h-full bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 md:p-8 dark:from-gray-900 dark:to-gray-950" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-gray-900 dark:to-gray-950">
+      <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-8 pb-24 lg:pb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <h1 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 break-words">
             <Users className="w-8 h-8 md:w-10 md:h-10 text-amber-600 flex-shrink-0" />

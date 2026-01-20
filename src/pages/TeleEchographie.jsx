@@ -74,8 +74,8 @@ export default function TeleEchographie() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 pb-24" style={{ paddingBottom: 'max(6rem, env(safe-area-inset-bottom))' }}>
-        <div className="max-w-4xl mx-auto p-4 space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+        <div className="max-w-4xl mx-auto p-4 space-y-6 pb-24 lg:pb-8">
           {/* Header */}
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-xl">

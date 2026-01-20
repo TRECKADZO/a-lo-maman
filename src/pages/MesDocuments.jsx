@@ -170,8 +170,8 @@ export default function MesDocuments() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 pb-24">
-        <div className="max-w-6xl mx-auto space-y-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-6xl mx-auto space-y-4 p-4 pb-24 lg:pb-8">
           {/* Header */}
           <Card className="shadow-xl border-none rounded-3xl overflow-hidden bg-gradient-to-r from-blue-500 to-indigo-600">
             <CardContent className="p-6">

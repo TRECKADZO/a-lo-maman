@@ -249,7 +249,7 @@ export default function Ressources() {
   if (selectedArticle) {
     return (
       <AuthGuard>
-        <div className="min-h-full bg-gray-50 pb-20">
+        <div className="min-h-screen bg-gray-50 pb-24 lg:pb-8">
           <div className="bg-white border-b sticky top-0 z-10">
             <div className="max-w-3xl mx-auto p-4 flex items-center gap-4">
               <Button variant="ghost" size="icon" onClick={() => setSelectedArticle(null)}>
@@ -324,7 +324,7 @@ export default function Ressources() {
     const domaine = DOMAINES_ACTIVITES.find(d => d.id === selectedActivite.domaine);
     return (
       <AuthGuard>
-        <div className="min-h-full bg-gray-50 pb-20">
+        <div className="min-h-screen bg-gray-50 pb-24 lg:pb-8">
           <div className="bg-white border-b sticky top-0 z-10">
             <div className="max-w-3xl mx-auto p-4 flex items-center gap-4">
               <Button variant="ghost" size="icon" onClick={() => setSelectedActivite(null)}>
@@ -411,7 +411,7 @@ export default function Ressources() {
 
   return (
     <AuthGuard>
-      <div className="min-h-full bg-gray-50 pb-20">
+      <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-6">
           <h1 className="text-2xl font-bold mb-2">Ressources</h1>
@@ -428,7 +428,7 @@ export default function Ressources() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto p-4 space-y-6">
+        <div className="max-w-4xl mx-auto p-4 space-y-6 pb-24 lg:pb-8">
           {/* Filtre par âge global */}
           <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
             {AGE_FILTERS.map(age => (

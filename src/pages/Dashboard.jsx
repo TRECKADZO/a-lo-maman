@@ -42,7 +42,6 @@ export default function Dashboard() {
       
       if (centreProfil) {
         console.log('✅ Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
-        localStorage.removeItem('centre_just_created');
       }
       
       return {

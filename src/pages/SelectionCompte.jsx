@@ -240,34 +240,33 @@ export default function SelectionCompte() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto w-full flex items-start justify-center py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8">
-        <div className="w-full max-w-4xl">
-          {!showForm ? (
-            <div className="text-center space-y-6 sm:space-y-8">
-              <div className="space-y-3 sm:space-y-4">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                  Bienvenue sur A'lo Maman ! 👋
-                </h1>
-                <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                  Bonjour <strong>{user.full_name}</strong>, choisissez votre type de compte :
-                </p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl">
+        {!showForm ? (
+          <div className="text-center space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+                Bienvenue sur A'lo Maman ! 👋
+              </h1>
+              <p className="text-xl text-gray-600">
+                Bonjour <strong>{user.full_name}</strong>, choisissez votre type de compte :
+              </p>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <Card 
-                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group active:scale-95"
+                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-pink-400 group"
                 onClick={() => handleSelectType('maman')}
               >
-                <CardContent className="p-6 sm:p-8 text-center">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-white fill-white" />
+                <CardContent className="p-8 text-center">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Heart className="w-12 h-12 text-white fill-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Je suis une Maman</h2>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Je suis une Maman</h2>
+                  <p className="text-gray-600 leading-relaxed">
                     Suivi de grossesse, carnets de santé de vos enfants, téléconsultations et communauté
                   </p>
-                  <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                  <div className="mt-6 space-y-2 text-sm text-gray-500">
                     <p>✓ Gratuit et complet</p>
                     <p>✓ Suivi grossesse personnalisé</p>
                     <p>✓ Carnets de santé numériques</p>
@@ -276,18 +275,18 @@ export default function SelectionCompte() {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-teal-400 group active:scale-95"
+                className="cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 hover:border-teal-400 group"
                 onClick={() => handleSelectType('professionnel')}
               >
-                <CardContent className="p-6 sm:p-8 text-center">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Stethoscope className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+                <CardContent className="p-8 text-center">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Stethoscope className="w-12 h-12 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Je suis Professionnel</h2>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Je suis Professionnel</h2>
+                  <p className="text-gray-600 leading-relaxed">
                     Gynécologue, pédiatre, sage-femme, médecin ou infirmier(ère)
                   </p>
-                  <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                  <div className="mt-6 space-y-2 text-sm text-gray-500">
                     <p>✓ Gratuit pour les professionnels</p>
                     <p>✓ Gestion d'agenda en ligne</p>
                     <p>✓ Téléconsultations sécurisées</p>
@@ -297,18 +296,18 @@ export default function SelectionCompte() {
 
               <Button
                 variant="outline"
-                className="h-auto p-0 border-2 hover:shadow-2xl transition-all duration-300 hover:border-purple-400 group active:scale-95"
+                className="h-auto p-0 border-2 hover:shadow-2xl transition-all duration-300 hover:border-purple-400 group"
                 onClick={() => navigate(createPageUrl('InscriptionClinique'))}
               >
-                <CardContent className="p-6 sm:p-8 text-center w-full">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <Building2 className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+                <CardContent className="p-8 text-center w-full">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <Building2 className="w-12 h-12 text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Centre de Santé</h2>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Centre de Santé</h2>
+                    <p className="text-gray-600 leading-relaxed">
                       PMI, clinique, hôpital ou centre offrant des services de maternité
                     </p>
-                    <div className="mt-4 sm:mt-6 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                    <div className="mt-6 space-y-2 text-sm text-gray-500">
                       <p>✓ Gestion des rendez-vous</p>
                       <p>✓ Profil public détaillé</p>
                       <p>✓ Intégration plateforme</p>
@@ -316,10 +315,10 @@ export default function SelectionCompte() {
                 </CardContent>
               </Button>
             </div>
-            </div>
-            ) : (
-            <Card className="shadow-2xl border-none">
-            <CardContent className="p-3 sm:p-4 md:p-6">
+          </div>
+        ) : (
+          <Card className="shadow-2xl border-none">
+            <CardContent className="p-8">
               <div className="mb-6">
                 <Button
                   variant="ghost"
@@ -334,25 +333,25 @@ export default function SelectionCompte() {
                 >
                   ← Retour
                 </Button>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3 flex-wrap">
+                <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                  {selectedType === 'maman' ? (
                    <>
-                     <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500 flex-shrink-0" />
-                     <span>Créer mon compte Maman</span>
+                     <Heart className="w-8 h-8 text-pink-500" />
+                     Créer mon compte Maman
                    </>
                  ) : selectedType === 'centre_sante' ? (
                    <>
-                     <Radio className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 flex-shrink-0" />
-                     <span>Créer mon compte Centre de Santé</span>
+                     <Radio className="w-8 h-8 text-purple-500" />
+                     Créer mon compte Centre de Santé
                    </>
                  ) : (
                    <>
-                     <Stethoscope className="w-6 h-6 sm:w-8 sm:h-8 text-teal-500 flex-shrink-0" />
-                     <span>Créer mon compte Professionnel</span>
+                     <Stethoscope className="w-8 h-8 text-teal-500" />
+                     Créer mon compte Professionnel
                    </>
                  )}
                 </h2>
-                <p className="text-sm sm:text-base text-gray-600 mt-2">
+                <p className="text-gray-600 mt-2">
                   {selectedType === 'maman' 
                     ? 'Quelques informations pour personnaliser votre expérience'
                     : selectedType === 'centre_sante'
@@ -377,22 +376,22 @@ export default function SelectionCompte() {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {selectedType === 'professionnel' && (
                   <>
-                    <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl">
-                      <Label htmlFor="code_centre" className="text-xs sm:text-sm font-semibold text-purple-900 flex items-center gap-2 mb-2">
-                        <Building2 className="w-4 h-4 flex-shrink-0" />
-                        <span>Code d'invitation centre (optionnel)</span>
+                    <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl">
+                      <Label htmlFor="code_centre" className="text-sm font-semibold text-purple-900 flex items-center gap-2 mb-2">
+                        <Building2 className="w-4 h-4" />
+                        Code d'invitation centre (optionnel)
                       </Label>
-                      <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="flex gap-2">
                         <Input
                           id="code_centre"
                           value={codeInvitation}
                           onChange={(e) => setCodeInvitation(e.target.value.toUpperCase())}
                           placeholder="ABCD12"
                           maxLength={6}
-                          className="font-mono text-base sm:text-lg tracking-wider flex-1"
+                          className="font-mono text-lg tracking-wider"
                           disabled={loading}
                         />
                         <Button
@@ -400,64 +399,63 @@ export default function SelectionCompte() {
                           variant="outline"
                           onClick={verifierCodeCentre}
                           disabled={codeInvitation.length < 4 || verifyingCode || loading}
-                          className="px-4 sm:px-6 w-full sm:w-auto"
+                          className="px-6"
                         >
                           {verifyingCode ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Vérifier'}
                         </Button>
                       </div>
                       {centreFound && (
-                        <div className="mt-2 sm:mt-3 p-2.5 sm:p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <div className="text-xs sm:text-sm min-w-0">
-                            <p className="text-green-900 font-semibold truncate">{centreFound.nom}</p>
-                            <p className="text-green-700 text-xs">{centreFound.ville}, {centreFound.region}</p>
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <div className="text-sm">
+                            <p className="text-green-900 font-semibold">{centreFound.nom}</p>
+                            <p className="text-green-700">{centreFound.ville}, {centreFound.region}</p>
                           </div>
                         </div>
                       )}
-                      <p className="text-[11px] sm:text-xs text-purple-700 mt-2">
+                      <p className="text-xs text-purple-700 mt-2">
                         💡 Si vous avez un code, vous serez automatiquement lié au centre
                       </p>
                     </div>
 
                     <div className="space-y-2">
-                       <Label htmlFor="nom_complet" className="flex items-center gap-2 text-xs sm:text-sm">
-                         <User className="w-4 h-4 flex-shrink-0" />
-                         <span>Nom complet *</span>
-                       </Label>
-                       <Input
-                         id="nom_complet"
-                         value={formData.nom_complet}
-                         onChange={(e) => handleChange('nom_complet', e.target.value)}
-                         placeholder="Dr. Jean Kouassi"
-                         required
-                         disabled={loading}
-                         className="text-base"
-                       />
-                     </div>
+                      <Label htmlFor="nom_complet" className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Nom complet *
+                      </Label>
+                      <Input
+                        id="nom_complet"
+                        value={formData.nom_complet}
+                        onChange={(e) => handleChange('nom_complet', e.target.value)}
+                        placeholder="Dr. Jean Kouassi"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
 
-                     <div className="space-y-2">
-                       <Label htmlFor="specialite" className="flex items-center gap-2 text-xs sm:text-sm">
-                         <Stethoscope className="w-4 h-4 flex-shrink-0" />
-                         <span>Spécialité *</span>
-                       </Label>
-                       <Select
-                         value={formData.specialite}
-                         onValueChange={(value) => handleChange('specialite', value)}
-                         required
-                         disabled={loading}
-                       >
-                         <SelectTrigger className="text-base">
-                           <SelectValue placeholder="Sélectionner votre spécialité" />
-                         </SelectTrigger>
-                         <SelectContent>
-                           {SPECIALITES.map(spec => (
-                             <SelectItem key={spec.value} value={spec.value}>
-                               {spec.label}
-                             </SelectItem>
-                           ))}
-                         </SelectContent>
-                       </Select>
-                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specialite" className="flex items-center gap-2">
+                        <Stethoscope className="w-4 h-4" />
+                        Spécialité *
+                      </Label>
+                      <Select
+                        value={formData.specialite}
+                        onValueChange={(value) => handleChange('specialite', value)}
+                        required
+                        disabled={loading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner votre spécialité" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SPECIALITES.map(spec => (
+                            <SelectItem key={spec.value} value={spec.value}>
+                              {spec.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </>
                 )}
 
@@ -465,11 +463,11 @@ export default function SelectionCompte() {
 
                 {selectedType !== 'centre_sante' && (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="telephone" className="flex items-center gap-2 text-xs sm:text-sm">
-                          <Phone className="w-4 h-4 flex-shrink-0" />
-                          <span>Téléphone {selectedType === 'professionnel' && '*'}</span>
+                        <Label htmlFor="telephone" className="flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          Téléphone {selectedType === 'professionnel' && '*'}
                         </Label>
                         <Input
                           id="telephone"
@@ -479,14 +477,13 @@ export default function SelectionCompte() {
                           placeholder="+225 07 XX XX XX XX"
                           required={selectedType === 'professionnel'}
                           disabled={loading}
-                          className="text-base"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="region" className="flex items-center gap-2 text-xs sm:text-sm">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
-                          <span>Région {selectedType === 'professionnel' && '*'}</span>
+                        <Label htmlFor="region" className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          Région {selectedType === 'professionnel' && '*'}
                         </Label>
                         <Select
                           value={formData.region}
@@ -494,7 +491,7 @@ export default function SelectionCompte() {
                           disabled={loading}
                           required={selectedType === 'professionnel'}
                         >
-                          <SelectTrigger className="text-base">
+                          <SelectTrigger>
                             <SelectValue placeholder="Sélectionner" />
                           </SelectTrigger>
                           <SelectContent>
@@ -507,53 +504,51 @@ export default function SelectionCompte() {
                     </div>
 
                     <div className="space-y-2">
-                       <Label htmlFor="ville" className="flex items-center gap-2 text-xs sm:text-sm">
-                         <MapPin className="w-4 h-4 flex-shrink-0" />
-                         <span>Ville {selectedType === 'professionnel' && '*'}</span>
-                       </Label>
-                       <Input
-                         id="ville"
-                         value={formData.ville}
-                         onChange={(e) => handleChange('ville', e.target.value)}
-                         placeholder="Abidjan"
-                         required={selectedType === 'professionnel'}
-                         disabled={loading}
-                         className="text-base"
-                       />
-                     </div>
+                      <Label htmlFor="ville" className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        Ville {selectedType === 'professionnel' && '*'}
+                      </Label>
+                      <Input
+                        id="ville"
+                        value={formData.ville}
+                        onChange={(e) => handleChange('ville', e.target.value)}
+                        placeholder="Abidjan"
+                        required={selectedType === 'professionnel'}
+                        disabled={loading}
+                      />
+                    </div>
                   </>
                 )}
 
                 {selectedType === 'professionnel' && (
-                   <div className="space-y-2">
-                     <Label htmlFor="biographie" className="text-xs sm:text-sm">
-                       Présentation professionnelle * (minimum 50 caractères)
-                     </Label>
-                     <textarea
-                       id="biographie"
-                       value={formData.biographie}
-                       onChange={(e) => handleChange('biographie', e.target.value)}
-                       placeholder="Décrivez votre expérience, vos spécialisations, votre approche..."
-                       rows={3}
-                       required
-                       disabled={loading}
-                       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base"
-                     />
-                     <p className={`text-xs ${formData.biographie.length >= 50 ? 'text-green-600' : 'text-orange-600'}`}>
-                       {formData.biographie.length} / 50 caractères
-                     </p>
-                   </div>
-                 )}
+                  <div className="space-y-2">
+                    <Label htmlFor="biographie">
+                      Présentation professionnelle * (minimum 50 caractères)
+                    </Label>
+                    <textarea
+                      id="biographie"
+                      value={formData.biographie}
+                      onChange={(e) => handleChange('biographie', e.target.value)}
+                      placeholder="Décrivez votre expérience, vos spécialisations, votre approche..."
+                      rows={4}
+                      required
+                      disabled={loading}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                    />
+                    <p className={`text-xs ${formData.biographie.length >= 50 ? 'text-green-600' : 'text-orange-600'}`}>
+                      {formData.biographie.length} / 50 caractères
+                    </p>
+                  </div>
+                )}
 
                 {/* Conditions */}
-                <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                   <Checkbox
                     id="conditions"
                     checked={formData.acceptConditions}
                     onCheckedChange={(checked) => handleChange('acceptConditions', checked)}
-                    className="mt-0.5"
                   />
-                  <label htmlFor="conditions" className="text-xs sm:text-sm text-gray-700 cursor-pointer leading-relaxed">
+                  <label htmlFor="conditions" className="text-sm text-gray-700 cursor-pointer">
                     J'accepte les{" "}
                     <a href={createPageUrl('Conditions')} className="text-pink-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
                       conditions d'utilisation
@@ -570,7 +565,7 @@ export default function SelectionCompte() {
                   </label>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
+                <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
                     variant="outline"
@@ -581,14 +576,14 @@ export default function SelectionCompte() {
                       setSuccess(false);
                     }}
                     disabled={loading}
-                    className="flex-1 text-sm sm:text-base"
+                    className="flex-1"
                   >
                     Annuler
                   </Button>
                   <Button
                     type="submit"
                     disabled={loading || success}
-                    className={`flex-1 text-sm sm:text-base ${
+                    className={`flex-1 ${
                       selectedType === 'maman' ? 'bg-pink-600 hover:bg-pink-700' : 
                       'bg-teal-600 hover:bg-teal-700'
                     }`}
@@ -596,8 +591,7 @@ export default function SelectionCompte() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        <span className="hidden sm:inline">Création en cours...</span>
-                        <span className="sm:hidden">Création...</span>
+                        Création en cours...
                       </>
                     ) : success ? (
                       <>
@@ -612,9 +606,8 @@ export default function SelectionCompte() {
               </form>
             </CardContent>
           </Card>
-          )}
-          </div>
-          </div>
-          </div>
-          );
-          }
+        )}
+      </div>
+    </div>
+  );
+}

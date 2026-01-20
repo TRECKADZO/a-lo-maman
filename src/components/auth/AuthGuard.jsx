@@ -72,49 +72,25 @@ export default function AuthGuard({ children }) {
     staleTime: 0,
   });
 
-  // 3. Déterminer le profil actif (priorité: centre, puis pro, puis maman)
-  const activeProfile = profiles?.centre || profiles?.pro || profiles?.maman;
+  // 3. Déterminer le profil actif
+  const activeProfile = profiles?.pro || profiles?.maman || profiles?.centre;
   const isSpecialist = !!profiles?.pro;
 
   // 4. Gérer les redirections
   React.useEffect(() => {
     if (userLoading || profilesLoading) return;
 
-    // Vérifier si un centre vient d'être créé
-    const centreJustCreated = localStorage.getItem('centre_just_created') === 'true';
-
     console.log('🛡️ AuthGuard - Auth state:', {
       hasUser: !!user,
       hasProfile: !!activeProfile,
-      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE')),
-      centreJustCreated
+      profileType: isSpecialist ? 'PROFESSIONNEL' : (profiles?.maman ? 'MAMAN' : (profiles?.centre ? 'CENTRE' : 'NONE'))
     });
-
-    // Nettoyer le flag si profil trouvé
-    if (centreJustCreated && activeProfile) {
-      console.log('🧹 Nettoyage flag centre_just_created');
-      localStorage.removeItem('centre_just_created');
-      localStorage.removeItem('centre_created_id');
-    }
 
     // Pas d'utilisateur -> Intro
     if (!user) {
       console.log('➡️ AuthGuard - No user, redirect to Intro');
       navigate(createPageUrl('Intro'), { replace: true });
       return;
-    }
-
-    // Si centre vient d'être créé mais pas encore chargé, attendre max 10s
-    if (centreJustCreated && !activeProfile) {
-      console.log('⏳ Centre en cours de chargement...');
-      const timeout = setTimeout(() => {
-        console.log('⚠️ Timeout - Nettoyage des flags et redirection');
-        localStorage.removeItem('centre_just_created');
-        localStorage.removeItem('centre_created_id');
-        navigate(createPageUrl('SelectionCompte'), { replace: true });
-      }, 10000);
-      
-      return () => clearTimeout(timeout);
     }
 
     // Utilisateur mais pas de profil -> SelectionCompte

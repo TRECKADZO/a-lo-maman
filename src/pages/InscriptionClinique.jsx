@@ -44,8 +44,8 @@ const SERVICES = [
 
 export default function InscriptionClinique() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [etape, setEtape] = useState(1);
+  const [uploadingDoc, setUploadingDoc] = useState(null);
   
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -53,78 +53,156 @@ export default function InscriptionClinique() {
   });
 
   const [formData, setFormData] = useState({
+    // Étape 1 - Informations établissement
     nom: '',
     type_etablissement: 'clinique_privee',
+    description: '',
+    numero_agrement: '',
+    
+    // Étape 2 - Localisation
     region: '',
     ville: '',
+    adresse: '',
     telephone: '',
+    email_contact: '',
+    
+    // Étape 3 - Administrateur
+    administrateur_nom: '',
+    administrateur_email: '',
+    administrateur_telephone: '',
+    
+    // Étape 4 - Services et capacité
+    services_offerts: [],
+    capacite_lits: '',
+    
+    // Étape 5 - Documents
+    document_agrement: null,
+    document_registre_commerce: null,
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!user) {
-      setError('Utilisateur non connecté');
+  const updateField = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const toggleService = (service) => {
+    setFormData(prev => ({
+      ...prev,
+      services_offerts: prev.services_offerts.includes(service)
+        ? prev.services_offerts.filter(s => s !== service)
+        : [...prev.services_offerts, service]
+    }));
+  };
+
+  const handleFileUpload = async (e, fieldName) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Fichier trop volumineux (max 5 MB)');
       return;
     }
 
-    if (!formData.nom?.trim() || !formData.region || !formData.ville?.trim() || !formData.telephone?.trim()) {
-      setError('Veuillez remplir tous les champs obligatoires');
+    if (file.type !== 'application/pdf') {
+      alert('Seuls les fichiers PDF sont acceptés');
       return;
     }
 
-    setLoading(true);
-    setError('');
-
+    setUploadingDoc(fieldName);
     try {
-      const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
-      
-      const centreData = {
-        nom: formData.nom.trim(),
-        type_etablissement: formData.type_etablissement,
-        region: formData.region,
-        ville: formData.ville.trim(),
-        telephone: formData.telephone.trim(),
-        email_contact: user.email,
-        administrateur_email: user.email,
-        administrateur_nom: user.full_name || '',
-        administrateurs: [user.email],
-        code_invitation: codeInvitation,
-        statut_validation: 'approuve',
-        actif: true,
-        onboarding_completed: false,
-        date_demande: new Date().toISOString(),
-      };
-
-      console.log('🏥 Création centre:', centreData);
-      const newCentre = await base44.entities.Clinique.create(centreData);
-      console.log('✅ Centre créé avec succès:', newCentre.id);
-      
-      // Stocker le flag et l'ID du centre créé
-      localStorage.setItem('centre_just_created', 'true');
-      localStorage.setItem('centre_created_id', newCentre.id);
-      
-      // Attendre un délai plus court avant redirection
-      setTimeout(() => {
-        window.location.href = createPageUrl('Dashboard') + '?centre_new=1&t=' + Date.now();
-      }, 1500);
-      
-    } catch (err) {
-      console.error('❌ Erreur création:', err);
-      setError(err.message || 'Erreur lors de la création du centre');
-      setLoading(false);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      updateField(fieldName, file_url);
+    } catch (error) {
+      alert('Erreur lors de l\'upload du document');
+    } finally {
+      setUploadingDoc(null);
     }
   };
 
-  if (loading) {
+  const soumettreInscription = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('Utilisateur non connecté');
+
+      const codeInvitation = Math.random().toString(36).substring(2, 8).toUpperCase();
+      
+      const demande = {
+        nom: formData.nom,
+        type_etablissement: formData.type_etablissement,
+        description: formData.description,
+        numero_agrement: formData.numero_agrement,
+        region: formData.region,
+        ville: formData.ville,
+        adresse: formData.adresse,
+        telephone: formData.telephone,
+        email_contact: formData.email_contact || user.email,
+        administrateur_nom: formData.administrateur_nom,
+        administrateur_email: formData.administrateur_email || user.email,
+        administrateur_telephone: formData.administrateur_telephone,
+        administrateurs: [user.email],
+        services_offerts: formData.services_offerts,
+        capacite_lits: formData.capacite_lits ? parseInt(formData.capacite_lits) : null,
+        document_agrement: formData.document_agrement,
+        document_registre_commerce: formData.document_registre_commerce,
+        code_invitation: codeInvitation,
+        statut_validation: 'approuve',
+        actif: true,
+        date_demande: new Date().toISOString(),
+        onboarding_completed: false
+      };
+
+      console.log('🏥 Création centre:', demande);
+      const result = await base44.entities.Clinique.create(demande);
+      console.log('✅ Centre créé:', result);
+      return result;
+    },
+    onSuccess: (centreCreated) => {
+      console.log('🎉 Centre créé avec succès:', centreCreated);
+      setEtape(6);
+      
+      // Invalider le cache et rediriger après un délai plus long
+      setTimeout(() => {
+        console.log('🔄 Redirection vers Dashboard...');
+        // Force un reload complet pour que Dashboard refetch les profils
+        // Ajouter un paramètre pour forcer le refetch
+        window.location.href = createPageUrl('Dashboard') + '?t=' + Date.now();
+      }, 3500);
+    },
+    onError: (error) => {
+      console.error('❌ Erreur création:', error);
+      alert('Erreur : ' + error.message);
+    }
+  });
+
+  const peutContinuerEtape1 = formData.nom?.trim() && formData.type_etablissement && formData.numero_agrement?.trim() && formData.description?.trim();
+  const peutContinuerEtape2 = formData.region && formData.ville?.trim() && formData.adresse?.trim() && formData.telephone?.trim();
+  const peutContinuerEtape3 = formData.administrateur_nom?.trim() && formData.administrateur_telephone?.trim();
+  const peutContinuerEtape4 = formData.services_offerts.length > 0;
+  const peutContinuerEtape5 = formData.document_agrement && formData.document_registre_commerce;
+
+  // Étape 6 - Succès
+  if (etape === 6) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center p-4">
+        <Card className="max-w-lg w-full shadow-2xl border-none">
           <CardContent className="p-8 text-center">
-            <Loader2 className="w-16 h-16 animate-spin text-teal-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Création en cours...</h3>
-            <p className="text-gray-600">
-              Votre centre de santé est en cours de création. Vous serez redirigé automatiquement.
+            <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+              <CheckCircle className="w-14 h-14 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Centre créé avec succès !</h2>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Votre centre de santé <strong>{formData.nom}</strong> a été créé et est maintenant actif sur la plateforme A'lo Maman.
+            </p>
+            <div className="p-4 bg-teal-50 rounded-xl mb-6">
+              <p className="text-sm text-teal-800 font-medium mb-2">
+                🎉 Prochaines étapes :
+              </p>
+              <ul className="text-sm text-teal-700 space-y-1">
+                <li>• Complétez votre profil dans le tableau de bord</li>
+                <li>• Configurez vos services et horaires</li>
+                <li>• Invitez vos collaborateurs</li>
+              </ul>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">
+              Redirection automatique vers votre tableau de bord...
             </p>
           </CardContent>
         </Card>
@@ -133,58 +211,83 @@ export default function InscriptionClinique() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-teal-50 to-cyan-50 flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl">
-              <Building2 className="w-9 h-9 sm:w-11 sm:h-11 text-white" />
-            </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-              Créer votre Centre de Santé
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              Rejoignez A'lo Maman en quelques clics. Complétez votre profil ensuite dans le tableau de bord.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
+      <div className="max-w-4xl mx-auto p-4 py-8 pb-24 lg:pb-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+            <Building2 className="w-11 h-11 text-white" />
           </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+            Inscription Établissement de Santé
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Rejoignez le réseau A'lo Maman
+          </p>
+        </div>
 
-          {/* Formulaire simplifié */}
-          <Card className="shadow-2xl border-none">
-            <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50">
-              <CardTitle className="text-lg sm:text-xl flex items-center gap-3">
-                <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600 flex-shrink-0" />
-                <span>Informations essentielles</span>
-              </CardTitle>
-            </CardHeader>
-
-            <CardContent className="p-4 sm:p-6">
-              {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">
-                  {error}
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between max-w-2xl mx-auto">
+            {[1, 2, 3, 4, 5].map((num) => (
+              <React.Fragment key={num}>
+                <div className="flex flex-col items-center">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold transition-all ${
+                    etape >= num 
+                      ? 'bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-lg scale-110' 
+                      : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {num}
+                  </div>
+                  <p className={`text-xs mt-2 font-medium hidden md:block ${etape >= num ? 'text-teal-600' : 'text-gray-400'}`}>
+                    {num === 1 && 'Établissement'}
+                    {num === 2 && 'Localisation'}
+                    {num === 3 && 'Administrateur'}
+                    {num === 4 && 'Services'}
+                    {num === 5 && 'Documents'}
+                  </p>
                 </div>
-              )}
+                {num < 5 && (
+                  <div className={`flex-1 h-1 mx-2 rounded-full transition-all ${
+                    etape > num ? 'bg-gradient-to-r from-teal-500 to-cyan-600' : 'bg-gray-200'
+                  }`} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        {/* Formulaire */}
+        <Card className="shadow-2xl border-none">
+          <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50">
+            <CardTitle className="text-xl flex items-center gap-3">
+              {etape === 1 && <><Building2 className="w-6 h-6 text-teal-600" /> Informations de l'établissement</>}
+              {etape === 2 && <><MapPin className="w-6 h-6 text-teal-600" /> Localisation</>}
+              {etape === 3 && <><Shield className="w-6 h-6 text-teal-600" /> Administrateur principal</>}
+              {etape === 4 && <><FileText className="w-6 h-6 text-teal-600" /> Services et capacité</>}
+              {etape === 5 && <><Upload className="w-6 h-6 text-teal-600" /> Documents officiels</>}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="p-6 space-y-6">
+            {/* Étape 1 - Informations établissement */}
+            {etape === 1 && (
+              <>
                 <div>
-                  <Label htmlFor="nom" className="text-xs sm:text-sm">Nom de l'établissement *</Label>
+                  <Label htmlFor="nom">Nom de l'établissement *</Label>
                   <Input
                     id="nom"
-                    placeholder="Ex: Clinique Notre-Dame"
+                    placeholder="CHU de Cocody"
                     value={formData.nom}
-                    onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                    className="mt-1 text-base"
-                    required
+                    onChange={(e) => updateField('nom', e.target.value)}
+                    className="mt-1"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="type" className="text-xs sm:text-sm">Type d'établissement *</Label>
-                  <Select 
-                    value={formData.type_etablissement} 
-                    onValueChange={(v) => setFormData({...formData, type_etablissement: v})}
-                  >
-                    <SelectTrigger className="mt-1 text-base">
+                  <Label htmlFor="type">Type d'établissement *</Label>
+                  <Select value={formData.type_etablissement} onValueChange={(v) => updateField('type_etablissement', v)}>
+                    <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -197,14 +300,54 @@ export default function InscriptionClinique() {
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <Label htmlFor="description">Description de votre établissement *</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Décrivez votre établissement, vos valeurs, vos spécialités..."
+                    value={formData.description}
+                    onChange={(e) => updateField('description', e.target.value)}
+                    rows={4}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Cette description sera visible par les utilisateurs de la plateforme
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="agrement">Numéro d'agrément MSP *</Label>
+                  <Input
+                    id="agrement"
+                    placeholder="AGR/MSP/2024/..."
+                    value={formData.numero_agrement}
+                    onChange={(e) => updateField('numero_agrement', e.target.value)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Numéro officiel d'agrément du Ministère de la Santé Publique
+                  </p>
+                </div>
+
+                <Button 
+                  onClick={() => setEtape(2)}
+                  disabled={!peutContinuerEtape1}
+                  className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700"
+                >
+                  Continuer
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </>
+            )}
+
+            {/* Étape 2 - Localisation */}
+            {etape === 2 && (
+              <>
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="region" className="text-xs sm:text-sm">Région *</Label>
-                    <Select 
-                      value={formData.region} 
-                      onValueChange={(v) => setFormData({...formData, region: v})}
-                    >
-                      <SelectTrigger className="mt-1 text-base">
+                    <Label htmlFor="region">Région *</Label>
+                    <Select value={formData.region} onValueChange={(v) => updateField('region', v)}>
+                      <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Sélectionner" />
                       </SelectTrigger>
                       <SelectContent>
@@ -218,84 +361,331 @@ export default function InscriptionClinique() {
                   </div>
 
                   <div>
-                    <Label htmlFor="ville" className="text-xs sm:text-sm">Ville *</Label>
+                    <Label htmlFor="ville">Ville *</Label>
                     <Input
                       id="ville"
-                      placeholder="Ex: Abidjan"
+                      placeholder="Cocody"
                       value={formData.ville}
-                      onChange={(e) => setFormData({...formData, ville: e.target.value})}
-                      className="mt-1 text-base"
-                      required
+                      onChange={(e) => updateField('ville', e.target.value)}
+                      className="mt-1"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="telephone" className="text-xs sm:text-sm">Téléphone principal *</Label>
-                  <Input
-                    id="telephone"
-                    type="tel"
-                    placeholder="+225 XX XX XX XX XX"
-                    value={formData.telephone}
-                    onChange={(e) => setFormData({...formData, telephone: e.target.value})}
-                    className="mt-1 text-base"
-                    required
+                  <Label htmlFor="adresse">Adresse complète *</Label>
+                  <Textarea
+                    id="adresse"
+                    placeholder="II Plateaux, Boulevard Latrille, face à la pharmacie..."
+                    value={formData.adresse}
+                    onChange={(e) => updateField('adresse', e.target.value)}
+                    rows={3}
+                    className="mt-1"
                   />
                 </div>
 
-                <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                  <p className="text-xs sm:text-sm text-blue-900">
-                    <CheckCircle className="w-4 h-4 inline mr-2" />
-                    <strong>Vous êtes administrateur:</strong> {user?.email}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="telephone">Téléphone principal *</Label>
+                    <Input
+                      id="telephone"
+                      type="tel"
+                      placeholder="+225 XX XX XX XX XX"
+                      value={formData.telephone}
+                      onChange={(e) => updateField('telephone', e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="email">Email de contact *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="contact@clinique.ci"
+                      value={formData.email_contact}
+                      onChange={(e) => updateField('email_contact', e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEtape(1)}
+                    className="flex-1"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Retour
+                  </Button>
+                  <Button 
+                    onClick={() => setEtape(3)}
+                    disabled={!peutContinuerEtape2}
+                    className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-600"
+                  >
+                    Continuer
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* Étape 3 - Administrateur */}
+            {etape === 3 && (
+              <>
+                <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <p className="text-sm text-blue-900">
+                    <Shield className="w-4 h-4 inline mr-2" />
+                    L'administrateur principal aura tous les droits de gestion du centre
                   </p>
                 </div>
 
-                <div className="p-3 sm:p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                  <p className="text-xs sm:text-sm text-amber-900 mb-2">
-                    📋 <strong>Prochaines étapes après création :</strong>
+                <div>
+                  <Label htmlFor="admin_nom">Nom complet *</Label>
+                  <Input
+                    id="admin_nom"
+                    placeholder="Dr. Koffi Kouassi"
+                    value={formData.administrateur_nom}
+                    onChange={(e) => updateField('administrateur_nom', e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="admin_email">Email professionnel</Label>
+                  <Input
+                    id="admin_email"
+                    type="email"
+                    placeholder={user?.email || "admin@clinique.ci"}
+                    value={formData.administrateur_email || user?.email}
+                    onChange={(e) => updateField('administrateur_email', e.target.value)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Par défaut : {user?.email}
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="admin_tel">Téléphone *</Label>
+                  <Input
+                    id="admin_tel"
+                    type="tel"
+                    placeholder="+225 XX XX XX XX XX"
+                    value={formData.administrateur_telephone}
+                    onChange={(e) => updateField('administrateur_telephone', e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEtape(2)}
+                    className="flex-1"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Retour
+                  </Button>
+                  <Button 
+                    onClick={() => setEtape(4)}
+                    disabled={!peutContinuerEtape3}
+                    className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-600"
+                  >
+                    Continuer
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* Étape 4 - Services */}
+            {etape === 4 && (
+              <>
+                <div>
+                  <Label className="mb-3 block">Services offerts * (sélectionnez au moins 1)</Label>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {SERVICES.map(service => (
+                      <div 
+                        key={service.value}
+                        className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                        onClick={() => toggleService(service.value)}
+                      >
+                        <Checkbox
+                          checked={formData.services_offerts.includes(service.value)}
+                          onCheckedChange={() => toggleService(service.value)}
+                        />
+                        <Label className="cursor-pointer text-sm flex-1">
+                          {service.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="lits">Capacité d'accueil (nombre de lits)</Label>
+                  <Input
+                    id="lits"
+                    type="number"
+                    placeholder="50"
+                    value={formData.capacite_lits}
+                    onChange={(e) => updateField('capacite_lits', e.target.value)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Optionnel - utile pour l'orientation des patients</p>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEtape(3)}
+                    className="flex-1"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Retour
+                  </Button>
+                  <Button 
+                    onClick={() => setEtape(5)}
+                    disabled={!peutContinuerEtape4}
+                    className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-600"
+                  >
+                    Continuer
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* Étape 5 - Documents */}
+            {etape === 5 && (
+              <>
+                <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                  <p className="text-sm text-amber-900 font-medium mb-2">
+                    📋 Documents requis pour validation
                   </p>
                   <ul className="text-xs text-amber-800 space-y-1 ml-4">
-                    <li>• Compléter les informations (agrément, adresse, services...)</li>
-                    <li>• Configurer vos horaires et tarifs</li>
-                    <li>• Inviter votre équipe</li>
-                    <li>• Personnaliser votre profil public</li>
+                    <li>• Agrément MSP en cours de validité</li>
+                    <li>• Registre de commerce ou équivalent administratif</li>
+                    <li>• Format PDF uniquement (max 5 MB par fichier)</li>
                   </ul>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => navigate(createPageUrl('SelectionCompte'))}
-                    className="flex-1 text-sm sm:text-base"
+                <div className="space-y-4">
+                  {/* Document 1 */}
+                  <div>
+                    <Label>Agrément MSP (PDF) *</Label>
+                    <div className="mt-2 border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-teal-400 transition-colors">
+                      {formData.document_agrement ? (
+                        <div className="flex items-center justify-center gap-3 text-green-700">
+                          <CheckCircle className="w-6 h-6" />
+                          <span className="font-medium">Document uploadé ✓</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateField('document_agrement', null)}
+                          >
+                            Remplacer
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-10 h-10 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-3">
+                            {uploadingDoc === 'document_agrement' ? 'Upload en cours...' : 'Cliquez pour uploader votre agrément MSP'}
+                          </p>
+                          <Input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => handleFileUpload(e, 'document_agrement')}
+                            disabled={uploadingDoc === 'document_agrement'}
+                            className="max-w-xs mx-auto"
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Document 2 */}
+                  <div>
+                    <Label>Registre de commerce (PDF) *</Label>
+                    <div className="mt-2 border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-teal-400 transition-colors">
+                      {formData.document_registre_commerce ? (
+                        <div className="flex items-center justify-center gap-3 text-green-700">
+                          <CheckCircle className="w-6 h-6" />
+                          <span className="font-medium">Document uploadé ✓</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateField('document_registre_commerce', null)}
+                          >
+                            Remplacer
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-10 h-10 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-3">
+                            {uploadingDoc === 'document_registre_commerce' ? 'Upload en cours...' : 'Cliquez pour uploader votre registre'}
+                          </p>
+                          <Input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => handleFileUpload(e, 'document_registre_commerce')}
+                            disabled={uploadingDoc === 'document_registre_commerce'}
+                            className="max-w-xs mx-auto"
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEtape(4)}
+                    className="flex-1"
                   >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
                     Retour
                   </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-sm sm:text-base"
+                  <Button 
+                    onClick={() => soumettreInscription.mutate()}
+                    disabled={!peutContinuerEtape5 || soumettreInscription.isPending}
+                    className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-600"
                   >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Créer mon centre
+                    {soumettreInscription.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      <>
+                        Soumettre la demande
+                        <CheckCircle className="w-4 h-4 ml-2" />
+                      </>
+                    )}
                   </Button>
                 </div>
-              </form>
-            </CardContent>
-          </Card>
+              </>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Aide */}
-          <Card className="mt-4 border-none shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50">
-            <CardContent className="p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
-              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-xs sm:text-sm text-blue-900 min-w-0">
-                <p className="font-semibold mb-1">Besoin d'aide ?</p>
-                <p className="text-blue-700">
-                  Contactez <strong>support@alomaman.ci</strong>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Aide */}
+        <Card className="border-none shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardContent className="p-4 flex items-start gap-3">
+            <FileText className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-blue-900">
+              <p className="font-semibold mb-1">Besoin d'aide ?</p>
+              <p className="text-blue-700">
+                Contactez-nous à <strong>support@alomaman.ci</strong> ou appelez le <strong>+225 07 XX XX XX XX</strong>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

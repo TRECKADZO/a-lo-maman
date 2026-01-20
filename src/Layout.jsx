@@ -25,7 +25,8 @@ import {
   Star,
   SlidersHorizontal,
   Moon,
-  Shield
+  Shield,
+  Building2
 } from "lucide-react";
 import {
   Sidebar,
@@ -61,7 +62,7 @@ import ServiceWorkerRegistration from "@/components/offline/ServiceWorkerRegistr
 import PersonnaliserNavigation from "@/components/navigation/PersonnaliserNavigation";
 import SecurityMonitor from "@/components/security/SecurityMonitor";
 
-const getNavigationItems = (lang, isSpecialist, isAdmin) => {
+const getNavigationItems = (lang, isSpecialist, isAdmin, isCentre) => {
     if (isAdmin) {
       const items = {
             fr: [
@@ -80,6 +81,31 @@ const getNavigationItems = (lang, isSpecialist, isAdmin) => {
             ],
           };
           return items[lang] || items.fr;
+    }
+    if (isCentre) {
+      const items = {
+        fr: [
+          { title: "Accueil", url: createPageUrl("0_Accueil"), icon: Home, color: "text-purple-500" },
+          { title: "Tableau de bord", url: createPageUrl("Dashboard"), icon: Sparkles, color: "text-purple-500" },
+          { title: "Portail Clinique", url: createPageUrl("AdminPortailCentre"), icon: Building2, color: "text-teal-500" },
+          { title: "Calendrier", url: createPageUrl("CalendrierCentre"), icon: Calendar, color: "text-blue-500" },
+          { title: "Gestion Membres", url: createPageUrl("GestionMembresCentre"), icon: Users, color: "text-indigo-500" },
+          { title: "Messagerie", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
+          { title: "Paramètres", url: createPageUrl("Parametres"), icon: Settings, color: "text-gray-500" },
+          { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+        ],
+        en: [
+          { title: "Home", url: createPageUrl("0_Accueil"), icon: Home, color: "text-purple-500" },
+          { title: "Dashboard", url: createPageUrl("Dashboard"), icon: Sparkles, color: "text-purple-500" },
+          { title: "Clinic Portal", url: createPageUrl("AdminPortailCentre"), icon: Building2, color: "text-teal-500" },
+          { title: "Calendar", url: createPageUrl("CalendrierCentre"), icon: Calendar, color: "text-blue-500" },
+          { title: "Members Management", url: createPageUrl("GestionMembresCentre"), icon: Users, color: "text-indigo-500" },
+          { title: "Messaging", url: createPageUrl("Messagerie"), icon: MessageSquare, color: "text-orange-500" },
+          { title: "Settings", url: createPageUrl("Parametres"), icon: Settings, color: "text-gray-500" },
+          { title: "Support", url: createPageUrl("Support"), icon: HelpCircle, color: "text-purple-500" },
+        ],
+      };
+      return items[lang] || items.fr;
     }
     if (isSpecialist) {
       const items = {
@@ -275,7 +301,7 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const isSpecialist = !!profiles?.pro;
-  const isCentre = !!profiles?.centre;
+  const isCentre = !!profiles?.centre && !isAdmin;
   const isAdmin = user?.role === 'admin';
   const currentProfile = profiles?.pro || profiles?.maman || profiles?.centre;
   const lang = currentProfile?.langue_preferee === 'anglais' ? 'en' : 'fr';
@@ -292,7 +318,7 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const navigationItems = React.useMemo(() => {
-    const items = getNavigationItems(lang, isSpecialist, isAdmin);
+    const items = getNavigationItems(lang, isSpecialist, isAdmin, isCentre);
     
     if (!preferencesNav?.navigation_personnalisee || preferencesNav.navigation_personnalisee.length === 0) {
       return items;
@@ -307,7 +333,7 @@ export default function Layout({ children, currentPageName }) {
     return navPerso
       .map(n => itemsMap.get(n.page))
       .filter(Boolean);
-  }, [lang, isSpecialist, isAdmin, preferencesNav]);
+  }, [lang, isSpecialist, isAdmin, isCentre, preferencesNav]);
 
   const currentBottomNavItems = isSpecialist ? proBottomNavItems : mamanBottomNavItems;
 

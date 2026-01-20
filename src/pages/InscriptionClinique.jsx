@@ -143,7 +143,7 @@ export default function InscriptionClinique() {
         document_agrement: formData.document_agrement,
         document_registre_commerce: formData.document_registre_commerce,
         code_invitation: codeInvitation,
-        statut_validation: 'en_attente',
+        statut_validation: 'approuve',
         date_demande: new Date().toISOString(),
         onboarding_completed: false
       };
@@ -151,7 +151,10 @@ export default function InscriptionClinique() {
       return await base44.entities.Clinique.create(demande);
     },
     onSuccess: () => {
-      setEtape(6);
+      // Rediriger vers le Dashboard après création
+      setTimeout(() => {
+        window.location.href = createPageUrl('Dashboard');
+      }, 2000);
     },
     onError: (error) => {
       alert('Erreur : ' + error.message);
@@ -173,23 +176,23 @@ export default function InscriptionClinique() {
             <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
               <CheckCircle className="w-14 h-14 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Demande envoyée !</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Centre créé avec succès !</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Votre demande d'inscription a été envoyée avec succès. 
-              Notre équipe va la valider sous 48h et vous contactera à l'adresse{' '}
-              <strong>{formData.email_contact || user?.email}</strong>.
+              Votre centre de santé <strong>{formData.nom}</strong> a été créé et est maintenant actif sur la plateforme A'lo Maman.
             </p>
             <div className="p-4 bg-teal-50 rounded-xl mb-6">
-              <p className="text-sm text-teal-800">
-                ✅ Vous recevrez un email de confirmation dès validation
+              <p className="text-sm text-teal-800 font-medium mb-2">
+                🎉 Prochaines étapes :
               </p>
+              <ul className="text-sm text-teal-700 space-y-1">
+                <li>• Complétez votre profil dans le tableau de bord</li>
+                <li>• Configurez vos services et horaires</li>
+                <li>• Invitez vos collaborateurs</li>
+              </ul>
             </div>
-            <Button 
-              onClick={() => navigate(createPageUrl('0_Accueil'))}
-              className="w-full bg-teal-600 hover:bg-teal-700"
-            >
-              Retour à l'accueil
-            </Button>
+            <p className="text-sm text-gray-500 mb-6">
+              Redirection automatique vers votre tableau de bord...
+            </p>
           </CardContent>
         </Card>
       </div>

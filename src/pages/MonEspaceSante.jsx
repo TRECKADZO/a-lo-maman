@@ -24,7 +24,7 @@ import GestionAutorisationsDMP from '@/components/dmp/GestionAutorisationsDMP';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import SwipeableTabs from '@/components/navigation/SwipeableTabs';
 import VueSynthese from '@/components/dossier-medical/VueSynthese';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function MonEspaceSante() {
   const [activeTab, setActiveTab] = useState('rendez-vous');

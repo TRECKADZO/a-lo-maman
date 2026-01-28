@@ -463,9 +463,13 @@ export default function MesPatients() {
                           <Button
                             size="sm"
                             className="flex-1 bg-teal-600 hover:bg-teal-700 active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(createPageUrl(`DossierMedicalDynamique/${patient.id}`));
+                            }}
                           >
                             <FileText className="w-4 h-4 mr-1 flex-shrink-0" />
-                            <span className="truncate text-xs md:text-sm">Dossier</span>
+                            <span className="truncate text-xs md:text-sm">Dossier Médical</span>
                           </Button>
                         </div>
                       </CardContent>

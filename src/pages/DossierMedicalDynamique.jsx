@@ -11,8 +11,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   User, Heart, Activity, Brain, Bone, 
   ArrowLeft, Lock, Shield, RefreshCw, 
-  Loader2, AlertTriangle 
+  Loader2, AlertTriangle, Plus 
 } from 'lucide-react';
+import AjouterObservation from '../components/dossier-medical/AjouterObservation';
+import AjouterTraitement from '../components/dossier-medical/AjouterTraitement';
 import VueSynthese from '../components/dossier-medical/VueSynthese';
 import VueCardiologie from '../components/dossier-medical/VueCardiologie';
 import VueOncologie from '../components/dossier-medical/VueOncologie';
@@ -31,6 +33,8 @@ export default function DossierMedicalDynamique() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('synthese');
   const [refreshing, setRefreshing] = useState(false);
+  const [showAjouterObs, setShowAjouterObs] = useState(false);
+  const [showAjouterTraitement, setShowAjouterTraitement] = useState(false);
 
   // Récupérer le professionnel connecté
   const { data: user } = useQuery({
@@ -129,6 +133,22 @@ export default function DossierMedicalDynamique() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAjouterObs(true)}
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Observation
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAjouterTraitement(true)}
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Traitement
+            </Button>
             <Badge className="bg-teal-100 text-teal-800">
               <Shield className="w-3 h-3 mr-1" />
               Sécurisé
@@ -192,6 +212,18 @@ export default function DossierMedicalDynamique() {
             )}
           </div>
         </Tabs>
+
+        {/* Modals */}
+        <AjouterObservation
+          dossierId={patientId}
+          open={showAjouterObs}
+          onClose={() => setShowAjouterObs(false)}
+        />
+        <AjouterTraitement
+          dossierId={patientId}
+          open={showAjouterTraitement}
+          onClose={() => setShowAjouterTraitement(false)}
+        />
       </div>
     </div>
   );

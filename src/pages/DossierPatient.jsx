@@ -52,6 +52,7 @@ import VueSynthese from "../components/dossier-medical/VueSynthese";
 import VueCardiologie from "../components/dossier-medical/VueCardiologie";
 import VueOncologie from "../components/dossier-medical/VueOncologie";
 import VuePsychiatrie from "../components/dossier-medical/VuePsychiatrie";
+import GestionConsentements from "../components/dossier-medical/GestionConsentements";
 
 export default function DossierPatient() {
   const location = useLocation();
@@ -533,6 +534,12 @@ export default function DossierPatient() {
 
           {/* Dossier Médical Dynamique */}
           <TabsContent value="dossier-medical" className="space-y-4">
+            <GestionConsentements 
+              dossier={dossierMedical} 
+              patientEmail={enfant.created_by}
+              isPatientView={false}
+            />
+            
             {dossierMedical ? (
               <>
                 <VueSynthese dossier={dossierMedical} />

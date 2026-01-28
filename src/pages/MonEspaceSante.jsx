@@ -24,6 +24,7 @@ import GestionAutorisationsDMP from '@/components/dmp/GestionAutorisationsDMP';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import SwipeableTabs from '@/components/navigation/SwipeableTabs';
 import VueSynthese from '@/components/dossier-medical/VueSynthese';
+import GestionConsentements from '@/components/dossier-medical/GestionConsentements';
 import { CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function MonEspaceSante() {
@@ -116,22 +117,32 @@ export default function MonEspaceSante() {
       case 'rendez-vous':
         return <MesRendezVousPatient userEmail={user?.email} />;
       case 'dossier-medical':
-        return dossierMedical ? (
-          <VueSynthese dossier={dossierMedical} />
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-pink-500" />
-                Mon Dossier Médical
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center py-8">
-              <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600">Votre dossier médical sera créé</p>
-              <p className="text-sm text-gray-500 mt-2">lors de votre première consultation avec un professionnel</p>
-            </CardContent>
-          </Card>
+        return (
+          <div className="space-y-6">
+            <GestionConsentements 
+              dossier={dossierMedical} 
+              patientEmail={user?.email}
+              isPatientView={true}
+            />
+            
+            {dossierMedical ? (
+              <VueSynthese dossier={dossierMedical} />
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-pink-500" />
+                    Mon Dossier Médical
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center py-8">
+                  <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-600">Votre dossier médical sera créé</p>
+                  <p className="text-sm text-gray-500 mt-2">lors de votre première consultation avec un professionnel</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         );
       case 'documents':
         return <DocumentsMedicaux userEmail={user?.email} />;

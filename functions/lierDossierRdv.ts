@@ -5,7 +5,6 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const { event, data } = await req.json();
 
-    // Vérifier que c'est une création de RDV
     if (event.type !== 'create' || !data) {
       return Response.json({ success: true, message: 'Pas une création de RDV' });
     }
@@ -13,12 +12,27 @@ Deno.serve(async (req) => {
     const rdv = data;
     const patientEmail = rdv.patient_email || rdv.created_by;
     const professionnelEmail = rdv.professionnel_email;
+    const professionnelId = rdv.professionnel_id;
 
-    if (!patientEmail || !professionnelEmail) {
-      return Response.json({ success: true, message: 'Emails manquants' });
+    if (!patientEmail || !professionnelEmail || !professionnelId) {
+      console.log('⚠️ RDV incomplet - emails ou ID manquants');
+      return Response.json({ success: true, message: 'RDV incomplet' });
     }
 
-    // 1. Lier au dossier médical complet
+    // ✅ Vérification: Le professionnel existe et l'email correspond
+    const professionnelsList = await base44.asServiceRole.entities.Professionnel.filter({
+      id: professionnelId,
+      email: professionnelEmail
+    });
+
+    if (professionnelsList.length === 0) {
+      console.error(`❌ Email ${professionnelEmail} ne correspond pas au professionnel ${professionnelId}`);
+      return Response.json({
+        error: 'Professionnel invalide'
+      }, { status: 403 });
+    }
+
+    // Lier au dossier médical avec CONSENTEMENTS RESTREINTS
     const dossiers = await base44.asServiceRole.entities.DossierMedicalComplet.filter({
       patient_email: patientEmail
     });
@@ -31,9 +45,27 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.DossierMedicalComplet.update(dossier.id, {
           professionnels_autorises: [...professionnels, professionnelEmail]
         });
+
+        // 📋 LOG D'AUDIT
+        try {
+          await base44.asServiceRole.entities.AuditLog.create({
+            user_email: 'system',
+            user_role: 'system',
+            action: 'update',
+            entity_type: 'DossierMedicalComplet',
+            entity_id: dossier.id,
+            details: {
+              event: 'professionnel_added',
+              professionnel_email: professionnelEmail,
+              trigger: 'appointment_created'
+            }
+          });
+        } catch (auditError) {
+          console.warn('Audit log non disponible');
+        }
       }
     } else {
-      // Créer le dossier médical
+      // Créer avec CONSENTEMENTS RESTREINTS (medecine_generale seulement)
       const profilsMaman = await base44.asServiceRole.entities.ProfilMaman.filter({
         created_by: patientEmail
       });
@@ -45,17 +77,33 @@ Deno.serve(async (req) => {
         patient_prenom: '',
         professionnels_autorises: [professionnelEmail],
         consentements_partage: {
-          cardiologie: true,
-          oncologie: true,
-          psychiatrie: true,
-          rhumatologie: true,
+          cardiologie: false,
+          oncologie: false,
+          psychiatrie: false,
+          rhumatologie: false,
           medecine_generale: true,
-          kinesitherapie: true,
+          kinesitherapie: false,
         },
       });
+
+      try {
+        await base44.asServiceRole.entities.AuditLog.create({
+          user_email: 'system',
+          user_role: 'system',
+          action: 'create',
+          entity_type: 'DossierMedicalComplet',
+          details: {
+            event: 'dossier_created_for_appointment',
+            patient_email: patientEmail,
+            professionnel_email: professionnelEmail
+          }
+        });
+      } catch (auditError) {
+        console.warn('Audit log non disponible');
+      }
     }
 
-    // 2. Lier aux grossesses actives
+    // Lier aux grossesses actives
     const grossesses = await base44.asServiceRole.entities.SuiviGrossesse.filter({
       created_by: patientEmail,
       statut: 'en_cours'
@@ -70,7 +118,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 3. Lier aux carnets enfants
+    // Lier aux carnets enfants
     const enfants = await base44.asServiceRole.entities.EnfantCarnet.filter({
       created_by: patientEmail
     });
@@ -81,12 +129,29 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.EnfantCarnet.update(enfant.id, {
           professionnels_suivi: [...professionnels, professionnelEmail]
         });
+
+        try {
+          await base44.asServiceRole.entities.AuditLog.create({
+            user_email: 'system',
+            user_role: 'system',
+            action: 'update',
+            entity_type: 'EnfantCarnet',
+            entity_id: enfant.id,
+            details: {
+              event: 'professionnel_added',
+              professionnel_email: professionnelEmail
+            }
+          });
+        } catch (auditError) {
+          console.warn('Audit log non disponible');
+        }
       }
     }
 
     return Response.json({
       success: true,
-      message: `Dossier lié au professionnel ${professionnelEmail}`
+      message: `Dossiers liés au professionnel ${professionnelEmail}`,
+      audit_logged: true
     });
 
   } catch (error) {

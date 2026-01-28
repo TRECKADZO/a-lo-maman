@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useValidatePatientAccess, AccessDeniedAlert } from "../components/security/ValidationAccesPatient";
 import {
   Loader2,
   User,
@@ -111,6 +112,12 @@ export default function DossierPatient() {
     },
     enabled: !!enfantId,
   });
+
+  // ✅ Validation d'accès patient
+  const { isValid: hasValidAccess, isLoading: loadingAccess } = useValidatePatientAccess(
+    enfant?.created_by,
+    enfantId
+  );
 
   const { data: rdvPatient = [] } = useQuery({
     queryKey: ['rdv_patient', enfantId],
@@ -235,15 +242,21 @@ export default function DossierPatient() {
       const parentEmail = enfant.created_by;
       const specialistEmail = user.email;
 
-      if (!parentEmail) {
-        alert("Impossible de trouver l'email du parent pour ce patient.");
+      if (!parentEmail || !profilPro) {
+        alert("Impossible d'initialiser la conversation");
+        return;
+      }
+
+      // ✅ Vérification que le parent a autorisé la communication
+      if (!enfant.professionnels_suivi?.includes(specialistEmail)) {
+        alert("Vous n'êtes pas autorisé à contacter ce parent");
         return;
       }
       
       const participantEmails = [parentEmail, specialistEmail].sort();
 
       const existingConversations = await base44.entities.Conversation.filter({
-        participant_emails: participantEmails
+        participants: { $elemMatch: { email: { $in: participantEmails } } }
       });
 
       let conversationId;
@@ -251,9 +264,13 @@ export default function DossierPatient() {
         conversationId = existingConversations[0].id;
       } else {
         const newConversation = await base44.entities.Conversation.create({
-          participant_emails: participantEmails,
-          last_message_content: "Début de la conversation",
-          last_message_date: new Date().toISOString()
+          type: 'direct',
+          participants: [
+            { email: parentEmail, nom: enfant.nom },
+            { email: specialistEmail, nom: profilPro.nom_complet, role: 'professionnel' }
+          ],
+          titre: `Consultation ${enfant.prenom} ${enfant.nom}`,
+          derniere_synchronisation: new Date().toISOString()
         });
         conversationId = newConversation.id;
       }
@@ -300,7 +317,7 @@ export default function DossierPatient() {
     return "Nouveau-né";
   };
 
-  if (loadingEnfant) {
+  if (loadingEnfant || loadingAccess) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
         <div className="text-center">
@@ -316,6 +333,17 @@ export default function DossierPatient() {
       <div className="p-8 text-center">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
         <p className="text-red-600 text-xl">Dossier patient non trouvé</p>
+      </div>
+    );
+  }
+
+  // ✅ Vérification d'accès sécurisée
+  if (!hasValidAccess) {
+    return (
+      <div className="p-8 text-center">
+        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <p className="text-red-600 text-xl">Accès refusé</p>
+        <p className="text-red-500 text-sm mt-2">Vous n'êtes pas autorisé à consulter ce dossier patient.</p>
       </div>
     );
   }

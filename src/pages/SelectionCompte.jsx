@@ -65,30 +65,45 @@ export default function SelectionCompte() {
     retry: false,
   });
 
-  // Vérifier si l'utilisateur a déjà un centre de santé
-  const { data: centreExistant } = useQuery({
-    queryKey: ['check_centre', user?.email],
+  // Vérifier si l'utilisateur a DÉJÀ un profil (maman, pro, ou centre)
+  const { data: existingProfiles } = useQuery({
+    queryKey: ['check_existing_profiles', user?.email],
     queryFn: async () => {
       if (!user) return null;
-      const centres = await base44.entities.Clinique.filter({
+
+      // Vérifier profil Maman
+      const maman = await base44.entities.ProfilMaman.filter({
+        created_by: user.email
+      }).then(res => res[0] || null);
+
+      // Vérifier profil Professionnel
+      const professionnel = await base44.entities.Professionnel.filter({
+        email: user.email
+      }).then(res => res[0] || null);
+
+      // Vérifier centre de santé
+      const centre = await base44.entities.Clinique.filter({
         $or: [
           { administrateurs: { $in: [user.email] } },
-          { administrateur_email: user.email },
-          { created_by: user.email }
+          { administrateur_email: user.email }
         ]
-      });
-      return centres[0] || null;
+      }).then(res => res[0] || null);
+
+      return { maman, professionnel, centre };
     },
     enabled: !!user,
     retry: false,
   });
 
-  // Si un centre existe déjà, rediriger vers le Dashboard
+  // ✅ Si un profil existe déjà, rediriger directement au Dashboard (skip SelectionCompte)
   React.useEffect(() => {
-    if (centreExistant && !userLoading) {
-      navigate(createPageUrl('Dashboard'), { replace: true });
+    if (existingProfiles && !userLoading) {
+      const hasAnyProfile = existingProfiles.maman || existingProfiles.professionnel || existingProfiles.centre;
+      if (hasAnyProfile) {
+        navigate(createPageUrl('Dashboard'), { replace: true });
+      }
     }
-  }, [centreExistant, userLoading, navigate]);
+  }, [existingProfiles, userLoading, navigate]);
 
   const verifierCodeCentre = async () => {
     if (codeInvitation.length < 4) return;
@@ -261,12 +276,12 @@ export default function SelectionCompte() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  if (!user || centreExistant) {
+  if (!user || !existingProfiles || (existingProfiles.maman || existingProfiles.professionnel || existingProfiles.centre)) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-pink-500 mx-auto mb-4" />
-          <p className="text-gray-600">{centreExistant ? 'Redirection vers votre centre...' : 'Chargement...'}</p>
+          <p className="text-gray-600">Chargement...</p>
         </div>
       </div>
     );

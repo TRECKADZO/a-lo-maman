@@ -23,6 +23,8 @@ import MessagerieSante from '@/components/espacesante/MessagerieSante';
 import GestionAutorisationsDMP from '@/components/dmp/GestionAutorisationsDMP';
 import RappelsWidget from '@/components/rappels/RappelsWidget';
 import SwipeableTabs from '@/components/navigation/SwipeableTabs';
+import VueSynthese from '@/components/dossier-medical/VueSynthese';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function MonEspaceSante() {
   const [activeTab, setActiveTab] = useState('rendez-vous');
@@ -88,8 +90,21 @@ export default function MonEspaceSante() {
     );
   }
 
+  const { data: dossierMedical } = useQuery({
+    queryKey: ['mon_dossier_medical', user?.email],
+    queryFn: async () => {
+      if (!user) return null;
+      const dossiers = await base44.entities.DossierMedicalComplet.filter({
+        patient_email: user.email
+      });
+      return dossiers[0] || null;
+    },
+    enabled: !!user,
+  });
+
   const tabs = [
     { value: 'rendez-vous', label: 'Rendez-vous', icon: Calendar },
+    { value: 'dossier-medical', label: 'Mon Dossier', icon: Heart },
     { value: 'documents', label: 'Documents', icon: FileText },
     { value: 'metriques', label: 'Santé', icon: Activity },
     { value: 'dmp', label: 'Autorisations DMP', icon: Bell },
@@ -100,6 +115,24 @@ export default function MonEspaceSante() {
     switch(activeTab) {
       case 'rendez-vous':
         return <MesRendezVousPatient userEmail={user?.email} />;
+      case 'dossier-medical':
+        return dossierMedical ? (
+          <VueSynthese dossier={dossierMedical} />
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-pink-500" />
+                Mon Dossier Médical
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center py-8">
+              <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">Votre dossier médical sera créé</p>
+              <p className="text-sm text-gray-500 mt-2">lors de votre première consultation avec un professionnel</p>
+            </CardContent>
+          </Card>
+        );
       case 'documents':
         return <DocumentsMedicaux userEmail={user?.email} />;
       case 'metriques':

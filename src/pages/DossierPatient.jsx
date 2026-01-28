@@ -48,6 +48,10 @@ import ConsulterDMPProfessionnel from "../components/dmp/ConsulterDMPProfessionn
 import PublierDMPProfessionnel from "../components/dmp/PublierDMPProfessionnel";
 import ExtractionDocumentIA from "../components/dmp/ExtractionDocumentIA";
 import ResumeMedicalIA from "../components/dmp/ResumeMedicalIA";
+import VueSynthese from "../components/dossier-medical/VueSynthese";
+import VueCardiologie from "../components/dossier-medical/VueCardiologie";
+import VueOncologie from "../components/dossier-medical/VueOncologie";
+import VuePsychiatrie from "../components/dossier-medical/VuePsychiatrie";
 
 export default function DossierPatient() {
   const location = useLocation();
@@ -126,6 +130,18 @@ export default function DossierPatient() {
       return await base44.entities.MetriqueSante.filter({
         created_by: enfant.created_by
       }, '-date_mesure', 10);
+    },
+    enabled: !!enfant,
+  });
+
+  const { data: dossierMedical } = useQuery({
+    queryKey: ['dossier_medical_patient', enfant?.created_by],
+    queryFn: async () => {
+      if (!enfant) return null;
+      const dossiers = await base44.entities.DossierMedicalComplet.filter({
+        patient_email: enfant.created_by
+      });
+      return dossiers[0] || null;
     },
     enabled: !!enfant,
   });
@@ -492,6 +508,10 @@ export default function DossierPatient() {
         <Tabs defaultValue="suivi" className="space-y-4">
           <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1 p-1">
             <TabsTrigger value="suivi" className="text-xs md:text-sm px-3 py-2">Suivi Patient</TabsTrigger>
+            <TabsTrigger value="dossier-medical" className="text-xs md:text-sm px-3 py-2 flex items-center gap-1">
+              <Activity className="w-3 h-3" />
+              Dossier Médical
+            </TabsTrigger>
             <TabsTrigger value="dmp" className="text-xs md:text-sm px-3 py-2 flex items-center gap-1">
               <Shield className="w-3 h-3" />
               DMP
@@ -509,6 +529,32 @@ export default function DossierPatient() {
               patientEmail={enfant.created_by}
               patientNom={`${enfant.prenom} ${enfant.nom}`}
             />
+          </TabsContent>
+
+          {/* Dossier Médical Dynamique */}
+          <TabsContent value="dossier-medical" className="space-y-4">
+            {dossierMedical ? (
+              <>
+                <VueSynthese dossier={dossierMedical} />
+                {profilPro?.specialite === 'cardiologie' && (
+                  <VueCardiologie dossier={dossierMedical} />
+                )}
+                {profilPro?.specialite === 'oncologie' && (
+                  <VueOncologie dossier={dossierMedical} />
+                )}
+                {profilPro?.specialite === 'psychiatrie' && (
+                  <VuePsychiatrie dossier={dossierMedical} />
+                )}
+              </>
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-600">Aucun dossier médical complet disponible</p>
+                  <p className="text-sm text-gray-500 mt-2">Le dossier médical sera créé lors de la première consultation</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* DMP - Dossier Médical Partagé */}

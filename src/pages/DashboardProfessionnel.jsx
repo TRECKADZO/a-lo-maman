@@ -28,6 +28,8 @@ import OnboardingProfessionnel from '../components/onboarding/OnboardingProfessi
 import MetricsCharts from '../components/dashboard-pro/MetricsCharts';
 import AlertesRisqueIA from '../components/dashboard-pro/AlertesRisqueIA';
 import RecommandationsPatientsIA from '../components/dmp/RecommandationsPatientsIA';
+import StatistiquesAvancees from '../components/dashboard-pro/StatistiquesAvancees';
+import AccesRapidePatients from '../components/dashboard-pro/AccesRapidePatients';
 
 export default function DashboardProfessionnel() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -92,6 +94,18 @@ export default function DashboardProfessionnel() {
     queryFn: async () => {
       const docs = await base44.entities.DocumentMedical.list();
       return docs;
+    },
+    enabled: !!profilPro,
+  });
+
+  const { data: dossiersMedicaux = [] } = useQuery({
+    queryKey: ['dossiers_medicaux', profilPro?.email],
+    queryFn: async () => {
+      if (!profilPro) return [];
+      const dossiers = await base44.entities.DossierMedicalComplet.filter({
+        professionnels_autorises: { $in: [profilPro.email] }
+      });
+      return dossiers;
     },
     enabled: !!profilPro,
   });
@@ -292,6 +306,19 @@ export default function DashboardProfessionnel() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Statistiques avancées */}
+        <StatistiquesAvancees 
+          appointments={mesRendezVous}
+          patients={mesPatients}
+        />
+
+        {/* Accès rapide aux patients */}
+        <AccesRapidePatients 
+          patients={mesPatients}
+          appointments={mesRendezVous}
+          medicalRecords={dossiersMedicaux}
+        />
 
         {/* Graphiques interactifs */}
         <MetricsCharts 

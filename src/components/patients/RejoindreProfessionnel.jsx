@@ -17,83 +17,21 @@ export default function RejoindreProfessionnel({ onSuccess }) {
 
   const rejoindreProMutation = useMutation({
     mutationFn: async (codeLiaison) => {
-      const user = await base44.auth.me();
-      
-      // Trouver le professionnel avec ce code
-      const pros = await base44.entities.Professionnel.list();
-      const pro = pros.find(p => p.code_liaison === codeLiaison.toUpperCase());
-      
-      if (!pro) {
-        throw new Error('Code invalide');
-      }
-
-      // Récupérer le profil maman
-      const profils = await base44.entities.ProfilMaman.filter({ created_by: user.email });
-      const profil = profils[0];
-
-      // Récupérer ou créer le dossier médical
-      let dossiers = await base44.entities.DossierMedicalComplet.filter({ patient_email: user.email });
-      let dossier = dossiers[0];
-
-      if (dossier) {
-        // Ajouter le professionnel aux autorisations
-        const professionnels = dossier.professionnels_autorises || [];
-        if (!professionnels.includes(pro.email)) {
-          await base44.entities.DossierMedicalComplet.update(dossier.id, {
-            professionnels_autorises: [...professionnels, pro.email],
-          });
-        }
-      } else {
-        // Créer un nouveau dossier avec le professionnel autorisé
-        await base44.entities.DossierMedicalComplet.create({
-          patient_email: user.email,
-          patient_nom: profil?.display_name || user.full_name || '',
-          patient_prenom: '',
-          professionnels_autorises: [pro.email],
-          consentements_partage: {
-            cardiologie: true,
-            oncologie: true,
-            psychiatrie: true,
-            rhumatologie: true,
-            medecine_generale: true,
-            kinesitherapie: true,
-          },
-        });
-      }
-
-      // Ajouter aux suivis de grossesse si existants
-      const grossesses = await base44.entities.SuiviGrossesse.filter({ 
-        created_by: user.email,
-        statut: 'en_cours'
+      const response = await base44.functions.invoke('gererCodeLiaison', {
+        action: 'lier_patient',
+        code_liaison: codeLiaison.toUpperCase(),
       });
       
-      for (const grossesse of grossesses) {
-        const professionnels = grossesse.professionnels_suivi || [];
-        if (!professionnels.includes(pro.email)) {
-          await base44.entities.SuiviGrossesse.update(grossesse.id, {
-            professionnels_suivi: [...professionnels, pro.email],
-          });
-        }
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Erreur');
       }
-
-      // Ajouter aux carnets enfants
-      const enfants = await base44.entities.EnfantCarnet.filter({ created_by: user.email });
       
-      for (const enfant of enfants) {
-        const professionnels = enfant.professionnels_suivi || [];
-        if (!professionnels.includes(pro.email)) {
-          await base44.entities.EnfantCarnet.update(enfant.id, {
-            professionnels_suivi: [...professionnels, pro.email],
-          });
-        }
-      }
-
-      return pro;
+      return response.data.professionnel;
     },
     onSuccess: (pro) => {
       setSuccess(true);
       setError('');
-      toast.success(`Vous êtes maintenant lié(e) à ${pro.nom_complet}`);
+      toast.success(`Vous êtes maintenant lié(e) à ${pro.nom}`);
       queryClient.invalidateQueries(['dossier_medical']);
       queryClient.invalidateQueries(['mon_dossier_medical']);
       queryClient.invalidateQueries(['suivi_grossesse']);

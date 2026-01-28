@@ -30,15 +30,17 @@ export default function MonCodeLiaison() {
 
   const regenererCodeMutation = useMutation({
     mutationFn: async () => {
-      const nouveauCode = generateCode();
-      await base44.entities.Professionnel.update(professionnel.id, {
-        code_liaison: nouveauCode,
+      const response = await base44.functions.invoke('gererCodeLiaison', {
+        action: 'generer_code',
       });
-      return nouveauCode;
+      return response.data.code;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['professionnel']);
-      toast.success('Code régénéré');
+      toast.success('Code régénéré avec succès');
+    },
+    onError: () => {
+      toast.error('Erreur lors de la génération du code');
     },
   });
 

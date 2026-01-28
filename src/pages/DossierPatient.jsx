@@ -149,9 +149,30 @@ export default function DossierPatient() {
       const dossiers = await base44.entities.DossierMedicalComplet.filter({
         patient_email: enfant.created_by
       });
+
+      // 📋 AUDIT LOG: Accès dossier médical
+      if (dossiers.length > 0 && user?.email) {
+        try {
+          await base44.entities.AuditLog.create({
+            user_email: user.email,
+            user_role: 'professionnel',
+            action: 'read',
+            entity_type: 'DossierMedicalComplet',
+            entity_id: dossiers[0].id,
+            details: {
+              event: 'medical_record_accessed',
+              professionnel_id: profilPro?.id,
+              patient_email: enfant.created_by
+            }
+          });
+        } catch (auditError) {
+          console.warn('Audit log non disponible');
+        }
+      }
+
       return dossiers[0] || null;
     },
-    enabled: !!enfant,
+    enabled: !!enfant && !!user,
   });
 
   const isPatientInList = profilPro && enfant?.professionnels_suivi?.includes(profilPro.email);
@@ -189,6 +210,24 @@ export default function DossierPatient() {
           }
         ]
       });
+
+      // 📋 AUDIT LOG: Ajout note consultation
+      try {
+        await base44.entities.AuditLog.create({
+          user_email: user?.email,
+          user_role: 'professionnel',
+          action: 'update',
+          entity_type: 'EnfantCarnet',
+          entity_id: enfant.id,
+          details: {
+            event: 'consultation_note_added',
+            diagnostic: data.diagnostic,
+            professionnel_id: profilPro?.id
+          }
+        });
+      } catch (auditError) {
+        console.warn('Audit log non disponible');
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dossier_enfant', enfantId] });
@@ -202,7 +241,23 @@ export default function DossierPatient() {
     mutationFn: async ({ file, info }) => {
       setUploadingDoc(true);
       try {
-        const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+        // ✅ Valider le fichier avant upload
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('info', JSON.stringify(info));
+
+        const validationResponse = await fetch(createPageUrl('validerUploadFichier'), {
+          method: 'POST',
+          body: formData
+        });
+
+        const validationResult = await validationResponse.json();
+
+        if (!validationResult.valid) {
+          throw new Error(validationResult.error);
+        }
+
+        const file_uri = validationResult.file_uri;
         
         const documents = enfant.documents_medicaux || [];
         await base44.entities.EnfantCarnet.update(enfant.id, {
@@ -221,6 +276,24 @@ export default function DossierPatient() {
             }
           ]
         });
+
+        // 📋 AUDIT LOG: Upload document
+        try {
+          await base44.entities.AuditLog.create({
+            user_email: user?.email,
+            user_role: 'professionnel',
+            action: 'create',
+            entity_type: 'DocumentMedical',
+            details: {
+              event: 'document_uploaded',
+              doc_type: info.type,
+              enfant_id: enfant.id,
+              file_size: file.size
+            }
+          });
+        } catch (auditError) {
+          console.warn('Audit log non disponible');
+        }
       } finally {
         setUploadingDoc(false);
       }
@@ -230,6 +303,9 @@ export default function DossierPatient() {
       setShowUploadDocument(false);
       setDocInfo({ nom: '', type: 'resultat_labo', description: '' });
       alert('✅ Document ajouté avec succès');
+    },
+    onError: (error) => {
+      alert(`❌ Erreur: ${error.message}`);
     }
   });
 

@@ -32,11 +32,41 @@ import EditAllergies from "./modals/EditAllergies";
 import EditInfosGenerales from "./modals/EditInfosGenerales";
 import PartagerCarnet from "./PartagerCarnet";
 import SuiviVaccins from "./SuiviVaccins";
+import VueSynthese from "../dossier-medical/VueSynthese";
+import VueCardiologie from "../dossier-medical/VueCardiologie";
+import VueOncologie from "../dossier-medical/VueOncologie";
+import VuePsychiatrie from "../dossier-medical/VuePsychiatrie";
+import GestionConsentements from "../dossier-medical/GestionConsentements";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 
 export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
   const [onglet, setOnglet] = useState("infos");
   const [modalOpen, setModalOpen] = useState(null);
   const [showPartage, setShowPartage] = useState(false);
+
+  // Récupérer le dossier médical de l'enfant
+  const { data: dossierMedical } = useQuery({
+    queryKey: ['dossier_medical_enfant', enfant.id],
+    queryFn: async () => {
+      const dossiers = await base44.entities.DossierMedicalComplet.filter({
+        patient_email: enfant.created_by
+      });
+      return dossiers[0] || null;
+    },
+    enabled: !!enfant.id,
+  });
+
+  // Récupérer le profil pro pour connaître sa spécialité
+  const { data: profilPro } = useQuery({
+    queryKey: ['profil_pro'],
+    queryFn: async () => {
+      const user = await base44.auth.me();
+      const pros = await base44.entities.Professionnel.list();
+      return pros.find(p => p.email === user.email);
+    },
+    retry: false,
+  });
 
   const calculateAge = (dateNaissance) => {
     const mois = differenceInMonths(new Date(), new Date(dateNaissance));
@@ -104,10 +134,14 @@ export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
 
       {/* Onglets */}
       <Tabs value={onglet} onValueChange={setOnglet}>
-        <TabsList className="grid w-full grid-cols-4 md:grid-cols-8">
+        <TabsList className="grid w-full grid-cols-5 md:grid-cols-9">
           <TabsTrigger value="infos">
             <Heart className="w-4 h-4 mr-1 md:mr-2" />
             <span className="hidden md:inline">Infos</span>
+          </TabsTrigger>
+          <TabsTrigger value="dossier">
+            <Activity className="w-4 h-4 mr-1 md:mr-2" />
+            <span className="hidden md:inline">Dossier</span>
           </TabsTrigger>
           <TabsTrigger value="premieres">
             <Star className="w-4 h-4 mr-1 md:mr-2" />
@@ -221,6 +255,38 @@ export default function ProfilEnfant({ enfant, onRetour, isEditable = false }) {
                     </li>
                   ))}
                 </ul>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Onglet Dossier Médical Complet */}
+        <TabsContent value="dossier" className="space-y-4">
+          <GestionConsentements 
+            dossier={dossierMedical} 
+            patientEmail={enfant.created_by}
+            isPatientView={isEditable}
+          />
+          
+          {dossierMedical ? (
+            <>
+              <VueSynthese dossier={dossierMedical} />
+              {profilPro?.specialite === 'cardiologie' && (
+                <VueCardiologie dossier={dossierMedical} />
+              )}
+              {profilPro?.specialite === 'oncologie' && (
+                <VueOncologie dossier={dossierMedical} />
+              )}
+              {profilPro?.specialite === 'psychiatrie' && (
+                <VuePsychiatrie dossier={dossierMedical} />
+              )}
+            </>
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-600">Aucun dossier médical complet disponible</p>
+                <p className="text-sm text-gray-500 mt-2">Le dossier médical sera créé lors de la première consultation</p>
               </CardContent>
             </Card>
           )}

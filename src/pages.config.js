@@ -79,6 +79,7 @@ import DashboardProfessionnel from './pages/DashboardProfessionnel';
 import DashboardProfessionnelPersonnalise from './pages/DashboardProfessionnelPersonnalise';
 import DeclarationNaissance from './pages/DeclarationNaissance';
 import DiagnosticProfil from './pages/DiagnosticProfil';
+import DossierMedicalDynamique from './pages/DossierMedicalDynamique';
 import DossierPatient from './pages/DossierPatient';
 import Enfants from './pages/Enfants';
 import FAQ from './pages/FAQ';
@@ -126,7 +127,6 @@ import Teleconsultation from './pages/Teleconsultation';
 import Tests from './pages/Tests';
 import TestsSecurite from './pages/TestsSecurite';
 import VideoConsultation from './pages/VideoConsultation';
-import DossierMedicalDynamique from './pages/DossierMedicalDynamique';
 import __Layout from './Layout.jsx';
 
 
@@ -163,6 +163,7 @@ export const PAGES = {
     "DashboardProfessionnelPersonnalise": DashboardProfessionnelPersonnalise,
     "DeclarationNaissance": DeclarationNaissance,
     "DiagnosticProfil": DiagnosticProfil,
+    "DossierMedicalDynamique": DossierMedicalDynamique,
     "DossierPatient": DossierPatient,
     "Enfants": Enfants,
     "FAQ": FAQ,
@@ -210,7 +211,6 @@ export const PAGES = {
     "Tests": Tests,
     "TestsSecurite": TestsSecurite,
     "VideoConsultation": VideoConsultation,
-    "DossierMedicalDynamique": DossierMedicalDynamique,
 }
 
 export const pagesConfig = {

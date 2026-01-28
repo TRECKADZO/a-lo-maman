@@ -16,6 +16,7 @@ import { createPageUrl } from '@/utils';
 import NotificationPreferences from '@/components/notifications/NotificationPreferences';
 import Configuration2FA from '@/components/security/Configuration2FA';
 import AuthGuard from '../components/auth/AuthGuard';
+import MonCodeLiaison from '@/components/pro/MonCodeLiaison';
 
 const SPECIALITES = [
   { value: 'gynecologie', label: 'Gynécologie' },
@@ -900,6 +901,8 @@ export default function ProfilProfessionnel() {
             <NotificationPreferences />
 
             <Configuration2FA user={user} />
+
+            <MonCodeLiaison />
 
             <div className="mt-8 flex flex-col md:flex-row justify-end gap-3">
               <Button

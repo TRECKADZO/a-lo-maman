@@ -20,6 +20,7 @@ import CalendarSyncSettings from '@/components/teleconsultation/CalendarSyncSett
 import ExportDonneesPersonnelles from '@/components/parametres/ExportDonneesPersonnelles';
 import SuppressionCompte from '@/components/parametres/SuppressionCompte';
 import ContactDPO from '@/components/parametres/ContactDPO';
+import RejoindreProfessionnel from '@/components/patients/RejoindreProfessionnel';
 
 const GROUPES_SANGUINS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -717,6 +718,8 @@ export default function Parametres() {
           <EncryptionSetup />
 
           <GestionConsentements user={user} />
+
+          <RejoindreProfessionnel />
 
           <ExportDonneesPersonnelles />
 

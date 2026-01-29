@@ -595,21 +595,24 @@ export default function ConfigurerAgenda() {
                 <div>
                   <Label className="mb-3 block font-semibold">Configurer le :</Label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {JOURS_SEMAINE.map(jour => (
-                      <Button
-                        key={jour}
-                        variant={jourSelectionne === jour ? 'default' : 'outline'}
-                        onClick={() => setJourSelectionne(jour)}
-                        className={jourSelectionne === jour ? 'bg-purple-600' : ''}
-                      >
-                        {jour}
-                        {disponibilites.filter(d => d.jour === jour).length > 0 && (
-                          <Badge className="ml-2 bg-green-100 text-green-800">
-                            {disponibilites.filter(d => d.jour === jour).length}
-                          </Badge>
-                        )}
-                      </Button>
-                    ))}
+                    {JOURS_SEMAINE.map(jour => {
+                      const nombreCreneaux = disponibilites.filter(d => d.jour === jour).length;
+                      return (
+                        <Button
+                          key={jour}
+                          variant={jourSelectionne === jour ? 'default' : 'outline'}
+                          onClick={() => setJourSelectionne(jour)}
+                          className={`${jourSelectionne === jour ? 'bg-purple-600' : ''} flex items-center justify-center gap-2`}
+                        >
+                          <span>{jour}</span>
+                          {nombreCreneaux > 0 && (
+                            <Badge className="bg-green-100 text-green-800 text-xs px-1.5 py-0">
+                              {nombreCreneaux}
+                            </Badge>
+                          )}
+                        </Button>
+                      );
+                    })}
                   </div>
                 </div>
 

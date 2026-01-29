@@ -171,7 +171,7 @@ export default function OnboardingProfessionnel({ professionnel, onComplete }) {
   const domainesDisponibles = DOMAINES_EXPERTISE[professionnel?.specialite] || [];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 md:p-8 pb-32 space-y-6">
       {/* Progress Bar */}
       <Card className="shadow-lg">
         <CardContent className="p-6">

@@ -216,7 +216,7 @@ export default function InscriptionClinique() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
-      <div className="max-w-4xl mx-auto p-4 py-8 pb-24 lg:pb-8">
+      <div className="max-w-4xl mx-auto p-4 py-8 pb-32 lg:pb-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">

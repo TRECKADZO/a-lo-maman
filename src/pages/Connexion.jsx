@@ -60,7 +60,7 @@ export default function Connexion() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex items-center justify-center p-4 pb-8">
+      <div className="flex-1 flex items-center justify-center p-4 pb-32">
         <div className="w-full max-w-md">
           {/* Logo & Title */}
           <div className="text-center mb-8">

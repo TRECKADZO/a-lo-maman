@@ -288,7 +288,7 @@ export default function SelectionCompte() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 pb-32">
       <div className="w-full max-w-4xl">
         {!showForm ? (
           <div className="text-center space-y-8">

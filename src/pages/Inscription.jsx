@@ -177,7 +177,7 @@ export default function Inscription() {
         </div>
       )}
 
-      <div className="flex-1 p-4 pb-8 overflow-y-auto">
+      <div className="flex-1 p-4 pb-32 overflow-y-auto">
         <div className="w-full max-w-4xl mx-auto">
           {step === 1 ? (
             // Étape 1: Choix du type de compte

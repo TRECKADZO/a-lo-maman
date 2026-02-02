@@ -34,6 +34,8 @@ export default function Contraception() {
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
   });
 
   const { data: profiles, isLoading: profilProLoading } = useQuery({
@@ -54,6 +56,8 @@ export default function Contraception() {
       };
     },
     enabled: !!user,
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
   });
 
   const profilPro = profiles?.pro;
@@ -69,6 +73,8 @@ export default function Contraception() {
     queryKey: ['methodesContraception'],
     queryFn: () => base44.entities.MethodeContraception.list(),
     enabled: !isSpecialist,
+    staleTime: 60 * 60 * 1000,
+    cacheTime: 24 * 60 * 60 * 1000,
   });
 
   const { data: suiviActif } = useQuery({
@@ -82,6 +88,8 @@ export default function Contraception() {
       return suivis[0] || null;
     },
     enabled: !!user && !isSpecialist,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 15 * 60 * 1000,
   });
 
   if (userLoading || profilProLoading) {

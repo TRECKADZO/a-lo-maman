@@ -62,6 +62,7 @@ import OfflineManager from "@/components/offline/OfflineManager";
 import ServiceWorkerRegistration from "@/components/offline/ServiceWorkerRegistration";
 import PersonnaliserNavigation from "@/components/navigation/PersonnaliserNavigation";
 import SecurityMonitor from "@/components/security/SecurityMonitor";
+import NetworkIndicator from "@/components/general/NetworkIndicator";
 
 const getNavigationItems = (lang, isSpecialist, isAdmin, isCentre) => {
     if (isAdmin) {
@@ -635,6 +636,7 @@ export default function Layout({ children, currentPageName }) {
           <RappelsChecker />
           <VaccinNotificationService />
           <SecurityMonitor />
+          <NetworkIndicator />
         </ABTestProvider>
 
         {showPersonnaliserNav && (

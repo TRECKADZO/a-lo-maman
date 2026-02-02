@@ -27,8 +27,6 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!user) return { maman: null, pro: null, centre: null };
       
-      console.log('🔍 Dashboard - Récupération profils pour:', user.email);
-      
       const [mamanProfiles, proProfiles, centreProfiles] = await Promise.all([
         base44.entities.ProfilMaman.filter({ created_by: user.email }).catch(() => []),
         base44.entities.Professionnel.list().catch(() => []),
@@ -41,14 +39,8 @@ export default function Dashboard() {
         }).catch(() => [])
       ]);
       
-      console.log('📊 Dashboard - Centres trouvés:', centreProfiles.length);
-      
       const proProfil = proProfiles.find(p => p.email === user.email);
       const centreProfil = centreProfiles[0] || null;
-      
-      if (centreProfil) {
-        console.log('✅ Dashboard - Centre détecté:', centreProfil.nom, '- Statut:', centreProfil.statut_validation);
-      }
       
       return {
         maman: mamanProfiles[0] || null,
@@ -57,10 +49,8 @@ export default function Dashboard() {
       };
     },
     enabled: !!user,
-    staleTime: 0,
-    refetchOnMount: 'always',
-    cacheTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
   });
 
   const isLoading = userLoading || profilesLoading;

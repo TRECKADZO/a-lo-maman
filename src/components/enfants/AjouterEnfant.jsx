@@ -82,9 +82,26 @@ export default function AjouterEnfant({ onClose, onSuccess }) {
 
   const createEnfantMutation = useMutation({
     mutationFn: async (data) => {
-      const dataToSend = { ...data };
-      if (dataToSend.poids_naissance) dataToSend.poids_naissance = parseFloat(dataToSend.poids_naissance);
-      if (dataToSend.taille_naissance) dataToSend.taille_naissance = parseFloat(dataToSend.taille_naissance);
+      // Validation des champs requis
+      if (!data.prenom || !data.date_naissance || !data.sexe) {
+        throw new Error("Veuillez renseigner tous les champs obligatoires");
+      }
+
+      const dataToSend = {
+        prenom: data.prenom,
+        date_naissance: data.date_naissance,
+        sexe: data.sexe
+      };
+
+      // Champs optionnels
+      if (data.nom) dataToSend.nom = data.nom;
+      if (data.numero_cmu) dataToSend.numero_cmu = data.numero_cmu;
+      if (data.identifiant_provisoire) dataToSend.identifiant_provisoire = data.identifiant_provisoire;
+      if (data.groupe_sanguin) dataToSend.groupe_sanguin = data.groupe_sanguin;
+      if (data.poids_naissance) dataToSend.poids_naissance = parseFloat(data.poids_naissance);
+      if (data.taille_naissance) dataToSend.taille_naissance = parseFloat(data.taille_naissance);
+      if (data.allergies && data.allergies.length > 0) dataToSend.allergies = data.allergies;
+      if (data.maladies_chroniques && data.maladies_chroniques.length > 0) dataToSend.maladies_chroniques = data.maladies_chroniques;
       
       return await base44.entities.EnfantCarnet.create(dataToSend);
     },
@@ -94,6 +111,10 @@ export default function AjouterEnfant({ onClose, onSuccess }) {
       if (onSuccess) onSuccess();
       if (onClose) onClose();
     },
+    onError: (error) => {
+      console.error("Erreur lors de la création de l'enfant:", error);
+      alert(error.message || "Erreur lors de l'enregistrement");
+    }
   });
 
   const handleSubmit = (e) => {

@@ -341,6 +341,28 @@ export default function Contraception() {
               </CardContent>
             </Card>
           </CardTransition>
+
+          {/* Footer légal */}
+          <div className="text-center py-6 border-t mt-8">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+              <Button
+                variant="link"
+                className="text-gray-600 hover:text-pink-600"
+                onClick={() => navigate(createPageUrl('Conditions'))}
+              >
+                Conditions d'utilisation
+              </Button>
+              <span className="text-gray-400">•</span>
+              <Button
+                variant="link"
+                className="text-gray-600 hover:text-pink-600"
+                onClick={() => navigate(createPageUrl('Politique'))}
+              >
+                Politique de confidentialité
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">© 2025 A'lo Maman. Tous droits réservés.</p>
+          </div>
         </div>
       </div>
       </PageTransition>

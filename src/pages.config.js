@@ -214,7 +214,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Contraception",
+    mainPage: "0_Accueil",
     Pages: PAGES,
     Layout: __Layout,
 };

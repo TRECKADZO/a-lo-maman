@@ -89,7 +89,7 @@ export default function Grossesse() {
     queryKey: ['grossesse_active'],
     queryFn: async () => {
       const grossesses = await base44.entities.SuiviGrossesse.filter({ 
-        grossesse_active: true 
+        statut: "en_cours"
       });
       return grossesses[0] || null;
     },
@@ -100,7 +100,7 @@ export default function Grossesse() {
     if (!grossesse) return null;
 
     const today = new Date();
-    const ddr = new Date(grossesse.date_derniere_regle);
+    const ddr = new Date(grossesse.date_debut_grossesse);
     const dpa = new Date(grossesse.date_accouchement_prevue);
 
     const joursDepuisDDR = differenceInDays(today, ddr);

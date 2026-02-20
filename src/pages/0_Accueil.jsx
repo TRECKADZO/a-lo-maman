@@ -272,38 +272,16 @@ export default function Accueil() {
               </p>
 
               {/* Boutons CTA */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                {!userLoading && !user ? (
-                  <>
-                    <Button
-                      onClick={handleSignup}
-                      size="lg"
-                      className="bg-white text-pink-600 hover:bg-pink-50 px-8 py-6 text-lg shadow-2xl h-auto font-bold group"
-                    >
-                      <UserPlus className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                      Créer un compte gratuit
-                    </Button>
-                    <Button
-                      onClick={async () => {
-                        console.log('🔵 Login clicked');
-                        await base44.auth.redirectToLogin(createPageUrl('Dashboard'));
-                      }}
-                      size="lg"
-                      className="bg-white/20 text-white hover:bg-white/30 border-2 border-white/50 px-8 py-6 text-lg h-auto font-semibold backdrop-blur-sm"
-                    >
-                      <LogIn className="w-5 h-5 mr-2" />
-                      Se connecter
-                    </Button>
-                  </>
-                ) : user ? (
+              {user ? (
+                <div className="mb-8">
                   <Button asChild size="lg" className="bg-white text-pink-600 hover:bg-gray-100 px-8 py-6 text-lg shadow-2xl h-auto font-bold group">
                     <Link to={createPageUrl('Dashboard')}>
                       <Sparkles className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                       Mon Tableau de bord
                     </Link>
                   </Button>
-                ) : null}
-              </div>
+                </div>
+              ) : null}
 
               {/* Avantages */}
               <div className="grid grid-cols-2 gap-3">
@@ -366,6 +344,194 @@ export default function Accueil() {
           </div>
         </div>
       </div>
+
+      {/* Section Inscription par type d'utilisateur - Seulement si non connecté */}
+      {!user && (
+        <div className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <Badge className="bg-pink-100 text-pink-800 mb-4 text-base px-4 py-1.5">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Créer votre compte
+              </Badge>
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+                Choisissez votre profil
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Inscription simple et rapide adaptée à vos besoins
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Maman / Parent */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0 }}
+                viewport={{ once: true }}
+              >
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all h-full bg-gradient-to-br from-pink-50 to-rose-50">
+                  <CardContent className="p-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <Heart className="w-10 h-10 text-white fill-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Parent / Maman</h3>
+                    <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                      Suivez votre grossesse, gérez les carnets de santé de vos enfants et consultez des spécialistes
+                    </p>
+                    <ul className="space-y-3 mb-8">
+                      {[
+                        "Suivi de grossesse personnalisé",
+                        "Carnets de santé numériques",
+                        "Rendez-vous avec spécialistes",
+                        "Messagerie sécurisée",
+                        "Assistant IA 24/7"
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="w-4 h-4 text-pink-600 flex-shrink-0" />
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      onClick={handleSignup}
+                      className="w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg h-12"
+                    >
+                      <UserPlus className="w-5 h-5 mr-2" />
+                      S'inscrire comme Parent
+                    </Button>
+                    <Button
+                      onClick={async () => await base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                      variant="ghost"
+                      className="w-full mt-2 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      J'ai déjà un compte
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Professionnel de santé */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all h-full bg-gradient-to-br from-teal-50 to-cyan-50 relative">
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-teal-600 text-white">Professionnel</Badge>
+                  </div>
+                  <CardContent className="p-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <Stethoscope className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Professionnel de Santé</h3>
+                    <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                      Gérez vos patients, agenda et consultations en toute simplicité
+                    </p>
+                    <ul className="space-y-3 mb-8">
+                      {[
+                        "Gestion complète des patients",
+                        "Agenda intelligent",
+                        "Téléconsultations vidéo",
+                        "Dossiers médicaux partagés",
+                        "Facturation intégrée"
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      onClick={handleSignup}
+                      className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white shadow-lg h-12"
+                    >
+                      <UserPlus className="w-5 h-5 mr-2" />
+                      S'inscrire comme Professionnel
+                    </Button>
+                    <Button
+                      onClick={async () => await base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                      variant="ghost"
+                      className="w-full mt-2 text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      J'ai déjà un compte
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Centre de Santé / Clinique */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all h-full bg-gradient-to-br from-purple-50 to-indigo-50 relative">
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-purple-600 text-white">Entreprise</Badge>
+                  </div>
+                  <CardContent className="p-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <Building2 className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Centre de Santé</h3>
+                    <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                      Digitalisez votre clinique et améliorez l'expérience patient
+                    </p>
+                    <ul className="space-y-3 mb-8">
+                      {[
+                        "Portail de réservation en ligne",
+                        "Gestion d'équipe et membres",
+                        "Statistiques et rapports",
+                        "Intégration FHIR",
+                        "API et webhooks"
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      onClick={() => navigate(createPageUrl('InscriptionClinique'))}
+                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg h-12"
+                    >
+                      <Building2 className="w-5 h-5 mr-2" />
+                      Inscrire mon Centre
+                    </Button>
+                    <Button
+                      onClick={async () => await base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                      variant="ghost"
+                      className="w-full mt-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      J'ai déjà un compte
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+
+            <div className="text-center mt-12">
+              <p className="text-gray-500 text-sm">
+                En vous inscrivant, vous acceptez nos{' '}
+                <Link to={createPageUrl('Conditions')} className="text-pink-600 hover:underline">
+                  Conditions d'utilisation
+                </Link>
+                {' '}et notre{' '}
+                <Link to={createPageUrl('Politique')} className="text-pink-600 hover:underline">
+                  Politique de confidentialité
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Métriques d'impact */}
       <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-12">

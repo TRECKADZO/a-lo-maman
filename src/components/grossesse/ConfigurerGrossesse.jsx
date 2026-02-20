@@ -69,20 +69,37 @@ export default function ConfigurerGrossesse({ grossesseExistante, onClose }) {
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
+      // Validation: s'assurer qu'on a au moins la date de début et la DPA
+      if (!data.date_derniere_regle || !data.date_accouchement_prevue) {
+        throw new Error("Veuillez renseigner la date des dernières règles");
+      }
+
+      const dataToSave = {
+        date_debut_grossesse: data.date_derniere_regle,
+        date_accouchement_prevue: data.date_accouchement_prevue,
+        type_grossesse: data.type_grossesse || "unique",
+        nombre_foetus: data.type_grossesse === "gemellaire" ? 2 : data.type_grossesse === "multiple" ? 3 : 1,
+        statut: "en_cours"
+      };
+
+      if (data.groupe_sanguin) dataToSave.groupe_sanguin = data.groupe_sanguin;
+      if (data.rhesus) dataToSave.rhesus = data.rhesus;
+
       if (grossesseExistante) {
-        return base44.entities.SuiviGrossesse.update(grossesseExistante.id, data);
+        return base44.entities.SuiviGrossesse.update(grossesseExistante.id, dataToSave);
       } else {
-        return base44.entities.SuiviGrossesse.create({
-          ...data,
-          grossesse_active: true,
-          issue_grossesse: "en_cours"
-        });
+        return base44.entities.SuiviGrossesse.create(dataToSave);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['grossesse_active'] });
+      queryClient.invalidateQueries({ queryKey: ['suivis_grossesse'] });
       onClose();
     },
+    onError: (error) => {
+      console.error("Erreur lors de l'enregistrement:", error);
+      alert(error.message || "Erreur lors de l'enregistrement");
+    }
   });
 
   const handleSubmit = (e) => {

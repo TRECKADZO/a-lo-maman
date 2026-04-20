@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, ArrowLeft, CheckCircle, AlertCircle, Trash2, Plus, Users, Shield } from 'lucide-react';
-import GestionCentreSante from './GestionCentreSanteAdmin';
+import GestionCentreSanteAdmin from './GestionCentreSanteAdmin';
 
 export default function EditerCentre({ centre, onBack, onUpdate }) {
   const queryClient = useQueryClient();

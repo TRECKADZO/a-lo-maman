@@ -32,6 +32,9 @@ const ACTION_COLORS = {
 export default function LogsAudit() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+
+  const handlePageChange = (page) => setCurrentPage(page);
+  const handlePageSizeChange = (size) => { setPageSize(size); setCurrentPage(1); };
   const [searchQuery, setSearchQuery] = useState('');
   const [filterAction, setFilterAction] = useState('tous');
   const [filterEntity, setFilterEntity] = useState('tous');

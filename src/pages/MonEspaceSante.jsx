@@ -80,17 +80,6 @@ export default function MonEspaceSante() {
     new Date(rdv.date_rdv) < new Date() && rdv.statut === 'termine'
   ).length;
 
-  if (userLoading || profileLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-pink-50 to-purple-50">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-pink-500 mx-auto mb-4" />
-          <p className="text-gray-600">Chargement de votre espace santé...</p>
-        </div>
-      </div>
-    );
-  }
-
   const { data: dossierMedical } = useQuery({
     queryKey: ['mon_dossier_medical', user?.email],
     queryFn: async () => {
@@ -102,6 +91,17 @@ export default function MonEspaceSante() {
     },
     enabled: !!user,
   });
+
+  if (userLoading || profileLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-pink-500 mx-auto mb-4" />
+          <p className="text-gray-600">Chargement de votre espace santé...</p>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { value: 'rendez-vous', label: 'Rendez-vous', icon: Calendar },

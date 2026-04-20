@@ -18,6 +18,7 @@ import GestionConsentements from '@/components/security/GestionConsentements';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
 import CalendarSyncSettings from '@/components/teleconsultation/CalendarSyncSettings';
 import ExportDonneesPersonnelles from '@/components/parametres/ExportDonneesPersonnelles';
+import ExportDonneesGDPR from '@/components/parametres/ExportDonneesGDPR';
 import SuppressionCompte from '@/components/parametres/SuppressionCompte';
 import ContactDPO from '@/components/parametres/ContactDPO';
 import RejoindreProfessionnel from '@/components/patients/RejoindreProfessionnel';

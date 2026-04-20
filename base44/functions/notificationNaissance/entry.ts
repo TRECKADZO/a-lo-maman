@@ -1,19 +1,15 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// Tâche planifiée (cron) - pas de vérification auth utilisateur
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Admin access required' }, { status: 403 });
-    }
 
     console.log('🔔 Démarrage du service de notifications de naissance...');
 
-    // Récupérer toutes les grossesses actives proches du terme (>= 37 semaines)
+    // Utiliser le bon champ "statut" à la place de "grossesse_active"
     const grossesses = await base44.asServiceRole.entities.SuiviGrossesse.filter({
-      grossesse_active: true
+      statut: "en_cours"
     });
 
     console.log(`📊 ${grossesses.length} grossesses actives trouvées`);
@@ -22,28 +18,27 @@ Deno.serve(async (req) => {
     let notificationsEnvoyees = 0;
 
     for (const grossesse of grossesses) {
-      const ddr = new Date(grossesse.date_derniere_regle);
+      // Utiliser date_debut_grossesse (champ correct)
+      const ddr = new Date(grossesse.date_debut_grossesse);
       const joursDepuisDDR = Math.floor((today - ddr) / (1000 * 60 * 60 * 24));
       const semainesGrossesse = Math.floor(joursDepuisDDR / 7);
 
       // Notification à 37 semaines (terme précoce)
       if (semainesGrossesse >= 37 && semainesGrossesse < 38) {
-        // Vérifier si notification déjà envoyée
         const existingNotif = await base44.asServiceRole.entities.Notification.filter({
-          destinataire_email: grossesse.created_by,
-          type: 'systeme',
+          user_email: grossesse.created_by,
           titre: '👶 Votre bébé arrive bientôt !'
         });
 
         if (existingNotif.length === 0) {
           await base44.asServiceRole.entities.Notification.create({
-            destinataire_email: grossesse.created_by,
+            user_email: grossesse.created_by,
             type: 'systeme',
             titre: '👶 Votre bébé arrive bientôt !',
             message: 'Préparez la déclaration de naissance dès maintenant. Vous pourrez la soumettre directement depuis l\'application après l\'accouchement.',
-            action_page: 'DeclarationNaissance',
-            priorite: 'haute',
-            icone: 'Baby'
+            lien: '/DeclarationNaissance',
+            priority: 'haute',
+            lu: false
           });
           notificationsEnvoyees++;
         }
@@ -52,20 +47,19 @@ Deno.serve(async (req) => {
       // Notification à 40 semaines (terme)
       if (semainesGrossesse >= 40 && semainesGrossesse < 41) {
         const existingNotif = await base44.asServiceRole.entities.Notification.filter({
-          destinataire_email: grossesse.created_by,
-          type: 'systeme',
+          user_email: grossesse.created_by,
           titre: '🎉 Votre bébé est arrivé ?'
         });
 
         if (existingNotif.length === 0) {
           await base44.asServiceRole.entities.Notification.create({
-            destinataire_email: grossesse.created_by,
+            user_email: grossesse.created_by,
             type: 'systeme',
             titre: '🎉 Votre bébé est arrivé ?',
             message: 'Déclarez sa naissance en quelques clics et créez son carnet médical numérique gratuitement !',
-            action_page: 'DeclarationNaissance',
-            priorite: 'urgente',
-            icone: 'Baby'
+            lien: '/DeclarationNaissance',
+            priority: 'urgente',
+            lu: false
           });
           notificationsEnvoyees++;
         }
@@ -78,18 +72,18 @@ Deno.serve(async (req) => {
     });
 
     for (const declaration of declarations) {
-      const dateSoumission = new Date(declaration.date_soumission);
+      const dateSoumission = new Date(declaration.date_soumission || declaration.created_date);
       const jourDepuisSoumission = Math.floor((today - dateSoumission) / (1000 * 60 * 60 * 24));
 
       if (jourDepuisSoumission >= 7 && jourDepuisSoumission < 8) {
         await base44.asServiceRole.entities.Notification.create({
-          destinataire_email: declaration.maman_email,
+          user_email: declaration.maman_email || declaration.created_by,
           type: 'systeme',
           titre: '📋 Rappel : Carnet médical de votre bébé',
-          message: `Créez maintenant le carnet médical numérique de ${declaration.prenoms_enfant} pour suivre sa croissance et ses vaccinations.`,
-          action_page: 'DeclarationNaissance',
-          priorite: 'normale',
-          icone: 'Baby'
+          message: `Créez maintenant le carnet médical numérique de votre bébé pour suivre sa croissance et ses vaccinations.`,
+          lien: '/DeclarationNaissance',
+          priority: 'normale',
+          lu: false
         });
         notificationsEnvoyees++;
       }

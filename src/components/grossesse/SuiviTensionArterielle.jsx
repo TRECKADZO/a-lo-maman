@@ -16,7 +16,8 @@ import {
   Loader2,
   AlertTriangle,
   CheckCircle,
-  TrendingUp
+  TrendingUp,
+  Stethoscope
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";

@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { Activity, Users, MousePointer, TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import AuthGuard from '../components/auth/AuthGuard';
 
 export default function Analytics() {

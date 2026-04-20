@@ -242,6 +242,7 @@ export default function GestionConsentements({ user }) {
                     onRefuser={() => handleRefuser(type)}
                     onRevoquer={() => setShowRevoquerDialog(type)}
                     isLoading={consentementMutation.isPending}
+                    getStatutBadge={getStatutBadge}
                   />
                 );
               })}
@@ -269,6 +270,7 @@ export default function GestionConsentements({ user }) {
                     onRefuser={() => handleRefuser(type)}
                     onRevoquer={() => setShowRevoquerDialog(type)}
                     isLoading={consentementMutation.isPending}
+                    getStatutBadge={getStatutBadge}
                   />
                 );
               })}
@@ -357,7 +359,7 @@ export default function GestionConsentements({ user }) {
   );
 }
 
-function ConsentementCard({ type, config, consent, onAccepter, onRefuser, onRevoquer, isLoading }) {
+function ConsentementCard({ type, config, consent, onAccepter, onRefuser, onRevoquer, isLoading, getStatutBadge }) {
   return (
     <Card>
       <CardContent className="p-4">

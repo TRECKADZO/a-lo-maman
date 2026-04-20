@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Syringe, Calendar, AlertCircle, CheckCircle, Plus } from "lucide-react";
+import { Syringe, Calendar, AlertCircle, CheckCircle, Plus, Baby } from "lucide-react";
 import { format, differenceInDays, addDays } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Link } from "react-router-dom";

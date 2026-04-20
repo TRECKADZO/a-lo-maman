@@ -2147,7 +2147,7 @@ export default function AdminAnalytics() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold text-green-600">{efficaciteOperationnelle.nps}</p>
-                  <Badge className="mt-2 bg-green-100 text-green-800">Excellent (>40)</Badge>
+                  <Badge className="mt-2 bg-green-100 text-green-800">{"Excellent (>40)"}</Badge>
                 </CardContent>
               </Card>
             </div>

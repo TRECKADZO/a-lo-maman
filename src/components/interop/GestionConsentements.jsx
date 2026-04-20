@@ -9,8 +9,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { 
   Shield, CheckCircle, XCircle, FileText, AlertTriangle, 
-  Lock, Unlock, Clock, User, Building2, Loader2 
+  Lock, Unlock, Clock, User, Building2, Loader2, Share2
 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';

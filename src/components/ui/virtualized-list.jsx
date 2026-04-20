@@ -231,7 +231,7 @@ export function SwipeableList({
                   setSwipedIndex(null);
                 }
               }}
-              animate={{ x: isOpen ? (offset.x > 0 ? 100 : -100) : 0 }}
+              animate={{ x: isOpen ? 100 : 0 }}
               className="bg-white dark:bg-gray-900 relative z-10"
             >
               {renderItem({ item, index })}

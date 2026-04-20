@@ -40,7 +40,14 @@ export default function DetailDocument({ document, enfants, onClose }) {
   const [showOCR, setShowOCR] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-
+  // Révoquer partage
+  const revoquerPartageMutation = useMutation({
+    mutationFn: (email) => {
+      const newPartages = (document.partages || []).filter(p => p.email !== email);
+      return base44.entities.DocumentFamille.update(document.id, { partages: newPartages });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['documents_famille'] }),
+  });
 
   // Toggle favori
   const toggleFavoriMutation = useMutation({

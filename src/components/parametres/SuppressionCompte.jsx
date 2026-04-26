@@ -43,7 +43,7 @@ export default function SuppressionCompte() {
   });
 
   return (
-    <Card className="border-red-200">
+    <Card className="border-red-200" id="suppression">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-red-600">
           <TrashIcon className="w-5 h-5" />

@@ -17,7 +17,7 @@ import {
   Globe, AlertOctagon, HeartPulse, Beaker, Wallet, Repeat, UserCheck,
   CreditCard, Zap, BarChart2, Banknote, RefreshCw, Gauge,
   UserPlus, UserMinus, Bug, TrendingUpIcon, Brain, MessageSquare, 
-  HelpCircle, FolderOpen, Settings
+  HelpCircle, FolderOpen, Settings, Sparkles
 } from 'lucide-react';
 import { format, subMonths, differenceInMonths, differenceInYears, startOfMonth, endOfMonth, subDays, isWithinInterval, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -865,7 +865,7 @@ export default function AdminAnalytics() {
     const paybackPeriod = cacEstime / (metriquesAssurancesAvancees.arpu || 1);
     
     // Revenu par consultation
-    const revenuePerConsultation = revenusEstimes / (rdvs?.filter(r => r.statut === 'termine').length || 1);
+    const revenuePerConsultation = metriquesAssurancesAvancees.revenusEstimes / (rdvs?.filter(r => r.statut === 'termine').length || 1);
     
     // Marge opérationnelle estimée
     const margeOperationnelle = 65; // % estimée

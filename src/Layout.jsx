@@ -547,6 +547,14 @@ export default function Layout({ children, currentPageName }) {
                     <LogOut className="w-3 h-3 mr-1" />Déconnexion
                   </Button>
                 </div>
+                {!isAdmin && (
+                  <Link
+                    to={createPageUrl('Parametres') + '#suppression'}
+                    className="text-xs text-red-400 hover:text-red-600 text-center block mt-1 transition-colors"
+                  >
+                    {lang === 'fr' ? 'Supprimer mon compte' : 'Delete my account'}
+                  </Link>
+                )}
               </div>
             )}
           </SidebarFooter>

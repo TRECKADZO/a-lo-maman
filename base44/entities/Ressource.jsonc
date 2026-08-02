@@ -1,0 +1,115 @@
+{
+  "name": "Ressource",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string",
+      "description": "Titre de la ressource"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description courte"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "video",
+        "pdf",
+        "article",
+        "infographie"
+      ],
+      "description": "Type de ressource"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "sommeil",
+        "alimentation",
+        "premiers_soins",
+        "developpement",
+        "sante",
+        "hygiene",
+        "securite",
+        "education",
+        "grossesse",
+        "post_partum"
+      ],
+      "description": "Cat\u00e9gorie th\u00e9matique"
+    },
+    "tranche_age": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "0-3_mois",
+        "3-6_mois",
+        "6-12_mois",
+        "1-2_ans",
+        "2-3_ans",
+        "3-6_ans",
+        "tous"
+      ],
+      "description": "Tranche d'\u00e2ge cibl\u00e9e"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL de la ressource (vid\u00e9o YouTube, PDF, etc.)"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image de couverture"
+    },
+    "duree_minutes": {
+      "type": "integer",
+      "description": "Dur\u00e9e pour les vid\u00e9os"
+    },
+    "auteur": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string"
+        },
+        "titre": {
+          "type": "string"
+        },
+        "photo_url": {
+          "type": "string"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "telechargements": {
+      "type": "integer",
+      "default": 0
+    },
+    "vues": {
+      "type": "integer",
+      "default": 0
+    },
+    "ordre": {
+      "type": "integer",
+      "default": 0
+    },
+    "epingle": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "titre",
+    "type",
+    "categorie"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

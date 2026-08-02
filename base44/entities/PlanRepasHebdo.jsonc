@@ -1,0 +1,195 @@
+{
+  "name": "PlanRepasHebdo",
+  "type": "object",
+  "properties": {
+    "semaine_debut": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de d\u00e9but de la semaine"
+    },
+    "semaine_grossesse": {
+      "type": "integer",
+      "description": "Semaine de grossesse au moment de la g\u00e9n\u00e9ration"
+    },
+    "trimestre": {
+      "type": "integer"
+    },
+    "imc": {
+      "type": "number"
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Pr\u00e9f\u00e9rences alimentaires"
+    },
+    "allergies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrictions alimentaires (v\u00e9g\u00e9tarien, halal, etc.)"
+    },
+    "symptomes_actuels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sympt\u00f4mes \u00e0 prendre en compte (naus\u00e9es, br\u00fblures, etc.)"
+    },
+    "jours": {
+      "type": "array",
+      "description": "Planning de chaque jour",
+      "items": {
+        "type": "object",
+        "properties": {
+          "jour": {
+            "type": "string",
+            "enum": [
+              "lundi",
+              "mardi",
+              "mercredi",
+              "jeudi",
+              "vendredi",
+              "samedi",
+              "dimanche"
+            ]
+          },
+          "petit_dejeuner": {
+            "type": "object",
+            "properties": {
+              "plat": {
+                "type": "string"
+              },
+              "ingredients": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "calories": {
+                "type": "number"
+              },
+              "conseils": {
+                "type": "string"
+              }
+            }
+          },
+          "dejeuner": {
+            "type": "object",
+            "properties": {
+              "plat": {
+                "type": "string"
+              },
+              "ingredients": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "calories": {
+                "type": "number"
+              },
+              "conseils": {
+                "type": "string"
+              }
+            }
+          },
+          "diner": {
+            "type": "object",
+            "properties": {
+              "plat": {
+                "type": "string"
+              },
+              "ingredients": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "calories": {
+                "type": "number"
+              },
+              "conseils": {
+                "type": "string"
+              }
+            }
+          },
+          "collations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string"
+                },
+                "calories": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "liste_courses": {
+      "type": "array",
+      "description": "Liste de courses g\u00e9n\u00e9r\u00e9e",
+      "items": {
+        "type": "object",
+        "properties": {
+          "categorie": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "conseils_generaux": {
+      "type": "string"
+    },
+    "objectifs_nutritionnels": {
+      "type": "object",
+      "properties": {
+        "calories_jour": {
+          "type": "number"
+        },
+        "proteines_jour": {
+          "type": "number"
+        },
+        "fer_jour": {
+          "type": "number"
+        },
+        "calcium_jour": {
+          "type": "number"
+        },
+        "acide_folique_jour": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "semaine_debut"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

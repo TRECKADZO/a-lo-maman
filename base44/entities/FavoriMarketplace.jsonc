@@ -1,0 +1,29 @@
+{
+  "name": "FavoriMarketplace",
+  "type": "object",
+  "properties": {
+    "produit_id": {
+      "type": "string"
+    },
+    "produit_nom": {
+      "type": "string"
+    },
+    "produit_image": {
+      "type": "string"
+    },
+    "produit_prix": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "produit_id"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "name": "CycleMenstruel",
+  "type": "object",
+  "properties": {
+    "date_debut_regles": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de d\u00e9but des r\u00e8gles"
+    },
+    "date_fin_regles": {
+      "type": "string",
+      "format": "date"
+    },
+    "duree_cycle": {
+      "type": "integer",
+      "description": "Dur\u00e9e du cycle en jours"
+    },
+    "flux": {
+      "type": "string",
+      "enum": [
+        "leger",
+        "moyen",
+        "abondant"
+      ]
+    },
+    "symptomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "douleur_niveau": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "notes": {
+      "type": "string"
+    },
+    "temperature_basale": {
+      "type": "array",
+      "description": "Relev\u00e9s de temp\u00e9rature",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "temperature": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "glaire_cervicale": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "absente",
+              "collante",
+              "cremeuse",
+              "filante",
+              "claire"
+            ]
+          }
+        }
+      }
+    },
+    "test_ovulation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "positif": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "date_debut_regles"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

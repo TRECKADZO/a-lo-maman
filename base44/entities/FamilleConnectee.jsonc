@@ -1,0 +1,182 @@
+{
+  "name": "FamilleConnectee",
+  "type": "object",
+  "properties": {
+    "proprietaire_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du cr\u00e9ateur de la famille"
+    },
+    "code_partage": {
+      "type": "string",
+      "description": "Code unique pour rejoindre la famille (6 caract\u00e8res)"
+    },
+    "membres": {
+      "type": "array",
+      "description": "Membres de la famille connect\u00e9e",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "partenaire",
+              "parent",
+              "belle_famille",
+              "ami",
+              "autre"
+            ]
+          },
+          "statut": {
+            "type": "string",
+            "enum": [
+              "accepte",
+              "refuse"
+            ],
+            "default": "accepte"
+          },
+          "date_ajout": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permissions": {
+            "type": "object",
+            "properties": {
+              "grossesse": {
+                "type": "boolean",
+                "default": true
+              },
+              "grossesse_details": {
+                "type": "boolean",
+                "default": false
+              },
+              "enfants": {
+                "type": "boolean",
+                "default": true
+              },
+              "enfants_details": {
+                "type": "boolean",
+                "default": false
+              },
+              "rendez_vous": {
+                "type": "boolean",
+                "default": true
+              },
+              "documents": {
+                "type": "boolean",
+                "default": false
+              },
+              "messagerie": {
+                "type": "boolean",
+                "default": true
+              }
+            }
+          }
+        }
+      },
+      "default": []
+    },
+    "messages_famille": {
+      "type": "array",
+      "description": "Fil de discussion familial",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "auteur_email": {
+            "type": "string"
+          },
+          "auteur_nom": {
+            "type": "string"
+          },
+          "contenu": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "message",
+              "jalon",
+              "rdv",
+              "document"
+            ]
+          },
+          "lu_par": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default": []
+    },
+    "parametres": {
+      "type": "object",
+      "properties": {
+        "nom_groupe": {
+          "type": "string",
+          "default": "Ma Famille"
+        },
+        "notifications_nouvelles": {
+          "type": "boolean",
+          "default": true
+        },
+        "partage_automatique_jalons": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "required": [
+    "proprietaire_email",
+    "code_partage"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "proprietaire_email": "{{user.email}}"
+        },
+        {
+          "membres": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "proprietaire_email": "{{user.email}}"
+        },
+        {
+          "membres": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "proprietaire_email": "{{user.email}}"
+    }
+  }
+}

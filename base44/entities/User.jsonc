@@ -1,0 +1,18 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "admin_role": {
+      "type": "string",
+      "enum": [
+        "super_admin",
+        "feedback_manager",
+        "feedback_viewer"
+      ],
+      "description": "R\u00f4le admin avec permissions sp\u00e9cifiques"
+    }
+  },
+  "required": [
+    "admin_role"
+  ]
+}

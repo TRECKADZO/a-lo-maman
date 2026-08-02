@@ -1,0 +1,115 @@
+{
+  "name": "MetriqueSante",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "poids",
+        "tension_arterielle",
+        "glycemie",
+        "temperature",
+        "frequence_cardiaque",
+        "spo2",
+        "imc"
+      ],
+      "description": "Type de m\u00e9trique de sant\u00e9"
+    },
+    "valeur": {
+      "type": "number",
+      "description": "Valeur principale de la m\u00e9trique"
+    },
+    "valeur_systolique": {
+      "type": "number",
+      "description": "Pour la tension art\u00e9rielle (valeur systolique)"
+    },
+    "valeur_diastolique": {
+      "type": "number",
+      "description": "Pour la tension art\u00e9rielle (valeur diastolique)"
+    },
+    "unite": {
+      "type": "string",
+      "description": "Unit\u00e9 de mesure (kg, mmHg, mg/dL, \u00b0C, bpm, %)"
+    },
+    "date_mesure": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure de la mesure"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes ou observations"
+    },
+    "contexte": {
+      "type": "string",
+      "enum": [
+        "repos",
+        "effort",
+        "apres_repas",
+        "a_jeun",
+        "matin",
+        "soir"
+      ],
+      "description": "Contexte de la mesure"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "auto_mesure",
+        "professionnel",
+        "dispositif_medical"
+      ],
+      "default": "auto_mesure",
+      "description": "Source de la mesure"
+    },
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel si mesur\u00e9 par un professionnel"
+    },
+    "alertes": {
+      "type": "array",
+      "description": "Alertes g\u00e9n\u00e9r\u00e9es par la mesure",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "normale",
+              "attention",
+              "anormale"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "type",
+    "date_mesure"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnel_id": "{{user.id}}"
+        }
+      ]
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

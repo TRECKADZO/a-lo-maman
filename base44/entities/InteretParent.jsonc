@@ -1,0 +1,47 @@
+{
+  "name": "InteretParent",
+  "type": "object",
+  "properties": {
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant concern\u00e9"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "sommeil",
+        "alimentation",
+        "developpement",
+        "sante",
+        "motricite",
+        "langage",
+        "social",
+        "jeux",
+        "securite",
+        "education"
+      ],
+      "description": "Cat\u00e9gorie d'int\u00e9r\u00eat"
+    },
+    "score": {
+      "type": "integer",
+      "default": 1,
+      "description": "Score d'int\u00e9r\u00eat (bas\u00e9 sur les lectures et clics)"
+    },
+    "derniere_visite": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "enfant_id",
+    "categorie"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

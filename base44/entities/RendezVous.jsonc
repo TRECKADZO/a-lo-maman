@@ -1,0 +1,190 @@
+{
+  "name": "RendezVous",
+  "type": "object",
+  "properties": {
+    "professionnel_id": {
+      "type": "string"
+    },
+    "professionnel_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "date_rdv": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "type_consultation": {
+      "type": "string",
+      "enum": [
+        "cabinet",
+        "clinique",
+        "hopital",
+        "telephone",
+        "visio"
+      ],
+      "description": "Type de consultation"
+    },
+    "motif": {
+      "type": "string"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "planifie",
+        "confirme",
+        "annule",
+        "termine",
+        "en_cours"
+      ],
+      "default": "planifie"
+    },
+    "notes_patient": {
+      "type": "string"
+    },
+    "notes_professionnel": {
+      "type": "string"
+    },
+    "ordonnance_url": {
+      "type": "string"
+    },
+    "lien_visio": {
+      "type": "string"
+    },
+    "rappel_envoye": {
+      "type": "boolean",
+      "default": false
+    },
+    "rappel_24h_envoye": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rappel 24h avant envoy\u00e9"
+    },
+    "rappel_1h_envoye": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rappel 1h avant envoy\u00e9"
+    },
+    "adresse_consultation": {
+      "type": "string",
+      "description": "Adresse pour consultation \u00e0 h\u00f4pital, cabinet ou clinique"
+    },
+    "raison_annulation": {
+      "type": "string",
+      "description": "Raison de l'annulation du rendez-vous"
+    },
+    "annule_par": {
+      "type": "string",
+      "enum": [
+        "patient",
+        "professionnel",
+        "systeme"
+      ],
+      "description": "Qui a annul\u00e9 le rendez-vous"
+    },
+    "date_annulation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure de l'annulation"
+    },
+    "ancien_date_rdv": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Ancienne date en cas de reprogrammation"
+    },
+    "reprogramme": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique si le RDV a \u00e9t\u00e9 reprogramm\u00e9"
+    },
+    "rdv_parent_id": {
+      "type": "string",
+      "description": "ID du RDV r\u00e9current parent si applicable"
+    },
+    "recurrence": {
+      "type": "object",
+      "description": "Configuration de r\u00e9currence",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "hebdomadaire",
+            "mensuel",
+            "personnalise"
+          ]
+        },
+        "frequence": {
+          "type": "integer",
+          "description": "Tous les X jours/semaines/mois"
+        },
+        "date_fin": {
+          "type": "string",
+          "format": "date"
+        },
+        "nombre_occurrences": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "required": [
+    "professionnel_id",
+    "date_rdv",
+    "type_consultation"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnel_email": "{{user.email}}"
+        },
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnel_email": "{{user.email}}"
+        },
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

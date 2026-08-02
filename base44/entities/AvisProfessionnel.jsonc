@@ -1,0 +1,150 @@
+{
+  "name": "AvisProfessionnel",
+  "type": "object",
+  "properties": {
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel \u00e9valu\u00e9"
+    },
+    "rendez_vous_id": {
+      "type": "string",
+      "description": "ID du rendez-vous li\u00e9 \u00e0 cet avis"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient qui laisse l'avis"
+    },
+    "patient_nom": {
+      "type": "string",
+      "description": "Nom du patient (ou 'Anonyme')"
+    },
+    "note_globale": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note globale sur 5"
+    },
+    "note_competence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note de comp\u00e9tence professionnelle"
+    },
+    "note_ecoute": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note de qualit\u00e9 d'\u00e9coute"
+    },
+    "note_ponctualite": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note de ponctualit\u00e9"
+    },
+    "note_qualite_soins": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note de qualit\u00e9 des soins"
+    },
+    "commentaire": {
+      "type": "string",
+      "description": "Commentaire d\u00e9taill\u00e9 du patient"
+    },
+    "points_forts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Points forts s\u00e9lectionn\u00e9s",
+      "default": []
+    },
+    "recommande": {
+      "type": "boolean",
+      "default": true,
+      "description": "Le patient recommande-t-il ce professionnel"
+    },
+    "anonyme": {
+      "type": "boolean",
+      "default": false,
+      "description": "Avis publi\u00e9 anonymement"
+    },
+    "verifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Avis v\u00e9rifi\u00e9 (patient a bien eu un RDV)"
+    },
+    "reponse_professionnel": {
+      "type": "string",
+      "description": "R\u00e9ponse du professionnel \u00e0 l'avis"
+    },
+    "date_reponse": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de r\u00e9ponse du professionnel"
+    },
+    "modere": {
+      "type": "boolean",
+      "default": false,
+      "description": "Avis mod\u00e9r\u00e9 (retir\u00e9)"
+    },
+    "raison_moderation": {
+      "type": "string",
+      "description": "Raison de la mod\u00e9ration si applicable"
+    },
+    "utile_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre d'utilisateurs ayant trouv\u00e9 cet avis utile"
+    },
+    "utile_par": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des utilisateurs ayant marqu\u00e9 l'avis comme utile",
+      "default": []
+    }
+  },
+  "required": [
+    "professionnel_id",
+    "rendez_vous_id",
+    "patient_email",
+    "note_globale"
+  ],
+  "rls": {
+    "create": {
+      "patient_email": "{{user.email}}"
+    },
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_linked": true
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

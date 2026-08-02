@@ -1,0 +1,110 @@
+{
+  "name": "RappelSuiviPersonnalise",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "patient_nom": {
+      "type": "string"
+    },
+    "professionnel_id": {
+      "type": "string"
+    },
+    "professionnel_nom": {
+      "type": "string"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre du rappel"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type_rappel": {
+      "type": "string",
+      "enum": [
+        "consultation_suivi",
+        "examen_controle",
+        "vaccination",
+        "traitement",
+        "autre"
+      ],
+      "default": "consultation_suivi"
+    },
+    "date_prevue": {
+      "type": "string",
+      "format": "date"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "actif",
+        "effectue",
+        "annule",
+        "reporte"
+      ],
+      "default": "actif"
+    },
+    "priorite": {
+      "type": "string",
+      "enum": [
+        "basse",
+        "normale",
+        "haute"
+      ],
+      "default": "normale"
+    },
+    "notifier_patient": {
+      "type": "boolean",
+      "default": true
+    },
+    "notifier_professionnel": {
+      "type": "boolean",
+      "default": true
+    },
+    "jours_avant_notification": {
+      "type": "integer",
+      "default": 7,
+      "description": "Nombre de jours avant la date pour notifier"
+    },
+    "notification_envoyee": {
+      "type": "boolean",
+      "default": false
+    },
+    "date_notification": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes_internes": {
+      "type": "string",
+      "description": "Notes visibles uniquement pour le professionnel"
+    }
+  },
+  "required": [
+    "patient_email",
+    "professionnel_id",
+    "titre",
+    "date_prevue"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

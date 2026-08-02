@@ -1,0 +1,678 @@
+{
+  "name": "EnfantCarnet",
+  "type": "object",
+  "properties": {
+    "prenom": {
+      "type": "string"
+    },
+    "nom": {
+      "type": "string"
+    },
+    "date_naissance": {
+      "type": "string",
+      "format": "date"
+    },
+    "sexe": {
+      "type": "string",
+      "enum": [
+        "masculin",
+        "feminin"
+      ]
+    },
+    "numero_cmu": {
+      "type": "string"
+    },
+    "identifiant_provisoire": {
+      "type": "string",
+      "description": "Utilis\u00e9 si le N\u00b0 CMU n'est pas encore disponible (ex: N\u00b0 acte de naissance)"
+    },
+    "groupe_sanguin": {
+      "type": "string"
+    },
+    "photo": {
+      "type": "string"
+    },
+    "poids_naissance": {
+      "type": "number"
+    },
+    "taille_naissance": {
+      "type": "number"
+    },
+    "vaccins": {
+      "type": "array",
+      "description": "Historique des vaccinations",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom_vaccin": {
+            "type": "string"
+          },
+          "date_administration": {
+            "type": "string",
+            "format": "date"
+          },
+          "lieu": {
+            "type": "string"
+          },
+          "professionnel": {
+            "type": "string"
+          },
+          "lot": {
+            "type": "string"
+          },
+          "prochain_rappel": {
+            "type": "string",
+            "format": "date"
+          },
+          "rappel_notifie": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "allergies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maladies_chroniques": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "historique_medical": {
+      "type": "array",
+      "description": "Historique des maladies et \u00e9v\u00e9nements m\u00e9dicaux",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "maladie",
+              "accident",
+              "hospitalisation",
+              "chirurgie",
+              "consultation",
+              "autre"
+            ]
+          },
+          "nom_maladie": {
+            "type": "string"
+          },
+          "symptomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "diagnostic": {
+            "type": "string"
+          },
+          "severite": {
+            "type": "string",
+            "enum": [
+              "leger",
+              "modere",
+              "severe"
+            ]
+          },
+          "traitement": {
+            "type": "string"
+          },
+          "medicaments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string"
+                },
+                "posologie": {
+                  "type": "string"
+                },
+                "duree": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "professionnel": {
+            "type": "string"
+          },
+          "date_guerison": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "document_uri": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mesures_croissance": {
+      "type": "array",
+      "description": "Suivi poids et taille",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "poids": {
+            "type": "number"
+          },
+          "taille": {
+            "type": "number"
+          },
+          "perimetre_cranien": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "jalons_developpement": {
+      "type": "array",
+      "description": "Jalons de d\u00e9veloppement atteints",
+      "items": {
+        "type": "object",
+        "properties": {
+          "jalon_reference_id": {
+            "type": "string",
+            "description": "ID du jalon de r\u00e9f\u00e9rence"
+          },
+          "categorie": {
+            "type": "string",
+            "enum": [
+              "moteur_global",
+              "moteur_fin",
+              "langage_receptif",
+              "langage_expressif",
+              "cognitif",
+              "social_emotionnel",
+              "autonomie"
+            ]
+          },
+          "jalon": {
+            "type": "string"
+          },
+          "age_attendu_mois": {
+            "type": "integer"
+          },
+          "statut": {
+            "type": "string",
+            "enum": [
+              "non_evalue",
+              "en_cours",
+              "atteint",
+              "retard_leger",
+              "retard_modere",
+              "consulter"
+            ],
+            "default": "non_evalue",
+            "description": "Statut du jalon"
+          },
+          "atteint": {
+            "type": "boolean",
+            "default": false
+          },
+          "date_atteint": {
+            "type": "string",
+            "format": "date"
+          },
+          "age_atteint_mois": {
+            "type": "integer",
+            "description": "\u00c2ge en mois lors de l'atteinte"
+          },
+          "niveau_maitrise": {
+            "type": "string",
+            "enum": [
+              "debutant",
+              "en_progression",
+              "acquis",
+              "maitrise"
+            ],
+            "description": "Niveau de ma\u00eetrise du jalon"
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "note": {
+                  "type": "string"
+                },
+                "par": {
+                  "type": "string",
+                  "description": "Email de l'observateur"
+                }
+              }
+            },
+            "description": "Observations successives"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "photo_url": {
+            "type": "string",
+            "description": "Photo du jalon atteint"
+          },
+          "video_url": {
+            "type": "string",
+            "description": "Vid\u00e9o du jalon atteint"
+          },
+          "evaluation_pro": {
+            "type": "object",
+            "description": "\u00c9valuation par un professionnel",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "professionnel_id": {
+                "type": "string"
+              },
+              "professionnel_nom": {
+                "type": "string"
+              },
+              "commentaire": {
+                "type": "string"
+              },
+              "recommandations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evaluations_developpement": {
+      "type": "array",
+      "description": "Bilans de d\u00e9veloppement p\u00e9riodiques",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "age_mois": {
+            "type": "integer"
+          },
+          "type_evaluation": {
+            "type": "string",
+            "enum": [
+              "auto_evaluation",
+              "visite_routine",
+              "bilan_specialise",
+              "suivi_retard"
+            ]
+          },
+          "scores_par_domaine": {
+            "type": "object",
+            "properties": {
+              "moteur_global": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "moteur_fin": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "langage_receptif": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "langage_expressif": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "cognitif": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "social_emotionnel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "autonomie": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          },
+          "score_global": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "interpretation": {
+            "type": "string",
+            "enum": [
+              "avance",
+              "normal",
+              "a_surveiller",
+              "retard_leger",
+              "retard_significatif"
+            ]
+          },
+          "points_forts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "points_attention": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommandations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "professionnel_id": {
+            "type": "string"
+          },
+          "professionnel_nom": {
+            "type": "string"
+          },
+          "prochain_bilan_prevu": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "alertes_developpement": {
+      "type": "array",
+      "description": "Alertes g\u00e9n\u00e9r\u00e9es automatiquement",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "retard_jalon",
+              "regression",
+              "absence_progres",
+              "bilan_recommande"
+            ]
+          },
+          "domaine": {
+            "type": "string"
+          },
+          "jalon_concerne": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "niveau_urgence": {
+            "type": "string",
+            "enum": [
+              "info",
+              "attention",
+              "urgent"
+            ]
+          },
+          "lu": {
+            "type": "boolean",
+            "default": false
+          },
+          "action_prise": {
+            "type": "string"
+          },
+          "date_action": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "premieres_experiences": {
+      "type": "array",
+      "description": "Journal des premi\u00e8res fois",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "premier_sourire",
+              "premier_rire",
+              "tete_levee",
+              "retournement",
+              "position_assise",
+              "quatre_pattes",
+              "premiers_pas",
+              "premier_mot",
+              "dit_maman",
+              "dit_papa",
+              "premiere_dent",
+              "premier_aliment",
+              "premiere_nuit",
+              "premier_bain",
+              "premiere_chanson",
+              "premier_livre",
+              "autre"
+            ]
+          },
+          "titre": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": "string"
+          },
+          "photo_url": {
+            "type": "string"
+          },
+          "video_url": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "documents_medicaux": {
+      "type": "array",
+      "description": "Documents m\u00e9dicaux s\u00e9curis\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "certificat_vaccination",
+              "resultat_labo",
+              "rapport_specialiste",
+              "ordonnance",
+              "radio",
+              "echographie",
+              "autre"
+            ]
+          },
+          "date_document": {
+            "type": "string",
+            "format": "date"
+          },
+          "professionnel": {
+            "type": "string"
+          },
+          "file_uri": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "file_type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date_upload": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "professionnels_suivi": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des emails des professionnels qui suivent cet enfant"
+    },
+    "partages_famille": {
+      "type": "array",
+      "description": "Membres de la famille avec acc\u00e8s au carnet",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "date_partage": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permissions": {
+            "type": "object",
+            "properties": {
+              "voir_infos": {
+                "type": "boolean",
+                "default": true
+              },
+              "voir_vaccins": {
+                "type": "boolean",
+                "default": true
+              },
+              "voir_croissance": {
+                "type": "boolean",
+                "default": true
+              },
+              "voir_jalons": {
+                "type": "boolean",
+                "default": true
+              },
+              "voir_medical": {
+                "type": "boolean",
+                "default": false
+              },
+              "voir_documents": {
+                "type": "boolean",
+                "default": false
+              },
+              "ajouter_photos": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "prenom",
+    "date_naissance",
+    "sexe"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "partages_famille": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

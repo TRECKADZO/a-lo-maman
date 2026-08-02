@@ -1,0 +1,208 @@
+{
+  "name": "ConsentementBPPC",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "policy_id": {
+      "type": "string",
+      "description": "Identifiant de la politique de consentement"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "opt-in",
+        "opt-out",
+        "emergency-only",
+        "research",
+        "break-glass"
+      ],
+      "description": "Type de politique"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "patient-privacy",
+        "treatment",
+        "research",
+        "marketing",
+        "document-sharing"
+      ],
+      "description": "Port\u00e9e du consentement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "rejected",
+        "proposed",
+        "entered-in-error"
+      ],
+      "default": "active"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "permit",
+        "deny"
+      ],
+      "description": "D\u00e9cision (autoriser/refuser)"
+    },
+    "date_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date/heure du consentement"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date d'expiration du consentement"
+    },
+    "provision": {
+      "type": "object",
+      "description": "Provisions d\u00e9taill\u00e9es du consentement",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "permit",
+            "deny"
+          ]
+        },
+        "actors": {
+          "type": "array",
+          "description": "Personnes/r\u00f4les concern\u00e9s",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": [
+                  "practitioner",
+                  "organization",
+                  "patient-family",
+                  "research"
+                ]
+              },
+              "reference": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "actions": {
+          "type": "array",
+          "description": "Actions autoris\u00e9es/refus\u00e9es",
+          "items": {
+            "type": "string",
+            "enum": [
+              "access",
+              "correct",
+              "disclose",
+              "use",
+              "collect"
+            ]
+          }
+        },
+        "purpose": {
+          "type": "array",
+          "description": "Finalit\u00e9s",
+          "items": {
+            "type": "string",
+            "enum": [
+              "TREAT",
+              "ETREAT",
+              "HPAYMT",
+              "HRESCH",
+              "PUBHLTH"
+            ]
+          }
+        },
+        "data_period": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date"
+            },
+            "end": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "document_types": {
+          "type": "array",
+          "description": "Types de documents concern\u00e9s",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "description": "V\u00e9rification du consentement",
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "verification_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verified_by": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "signature",
+            "verbal",
+            "written",
+            "electronic"
+          ]
+        }
+      }
+    },
+    "source_document_uri": {
+      "type": "string",
+      "description": "URI du document de consentement sign\u00e9"
+    }
+  },
+  "required": [
+    "patient_email",
+    "policy_type",
+    "decision",
+    "date_time"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

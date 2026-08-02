@@ -1,0 +1,160 @@
+{
+  "name": "RapportSante",
+  "type": "object",
+  "properties": {
+    "type_rapport": {
+      "type": "string",
+      "enum": [
+        "msp",
+        "assurance",
+        "clinique",
+        "oms"
+      ],
+      "description": "Destinataire du rapport"
+    },
+    "periode_debut": {
+      "type": "string",
+      "format": "date"
+    },
+    "periode_fin": {
+      "type": "string",
+      "format": "date"
+    },
+    "region": {
+      "type": "string"
+    },
+    "clinique_id": {
+      "type": "string"
+    },
+    "indicateurs": {
+      "type": "object",
+      "properties": {
+        "total_grossesses_suivies": {
+          "type": "integer"
+        },
+        "accouchements": {
+          "type": "integer"
+        },
+        "cesarienne_taux": {
+          "type": "number"
+        },
+        "pre_eclampsie_cas": {
+          "type": "integer"
+        },
+        "diabete_gestationnel_cas": {
+          "type": "integer"
+        },
+        "mortalite_maternelle": {
+          "type": "integer"
+        },
+        "mortalite_neonatale": {
+          "type": "integer"
+        },
+        "taux_consultation_prenatale": {
+          "type": "number"
+        },
+        "vaccination_couverture": {
+          "type": "number"
+        },
+        "allaitement_exclusif_6mois": {
+          "type": "number"
+        }
+      }
+    },
+    "demographie": {
+      "type": "object",
+      "properties": {
+        "age_moyen_grossesse": {
+          "type": "number"
+        },
+        "primipares": {
+          "type": "integer"
+        },
+        "multipares": {
+          "type": "integer"
+        },
+        "grossesses_multiples": {
+          "type": "integer"
+        }
+      }
+    },
+    "complications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code_icd10": {
+            "type": "string"
+          },
+          "diagnostic": {
+            "type": "string"
+          },
+          "nombre_cas": {
+            "type": "integer"
+          },
+          "severity_distribution": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "interventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "satisfaction_patient": {
+      "type": "object",
+      "properties": {
+        "note_moyenne": {
+          "type": "number"
+        },
+        "taux_recommandation": {
+          "type": "number"
+        }
+      }
+    },
+    "genere_par": {
+      "type": "string"
+    },
+    "genere_le": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "valide",
+        "envoye"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "type_rapport",
+    "periode_debut",
+    "periode_fin"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

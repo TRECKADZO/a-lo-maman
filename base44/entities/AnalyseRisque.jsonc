@@ -1,0 +1,170 @@
+{
+  "name": "AnalyseRisque",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "grossesse_id": {
+      "type": "string"
+    },
+    "type_analyse": {
+      "type": "string",
+      "enum": [
+        "pre_eclampsie",
+        "diabete_gestationnel",
+        "accouchement_premature",
+        "retard_croissance"
+      ],
+      "description": "Type de risque analys\u00e9"
+    },
+    "score_risque": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de risque calcul\u00e9 par IA"
+    },
+    "niveau_risque": {
+      "type": "string",
+      "enum": [
+        "faible",
+        "modere",
+        "eleve",
+        "critique"
+      ],
+      "description": "Cat\u00e9gorisation du risque"
+    },
+    "facteurs_identifie": {
+      "type": "array",
+      "description": "Facteurs de risque d\u00e9tect\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "facteur": {
+            "type": "string"
+          },
+          "poids": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "donnees_utilisees": {
+      "type": "object",
+      "description": "Donn\u00e9es ayant servi \u00e0 l'analyse",
+      "properties": {
+        "age": {
+          "type": "integer"
+        },
+        "imc": {
+          "type": "number"
+        },
+        "tension_arterielle": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "antecedents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "examens_labo": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "recommandations": {
+      "type": "array",
+      "description": "Recommandations cliniques",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priorite": {
+            "type": "string",
+            "enum": [
+              "urgente",
+              "haute",
+              "moyenne",
+              "basse"
+            ]
+          },
+          "action": {
+            "type": "string"
+          },
+          "justification": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "surveillance_proposee": {
+      "type": "object",
+      "properties": {
+        "frequence_consultation": {
+          "type": "string"
+        },
+        "examens_complemetaires": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "date_analyse": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "modele_ia_version": {
+      "type": "string"
+    },
+    "confiance_score": {
+      "type": "number",
+      "description": "Niveau de confiance du mod\u00e8le"
+    },
+    "valide_par_professionnel": {
+      "type": "boolean",
+      "default": false
+    },
+    "professionnel_id": {
+      "type": "string"
+    },
+    "notes_professionnel": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "patient_email",
+    "type_analyse",
+    "score_risque"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "destinataire_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'utilisateur destinataire"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "rendez_vous_confirmation",
+        "rendez_vous_rappel",
+        "rendez_vous_annulation",
+        "message_nouveau",
+        "message_reponse",
+        "communaute_reponse",
+        "communaute_vote",
+        "communaute_reponse_utile",
+        "vaccin_rappel",
+        "grossesse_jalon",
+        "enfant_jalon",
+        "alerte_sante",
+        "assistant_ia",
+        "dmp_nouveau_document",
+        "dmp_demande_acces",
+        "dmp_acces_accorde",
+        "dmp_consultation",
+        "systeme"
+      ],
+      "description": "Type de notification"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre court de la notification"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message d\u00e9taill\u00e9 de la notification"
+    },
+    "lu": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique si la notification a \u00e9t\u00e9 lue"
+    },
+    "action_url": {
+      "type": "string",
+      "description": "URL vers laquelle rediriger lors du clic"
+    },
+    "action_page": {
+      "type": "string",
+      "description": "Nom de la page \u00e0 ouvrir (ex: Teleconsultation, Messagerie)"
+    },
+    "action_params": {
+      "type": "object",
+      "description": "Param\u00e8tres suppl\u00e9mentaires pour l'action (ex: conversationId, messageId)",
+      "additionalProperties": true
+    },
+    "priorite": {
+      "type": "string",
+      "enum": [
+        "basse",
+        "normale",
+        "haute",
+        "urgente"
+      ],
+      "default": "normale",
+      "description": "Niveau de priorit\u00e9 de la notification"
+    },
+    "icone": {
+      "type": "string",
+      "description": "Nom de l'ic\u00f4ne Lucide React \u00e0 afficher"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Donn\u00e9es suppl\u00e9mentaires li\u00e9es \u00e0 la notification",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "destinataire_email",
+    "type",
+    "titre",
+    "message"
+  ],
+  "rls": {
+    "read": {
+      "destinataire_email": "{{user.email}}"
+    },
+    "create": {},
+    "update": {
+      "destinataire_email": "{{user.email}}"
+    },
+    "delete": {
+      "destinataire_email": "{{user.email}}"
+    }
+  }
+}

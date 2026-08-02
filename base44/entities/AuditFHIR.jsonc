@@ -1,0 +1,86 @@
+{
+  "name": "AuditFHIR",
+  "type": "object",
+  "properties": {
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre de sant\u00e9"
+    },
+    "centre_nom": {
+      "type": "string"
+    },
+    "type_action": {
+      "type": "string",
+      "enum": [
+        "connexion",
+        "lecture_donnees",
+        "ecriture_donnees",
+        "configuration",
+        "synchronisation",
+        "erreur"
+      ]
+    },
+    "utilisateur_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "endpoint_url": {
+      "type": "string"
+    },
+    "ip_adresse": {
+      "type": "string"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "succes",
+        "echec",
+        "avertissement"
+      ]
+    },
+    "code_reponse": {
+      "type": "integer",
+      "description": "Code HTTP de la r\u00e9ponse"
+    },
+    "details": {
+      "type": "object",
+      "properties": {
+        "ressource_type": {
+          "type": "string",
+          "description": "Type FHIR (Patient, Observation, etc.)"
+        },
+        "nombre_records": {
+          "type": "integer"
+        },
+        "duree_ms": {
+          "type": "integer",
+          "description": "Dur\u00e9e en millisecondes"
+        },
+        "message_erreur": {
+          "type": "string"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "centre_id",
+    "type_action",
+    "statut"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "NoteEvolutionPatient",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "patient_nom": {
+      "type": "string"
+    },
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel qui cr\u00e9e la note"
+    },
+    "professionnel_nom": {
+      "type": "string"
+    },
+    "consultation_id": {
+      "type": "string",
+      "description": "Lien vers la consultation si applicable"
+    },
+    "type_note": {
+      "type": "string",
+      "enum": [
+        "evolution",
+        "observation",
+        "diagnostic",
+        "traitement",
+        "suivi",
+        "alerte"
+      ],
+      "default": "evolution"
+    },
+    "contenu": {
+      "type": "string",
+      "description": "Contenu de la note"
+    },
+    "symptomes_observes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "examens_prescrits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "traitement_prescrit": {
+      "type": "string"
+    },
+    "prochaine_etape": {
+      "type": "string",
+      "description": "Recommandations pour le prochain suivi"
+    },
+    "priorite": {
+      "type": "string",
+      "enum": [
+        "normale",
+        "importante",
+        "urgente"
+      ],
+      "default": "normale"
+    },
+    "visible_patient": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si false, note visible uniquement pour les professionnels"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "patient_email",
+    "professionnel_id",
+    "contenu"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

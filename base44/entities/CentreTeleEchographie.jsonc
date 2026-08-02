@@ -1,0 +1,187 @@
+{
+  "name": "CentreTeleEchographie",
+  "type": "object",
+  "properties": {
+    "nom_centre": {
+      "type": "string",
+      "description": "Nom du centre/PMI"
+    },
+    "type_etablissement": {
+      "type": "string",
+      "enum": [
+        "pmi",
+        "clinique",
+        "hopital",
+        "centre_sante"
+      ],
+      "default": "pmi"
+    },
+    "adresse": {
+      "type": "string"
+    },
+    "ville": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "email_contact": {
+      "type": "string",
+      "format": "email"
+    },
+    "sage_femme_nom": {
+      "type": "string",
+      "description": "Nom de la sage-femme form\u00e9e sur place"
+    },
+    "sage_femme_telephone": {
+      "type": "string"
+    },
+    "gynecologue_referent_id": {
+      "type": "string",
+      "description": "ID du gyn\u00e9cologue t\u00e9l\u00e9consultant associ\u00e9"
+    },
+    "materiel_disponible": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sonde_portable",
+          "echographe_standard",
+          "doppler",
+          "imprimante"
+        ]
+      },
+      "default": [
+        "sonde_portable"
+      ]
+    },
+    "types_echographie": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "datation",
+          "morphologique",
+          "croissance",
+          "doppler"
+        ]
+      },
+      "default": [
+        "datation",
+        "croissance"
+      ]
+    },
+    "horaires_ouverture": {
+      "type": "object",
+      "properties": {
+        "lundi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "mardi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "mercredi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "jeudi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "vendredi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "samedi": {
+          "type": "string",
+          "default": "08:00-12:00"
+        },
+        "dimanche": {
+          "type": "string",
+          "default": "Ferm\u00e9"
+        }
+      }
+    },
+    "disponibilites": {
+      "type": "array",
+      "description": "Cr\u00e9neaux disponibles par semaine",
+      "items": {
+        "type": "object",
+        "properties": {
+          "jour": {
+            "type": "string"
+          },
+          "heure_debut": {
+            "type": "string"
+          },
+          "heure_fin": {
+            "type": "string"
+          },
+          "capacite": {
+            "type": "integer",
+            "default": 1
+          }
+        }
+      },
+      "default": []
+    },
+    "tarif_gratuit": {
+      "type": "boolean",
+      "default": true,
+      "description": "Gratuit pour CMU"
+    },
+    "photo_centre": {
+      "type": "string",
+      "description": "URL photo du centre"
+    },
+    "actif": {
+      "type": "boolean",
+      "default": true
+    },
+    "note_moyenne": {
+      "type": "number",
+      "default": 0
+    },
+    "nombre_avis": {
+      "type": "integer",
+      "default": 0
+    },
+    "statistiques": {
+      "type": "object",
+      "properties": {
+        "echographies_realisees": {
+          "type": "integer",
+          "default": 0
+        },
+        "taux_satisfaction": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    }
+  },
+  "required": [
+    "nom_centre",
+    "ville",
+    "region"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

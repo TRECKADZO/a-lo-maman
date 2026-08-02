@@ -1,0 +1,149 @@
+{
+  "name": "Facturation",
+  "type": "object",
+  "properties": {
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre de sant\u00e9"
+    },
+    "centre_nom": {
+      "type": "string"
+    },
+    "numero_facture": {
+      "type": "string",
+      "description": "Num\u00e9ro unique de facture"
+    },
+    "date_emission": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_echeance": {
+      "type": "string",
+      "format": "date"
+    },
+    "patient_nom": {
+      "type": "string"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "rdv_id": {
+      "type": "string",
+      "description": "Lien au RDV si applicable"
+    },
+    "type_service": {
+      "type": "string",
+      "enum": [
+        "consultation",
+        "echographie",
+        "acte_medical",
+        "medicament",
+        "abonnement",
+        "autre"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "montant_ht": {
+      "type": "number",
+      "description": "Montant hors taxes"
+    },
+    "tva_pourcentage": {
+      "type": "number",
+      "default": 18
+    },
+    "montant_tva": {
+      "type": "number",
+      "description": "Montant TVA"
+    },
+    "montant_ttc": {
+      "type": "number",
+      "description": "Montant TTC total"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "brouillon",
+        "envoyee",
+        "payee",
+        "partiellement_payee",
+        "impayee",
+        "annulee"
+      ],
+      "default": "brouillon"
+    },
+    "mode_paiement": {
+      "type": "string",
+      "enum": [
+        "espece",
+        "cheque",
+        "virement",
+        "carte",
+        "mobile_money",
+        "non_defini"
+      ],
+      "default": "non_defini"
+    },
+    "paiements": {
+      "type": "array",
+      "description": "Historique des paiements",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "montant": {
+            "type": "number"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "notes": {
+      "type": "string"
+    },
+    "fichier_pdf_url": {
+      "type": "string",
+      "description": "URL du PDF de la facture"
+    }
+  },
+  "required": [
+    "centre_id",
+    "numero_facture",
+    "date_emission",
+    "patient_nom",
+    "montant_ttc"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

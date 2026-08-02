@@ -1,0 +1,56 @@
+{
+  "name": "DonneesVitales",
+  "type": "object",
+  "properties": {
+    "date_mesure": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "type_mesure": {
+      "type": "string",
+      "enum": [
+        "tension",
+        "poids",
+        "temperature",
+        "glycemie",
+        "frequence_cardiaque",
+        "saturation_oxygene"
+      ]
+    },
+    "valeur": {
+      "type": "number"
+    },
+    "unite": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "professionnel_id": {
+      "type": "string"
+    },
+    "grossesse_id": {
+      "type": "string"
+    },
+    "enfant_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date_mesure",
+    "type_mesure",
+    "valeur"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "name": "CommandeMarketplace",
+  "type": "object",
+  "properties": {
+    "numero_commande": {
+      "type": "string"
+    },
+    "produit_id": {
+      "type": "string"
+    },
+    "produit_nom": {
+      "type": "string"
+    },
+    "produit_image": {
+      "type": "string"
+    },
+    "vendeur_email": {
+      "type": "string"
+    },
+    "vendeur_nom": {
+      "type": "string"
+    },
+    "acheteur_email": {
+      "type": "string"
+    },
+    "acheteur_nom": {
+      "type": "string"
+    },
+    "acheteur_telephone": {
+      "type": "string"
+    },
+    "quantite": {
+      "type": "integer",
+      "default": 1
+    },
+    "prix_unitaire": {
+      "type": "number"
+    },
+    "frais_livraison": {
+      "type": "number",
+      "default": 0
+    },
+    "total": {
+      "type": "number"
+    },
+    "mode_livraison": {
+      "type": "string",
+      "enum": [
+        "livraison",
+        "retrait"
+      ]
+    },
+    "adresse_livraison": {
+      "type": "object",
+      "properties": {
+        "rue": {
+          "type": "string"
+        },
+        "quartier": {
+          "type": "string"
+        },
+        "ville": {
+          "type": "string"
+        },
+        "indications": {
+          "type": "string"
+        }
+      }
+    },
+    "mode_paiement": {
+      "type": "string",
+      "enum": [
+        "especes",
+        "wave",
+        "orange_money",
+        "mtn_money",
+        "carte"
+      ]
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "en_attente",
+        "confirmee",
+        "preparee",
+        "en_livraison",
+        "livree",
+        "annulee",
+        "remboursee"
+      ],
+      "default": "en_attente"
+    },
+    "date_livraison_prevue": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_livraison_effective": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes_acheteur": {
+      "type": "string"
+    },
+    "notes_vendeur": {
+      "type": "string"
+    },
+    "historique_statuts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statut": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "commentaire": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "avis_laisse": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "produit_id",
+    "vendeur_email",
+    "acheteur_email",
+    "prix_unitaire",
+    "total"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "acheteur_email": "{{user.email}}"
+        },
+        {
+          "vendeur_email": "{{user.email}}"
+        }
+      ]
+    },
+    "create": {
+      "acheteur_email": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "acheteur_email": "{{user.email}}"
+        },
+        {
+          "vendeur_email": "{{user.email}}"
+        }
+      ]
+    }
+  }
+}

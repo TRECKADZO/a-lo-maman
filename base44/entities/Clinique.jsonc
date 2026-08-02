@@ -1,0 +1,276 @@
+{
+  "name": "Clinique",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "description": "Nom de la clinique/h\u00f4pital"
+    },
+    "type_etablissement": {
+      "type": "string",
+      "enum": [
+        "clinique_privee",
+        "hopital_public",
+        "centre_sante",
+        "maternite",
+        "pmi"
+      ],
+      "description": "Type d'\u00e9tablissement"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e du centre, mission, valeurs"
+    },
+    "numero_agrement": {
+      "type": "string",
+      "description": "Num\u00e9ro d'agr\u00e9ment MSP"
+    },
+    "region": {
+      "type": "string"
+    },
+    "ville": {
+      "type": "string"
+    },
+    "adresse": {
+      "type": "string"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "email_contact": {
+      "type": "string",
+      "format": "email"
+    },
+    "administrateur_nom": {
+      "type": "string"
+    },
+    "administrateur_email": {
+      "type": "string"
+    },
+    "administrateur_telephone": {
+      "type": "string"
+    },
+    "administrateurs": {
+      "type": "array",
+      "description": "Emails des administrateurs de la clinique",
+      "items": {
+        "type": "string"
+      }
+    },
+    "code_invitation": {
+      "type": "string",
+      "description": "Code unique pour rejoindre le centre (6 caract\u00e8res)"
+    },
+    "professionnels_ids": {
+      "type": "array",
+      "description": "IDs des professionnels attach\u00e9s",
+      "items": {
+        "type": "string"
+      }
+    },
+    "services_offerts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "consultation_prenatale",
+          "accouchement",
+          "pediatrie",
+          "echographie",
+          "laboratoire",
+          "urgences",
+          "planification_familiale",
+          "vaccination",
+          "suivi_post_partum"
+        ]
+      }
+    },
+    "equipements": {
+      "type": "array",
+      "description": "\u00c9quipements m\u00e9dicaux disponibles",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "capacite_lits": {
+      "type": "integer"
+    },
+    "taux_occupation": {
+      "type": "number",
+      "description": "Taux d'occupation en %"
+    },
+    "horaires_ouverture": {
+      "type": "object",
+      "description": "Horaires d'ouverture par jour",
+      "properties": {
+        "lundi": {
+          "type": "string"
+        },
+        "mardi": {
+          "type": "string"
+        },
+        "mercredi": {
+          "type": "string"
+        },
+        "jeudi": {
+          "type": "string"
+        },
+        "vendredi": {
+          "type": "string"
+        },
+        "samedi": {
+          "type": "string"
+        },
+        "dimanche": {
+          "type": "string"
+        }
+      }
+    },
+    "photo_centre": {
+      "type": "string",
+      "description": "URL de la photo principale du centre"
+    },
+    "photos_galerie": {
+      "type": "array",
+      "description": "Galerie de photos du centre",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "statut_validation": {
+      "type": "string",
+      "enum": [
+        "en_attente",
+        "approuve",
+        "rejete"
+      ],
+      "default": "approuve",
+      "description": "Statut de validation de la demande"
+    },
+    "actif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Centre actif ou suspendu par l'admin"
+    },
+    "date_suspension": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de suspension si applicable"
+    },
+    "raison_suspension": {
+      "type": "string",
+      "description": "Raison de la suspension"
+    },
+    "date_demande": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "document_agrement": {
+      "type": "string",
+      "description": "URL du document d'agr\u00e9ment MSP"
+    },
+    "document_registre_commerce": {
+      "type": "string",
+      "description": "URL du registre de commerce"
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Onboarding termin\u00e9"
+    },
+    "partage_donnees_msp": {
+      "type": "boolean",
+      "default": false,
+      "description": "Partage donn\u00e9es anonymis\u00e9es avec MSP"
+    },
+    "statistiques_mois": {
+      "type": "object",
+      "description": "Stats du mois en cours",
+      "properties": {
+        "consultations": {
+          "type": "integer"
+        },
+        "accouchements": {
+          "type": "integer"
+        },
+        "nouveaux_patients": {
+          "type": "integer"
+        },
+        "taux_satisfaction": {
+          "type": "number"
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assurances_partenaires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "note_moyenne": {
+      "type": "number",
+      "default": 0,
+      "description": "Note moyenne du centre"
+    },
+    "nombre_avis": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre d'avis re\u00e7us"
+    }
+  },
+  "required": [
+    "nom",
+    "type_etablissement"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "administrateurs": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "actif": true
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "administrateurs": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "name": "ImageDICOM",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "grossesse_id": {
+      "type": "string"
+    },
+    "enfant_id": {
+      "type": "string"
+    },
+    "study_instance_uid": {
+      "type": "string",
+      "description": "DICOM Study Instance UID"
+    },
+    "series_instance_uid": {
+      "type": "string",
+      "description": "DICOM Series Instance UID"
+    },
+    "sop_instance_uid": {
+      "type": "string",
+      "description": "DICOM SOP Instance UID"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "US",
+        "CR",
+        "CT",
+        "MR",
+        "DX",
+        "XA"
+      ],
+      "description": "Modalit\u00e9 DICOM (US=Ultrasound/\u00c9chographie)"
+    },
+    "study_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "study_time": {
+      "type": "string"
+    },
+    "study_description": {
+      "type": "string",
+      "description": "Description de l'\u00e9tude (ex: \u00c9chographie obst\u00e9tricale T1)"
+    },
+    "series_description": {
+      "type": "string"
+    },
+    "body_part_examined": {
+      "type": "string",
+      "description": "Partie du corps examin\u00e9e"
+    },
+    "patient_position": {
+      "type": "string"
+    },
+    "institution_name": {
+      "type": "string",
+      "description": "\u00c9tablissement ayant r\u00e9alis\u00e9 l'examen"
+    },
+    "referring_physician": {
+      "type": "string",
+      "description": "M\u00e9decin prescripteur"
+    },
+    "performing_physician": {
+      "type": "string",
+      "description": "M\u00e9decin r\u00e9alisateur"
+    },
+    "dicom_file_uri": {
+      "type": "string",
+      "description": "URI du fichier DICOM original"
+    },
+    "thumbnail_uri": {
+      "type": "string",
+      "description": "Vignette JPEG pour pr\u00e9visualisation"
+    },
+    "preview_uri": {
+      "type": "string",
+      "description": "Image JPEG basse r\u00e9solution"
+    },
+    "number_of_frames": {
+      "type": "integer",
+      "description": "Nombre d'images (cine pour \u00e9cho)"
+    },
+    "rows": {
+      "type": "integer"
+    },
+    "columns": {
+      "type": "integer"
+    },
+    "bits_allocated": {
+      "type": "integer"
+    },
+    "window_center": {
+      "type": "number"
+    },
+    "window_width": {
+      "type": "number"
+    },
+    "measurements": {
+      "type": "array",
+      "description": "Mesures effectu\u00e9es sur l'image",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "BPD",
+              "FL",
+              "HC",
+              "AC",
+              "CRL",
+              "NT"
+            ],
+            "description": "BPD=Biparietal, FL=F\u00e9mur, HC=Head Circum, AC=Abdominal, CRL=Crown-Rump, NT=Nuchal Translucency"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string",
+            "default": "mm"
+          },
+          "percentile": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "interpretation": {
+      "type": "string",
+      "description": "Compte-rendu radiologique"
+    },
+    "anonymized": {
+      "type": "boolean",
+      "default": false,
+      "description": "Image anonymis\u00e9e (PHI supprim\u00e9es)"
+    }
+  },
+  "required": [
+    "patient_email",
+    "study_instance_uid",
+    "modality"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "name": "DeclarationNaissance",
+  "type": "object",
+  "properties": {
+    "numero_suivi": {
+      "type": "string",
+      "description": "Num\u00e9ro unique de suivi de la d\u00e9claration (auto-g\u00e9n\u00e9r\u00e9)"
+    },
+    "maman_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de la m\u00e8re d\u00e9clarante"
+    },
+    "prenoms_enfant": {
+      "type": "string",
+      "description": "Pr\u00e9nom(s) de l'enfant"
+    },
+    "nom_famille": {
+      "type": "string",
+      "description": "Nom de famille de l'enfant"
+    },
+    "sexe": {
+      "type": "string",
+      "enum": [
+        "garcon",
+        "fille",
+        "autre"
+      ],
+      "description": "Sexe de l'enfant"
+    },
+    "date_naissance": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de naissance"
+    },
+    "heure_naissance": {
+      "type": "string",
+      "description": "Heure de naissance (format HH:mm)"
+    },
+    "lieu_naissance": {
+      "type": "string",
+      "description": "Lieu de naissance (\u00e9tablissement ou adresse)"
+    },
+    "type_lieu": {
+      "type": "string",
+      "enum": [
+        "hopital",
+        "maternite",
+        "pmi",
+        "domicile",
+        "autre"
+      ],
+      "default": "hopital"
+    },
+    "ville": {
+      "type": "string",
+      "description": "Ville de naissance"
+    },
+    "region": {
+      "type": "string",
+      "description": "R\u00e9gion de C\u00f4te d'Ivoire"
+    },
+    "prenom_pere": {
+      "type": "string",
+      "description": "Pr\u00e9nom du p\u00e8re"
+    },
+    "nom_pere": {
+      "type": "string",
+      "description": "Nom du p\u00e8re"
+    },
+    "no_cmu_mere": {
+      "type": "string",
+      "description": "Num\u00e9ro CMU de la m\u00e8re"
+    },
+    "attestation_url": {
+      "type": "string",
+      "description": "URL du scan de l'attestation de naissance"
+    },
+    "consentement_transmission": {
+      "type": "boolean",
+      "default": true,
+      "description": "Autorisation de transmission \u00e0 l'\u00e9tat civil"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "brouillon",
+        "soumise",
+        "transmise",
+        "validee",
+        "complete"
+      ],
+      "default": "brouillon",
+      "description": "Statut de la d\u00e9claration"
+    },
+    "date_soumission": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de soumission de la d\u00e9claration"
+    },
+    "date_transmission_oneci": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de transmission \u00e0 ONECI"
+    },
+    "pdf_declaration_url": {
+      "type": "string",
+      "description": "URL du PDF pr\u00e9-rempli g\u00e9n\u00e9r\u00e9"
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID du profil enfant cr\u00e9\u00e9 automatiquement"
+    },
+    "no_acte_naissance": {
+      "type": "string",
+      "description": "Num\u00e9ro d'acte de naissance officiel (apr\u00e8s validation)"
+    },
+    "notes_admin": {
+      "type": "string",
+      "description": "Notes administratives"
+    },
+    "erreur_transmission": {
+      "type": "string",
+      "description": "Message d'erreur si \u00e9chec transmission"
+    },
+    "data_offline": {
+      "type": "object",
+      "description": "Donn\u00e9es sauvegard\u00e9es en mode hors-ligne",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "maman_email",
+    "prenoms_enfant",
+    "nom_famille",
+    "sexe",
+    "date_naissance",
+    "lieu_naissance"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "maman_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "maman_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

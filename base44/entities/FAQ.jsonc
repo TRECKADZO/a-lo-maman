@@ -1,0 +1,76 @@
+{
+  "name": "FAQ",
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "string",
+      "description": "Question fr\u00e9quente"
+    },
+    "reponse": {
+      "type": "string",
+      "description": "R\u00e9ponse d\u00e9taill\u00e9e en markdown"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "accouchement",
+        "allaitement",
+        "sommeil",
+        "alimentation",
+        "sante",
+        "developpement",
+        "comportement",
+        "securite",
+        "vie_quotidienne"
+      ],
+      "description": "Cat\u00e9gorie de la question"
+    },
+    "tranche_age": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "0-3_mois",
+        "3-6_mois",
+        "6-12_mois",
+        "1-2_ans",
+        "2-3_ans",
+        "3-6_ans",
+        "tous"
+      ],
+      "description": "Tranche d'\u00e2ge concern\u00e9e"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "Source ou expert ayant valid\u00e9 la r\u00e9ponse"
+    },
+    "ordre": {
+      "type": "integer",
+      "default": 0
+    },
+    "populaire": {
+      "type": "boolean",
+      "default": false,
+      "description": "Question tr\u00e8s fr\u00e9quente"
+    }
+  },
+  "required": [
+    "question",
+    "reponse",
+    "categorie"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

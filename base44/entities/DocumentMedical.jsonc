@@ -1,0 +1,102 @@
+{
+  "name": "DocumentMedical",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string"
+    },
+    "type_document": {
+      "type": "string",
+      "enum": [
+        "ordonnance",
+        "resultat_labo",
+        "imagerie",
+        "compte_rendu",
+        "certificat",
+        "carnet_sante",
+        "autre"
+      ]
+    },
+    "date_document": {
+      "type": "string",
+      "format": "date"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "URI du fichier priv\u00e9 si stock\u00e9 de mani\u00e8re s\u00e9curis\u00e9e"
+    },
+    "description": {
+      "type": "string"
+    },
+    "professionnel_emetteur": {
+      "type": "string"
+    },
+    "patient_email": {
+      "type": "string"
+    },
+    "enfant_id": {
+      "type": "string"
+    },
+    "grossesse_id": {
+      "type": "string"
+    },
+    "partage_avec": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "confidentiel": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "titre",
+    "type_document"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_emetteur": "{{user.email}}"
+        },
+        {
+          "partage_avec": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnel_emetteur": "{{user.email}}"
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        }
+      ]
+    }
+  }
+}

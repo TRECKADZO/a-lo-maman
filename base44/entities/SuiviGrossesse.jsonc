@@ -1,0 +1,95 @@
+{
+  "name": "SuiviGrossesse",
+  "type": "object",
+  "properties": {
+    "date_debut_grossesse": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_accouchement_prevue": {
+      "type": "string",
+      "format": "date"
+    },
+    "type_grossesse": {
+      "type": "string",
+      "enum": [
+        "unique",
+        "gemellaire",
+        "multiple"
+      ]
+    },
+    "nombre_foetus": {
+      "type": "integer",
+      "default": 1
+    },
+    "semaine_actuelle": {
+      "type": "integer"
+    },
+    "trimestre_actuel": {
+      "type": "integer"
+    },
+    "professionnel_suivi_id": {
+      "type": "string"
+    },
+    "professionnel_suivi_email": {
+      "type": "string"
+    },
+    "professionnels_suivi": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "en_cours",
+        "termine",
+        "archive"
+      ],
+      "default": "en_cours"
+    }
+  },
+  "required": [
+    "date_debut_grossesse",
+    "date_accouchement_prevue"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "professionnel_suivi_email": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

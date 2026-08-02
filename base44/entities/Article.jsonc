@@ -1,0 +1,111 @@
+{
+  "name": "Article",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string",
+      "description": "Titre de l'article"
+    },
+    "resume": {
+      "type": "string",
+      "description": "R\u00e9sum\u00e9 court de l'article"
+    },
+    "contenu": {
+      "type": "string",
+      "description": "Contenu complet de l'article en markdown"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "nouveau_ne",
+        "nourrisson",
+        "bambin",
+        "enfant",
+        "nutrition",
+        "sante_mentale",
+        "vie_famille",
+        "bien_etre",
+        "soins_quotidiens"
+      ],
+      "description": "Cat\u00e9gorie de l'article"
+    },
+    "sous_categorie": {
+      "type": "string",
+      "description": "Sous-cat\u00e9gorie plus pr\u00e9cise"
+    },
+    "age_cible": {
+      "type": "object",
+      "description": "Tranche d'\u00e2ge cibl\u00e9e",
+      "properties": {
+        "min_mois": {
+          "type": "integer"
+        },
+        "max_mois": {
+          "type": "integer"
+        },
+        "grossesse_trimestre": {
+          "type": "integer",
+          "description": "Trimestre de grossesse cibl\u00e9 (1, 2 ou 3)"
+        }
+      }
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image d'illustration"
+    },
+    "auteur": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string"
+        },
+        "specialite": {
+          "type": "string"
+        },
+        "photo_url": {
+          "type": "string"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "temps_lecture": {
+      "type": "integer",
+      "description": "Temps de lecture estim\u00e9 en minutes"
+    },
+    "valide_par_expert": {
+      "type": "boolean",
+      "default": true
+    },
+    "date_publication": {
+      "type": "string",
+      "format": "date"
+    },
+    "epingle": {
+      "type": "boolean",
+      "default": false
+    },
+    "ordre": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "titre",
+    "contenu",
+    "categorie"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

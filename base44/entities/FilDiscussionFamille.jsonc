@@ -1,0 +1,157 @@
+{
+  "name": "FilDiscussionFamille",
+  "type": "object",
+  "properties": {
+    "famille_id": {
+      "type": "string",
+      "description": "ID de la famille connect\u00e9e"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre du fil de discussion"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "general",
+        "vaccins",
+        "grossesse",
+        "sante",
+        "documents",
+        "evenements",
+        "autre"
+      ],
+      "default": "general"
+    },
+    "icone": {
+      "type": "string",
+      "description": "Emoji ou ic\u00f4ne du fil"
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant concern\u00e9 si applicable"
+    },
+    "couleur": {
+      "type": "string",
+      "default": "pink"
+    },
+    "epingle": {
+      "type": "boolean",
+      "default": false
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des participants autoris\u00e9s"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "auteur_email": {
+            "type": "string"
+          },
+          "auteur_nom": {
+            "type": "string"
+          },
+          "contenu": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "texte",
+              "document",
+              "photo",
+              "evenement",
+              "alerte"
+            ]
+          },
+          "document": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string"
+              },
+              "type_doc": {
+                "type": "string"
+              },
+              "file_uri": {
+                "type": "string"
+              },
+              "file_url": {
+                "type": "string"
+              },
+              "taille": {
+                "type": "number"
+              },
+              "permissions_lecture": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "lu_par": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "date_lecture": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "important": {
+            "type": "boolean",
+            "default": false
+          },
+          "reponse_a": {
+            "type": "string",
+            "description": "ID du message auquel on r\u00e9pond"
+          }
+        }
+      }
+    },
+    "dernier_message_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "famille_id",
+    "titre"
+  ],
+  "rls": {
+    "read": {
+      "participants": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    },
+    "write": {
+      "participants": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    }
+  }
+}

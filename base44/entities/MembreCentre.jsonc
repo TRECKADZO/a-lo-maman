@@ -1,0 +1,221 @@
+{
+  "name": "MembreCentre",
+  "type": "object",
+  "properties": {
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre de sant\u00e9"
+    },
+    "centre_nom": {
+      "type": "string",
+      "description": "Nom du centre"
+    },
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'utilisateur membre"
+    },
+    "user_nom": {
+      "type": "string",
+      "description": "Nom complet du membre"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "administrateur",
+        "medecin",
+        "infirmier",
+        "sage_femme",
+        "secretaire",
+        "technicien",
+        "consultant"
+      ],
+      "description": "R\u00f4le du membre dans le centre"
+    },
+    "specialite": {
+      "type": "string",
+      "description": "Sp\u00e9cialit\u00e9 m\u00e9dicale si applicable"
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Permissions sp\u00e9cifiques du membre",
+      "properties": {
+        "gerer_membres": {
+          "type": "boolean",
+          "default": false,
+          "description": "Inviter/retirer membres"
+        },
+        "voir_tous_patients": {
+          "type": "boolean",
+          "default": false,
+          "description": "Acc\u00e8s lecture tous patients"
+        },
+        "modifier_patients": {
+          "type": "boolean",
+          "default": false,
+          "description": "Cr\u00e9er/modifier dossiers patients"
+        },
+        "voir_dossiers_medicaux": {
+          "type": "boolean",
+          "default": false,
+          "description": "Acc\u00e8s dossiers m\u00e9dicaux complets"
+        },
+        "creer_ordonnances": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prescrire m\u00e9dicaments"
+        },
+        "gerer_rdv": {
+          "type": "boolean",
+          "default": false,
+          "description": "Cr\u00e9er/modifier/annuler RDV"
+        },
+        "voir_rdv": {
+          "type": "boolean",
+          "default": false,
+          "description": "Consulter agenda RDV"
+        },
+        "gerer_facturation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Cr\u00e9er/modifier factures"
+        },
+        "voir_rapports": {
+          "type": "boolean",
+          "default": false,
+          "description": "Acc\u00e8s rapports statistiques"
+        },
+        "gerer_services": {
+          "type": "boolean",
+          "default": false,
+          "description": "Modifier services offerts"
+        },
+        "gerer_stock": {
+          "type": "boolean",
+          "default": false,
+          "description": "G\u00e9rer stocks/inventaire"
+        },
+        "acceder_api": {
+          "type": "boolean",
+          "default": false,
+          "description": "Acc\u00e9der aux cl\u00e9s API"
+        }
+      }
+    },
+    "departements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "D\u00e9partements/services assign\u00e9s",
+      "default": []
+    },
+    "horaires": {
+      "type": "object",
+      "description": "Horaires de pr\u00e9sence",
+      "properties": {
+        "lundi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "mardi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "mercredi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "jeudi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "vendredi": {
+          "type": "string",
+          "default": "08:00-17:00"
+        },
+        "samedi": {
+          "type": "string",
+          "default": "Repos"
+        },
+        "dimanche": {
+          "type": "string",
+          "default": "Repos"
+        }
+      }
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "actif",
+        "inactif",
+        "suspendu",
+        "en_attente"
+      ],
+      "default": "actif",
+      "description": "Statut du membre"
+    },
+    "date_invitation": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_acceptation": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inviteur_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'admin qui a invit\u00e9"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Photo de profil du membre"
+    },
+    "notes_admin": {
+      "type": "string",
+      "description": "Notes internes administrateur"
+    }
+  },
+  "required": [
+    "centre_id",
+    "user_email",
+    "role"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "centre_id": {
+            "$in": "{{user.centres_ids}}"
+          }
+        },
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "centre_id": {
+            "$in": "{{user.centres_admin_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

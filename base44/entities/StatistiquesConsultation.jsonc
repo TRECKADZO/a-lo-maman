@@ -1,0 +1,162 @@
+{
+  "name": "StatistiquesConsultation",
+  "type": "object",
+  "properties": {
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel de sant\u00e9"
+    },
+    "rdv_id": {
+      "type": "string",
+      "description": "ID du rendez-vous li\u00e9"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "date_consultation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure de la consultation"
+    },
+    "type_consultation": {
+      "type": "string",
+      "enum": [
+        "cabinet",
+        "clinique",
+        "hopital",
+        "telephone",
+        "teleconsultation"
+      ],
+      "description": "Type de consultation"
+    },
+    "duree_minutes": {
+      "type": "integer",
+      "description": "Dur\u00e9e de la consultation en minutes"
+    },
+    "montant_facture": {
+      "type": "number",
+      "description": "Montant factur\u00e9 pour la consultation en FCFA"
+    },
+    "mode_paiement": {
+      "type": "string",
+      "enum": [
+        "cmu",
+        "assurance",
+        "paiement_direct",
+        "gratuit"
+      ],
+      "description": "Mode de paiement utilis\u00e9"
+    },
+    "assurance_nom": {
+      "type": "string",
+      "description": "Nom de l'assurance si applicable"
+    },
+    "statut_paiement": {
+      "type": "string",
+      "enum": [
+        "en_attente",
+        "paye",
+        "partiel",
+        "annule",
+        "rembourse"
+      ],
+      "default": "en_attente",
+      "description": "Statut du paiement"
+    },
+    "date_paiement": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du paiement"
+    },
+    "ordonnance_generee": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ordonnance g\u00e9n\u00e9r\u00e9e lors de cette consultation"
+    },
+    "ordonnance_id": {
+      "type": "string",
+      "description": "ID de l'ordonnance si g\u00e9n\u00e9r\u00e9e"
+    },
+    "donnees_vitales_consultees": {
+      "type": "boolean",
+      "default": false,
+      "description": "Donn\u00e9es vitales du patient consult\u00e9es"
+    },
+    "nombre_donnees_vitales": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre de mesures vitales consult\u00e9es"
+    },
+    "diagnostic": {
+      "type": "string",
+      "description": "Diagnostic principal"
+    },
+    "specialite": {
+      "type": "string",
+      "description": "Sp\u00e9cialit\u00e9 du professionnel"
+    },
+    "premier_rdv": {
+      "type": "boolean",
+      "default": false,
+      "description": "Premier rendez-vous avec ce patient"
+    },
+    "suivi": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consultation de suivi"
+    },
+    "satisfaction_patient": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note de satisfaction du patient (1-5)"
+    },
+    "notes_internes": {
+      "type": "string",
+      "description": "Notes internes du professionnel"
+    },
+    "annee": {
+      "type": "integer",
+      "description": "Ann\u00e9e de la consultation (pour faciliter les requ\u00eates)"
+    },
+    "mois": {
+      "type": "integer",
+      "description": "Mois de la consultation (1-12)"
+    },
+    "semaine": {
+      "type": "integer",
+      "description": "Num\u00e9ro de semaine dans l'ann\u00e9e"
+    }
+  },
+  "required": [
+    "professionnel_id",
+    "patient_email",
+    "date_consultation",
+    "type_consultation",
+    "duree_minutes"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

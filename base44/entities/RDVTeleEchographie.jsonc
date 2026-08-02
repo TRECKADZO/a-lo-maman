@@ -1,0 +1,190 @@
+{
+  "name": "RDVTeleEchographie",
+  "type": "object",
+  "properties": {
+    "maman_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "grossesse_id": {
+      "type": "string",
+      "description": "ID du suivi de grossesse"
+    },
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre t\u00e9l\u00e9-\u00e9chographie"
+    },
+    "gynecologue_id": {
+      "type": "string",
+      "description": "ID du gyn\u00e9cologue t\u00e9l\u00e9consultant"
+    },
+    "type_echographie": {
+      "type": "string",
+      "enum": [
+        "datation",
+        "morphologique",
+        "croissance",
+        "doppler",
+        "autre"
+      ],
+      "description": "Type d'\u00e9chographie demand\u00e9e"
+    },
+    "date_rdv": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "semaine_grossesse": {
+      "type": "integer",
+      "description": "SA au moment du RDV"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "planifie",
+        "confirme",
+        "en_cours",
+        "termine",
+        "annule"
+      ],
+      "default": "planifie"
+    },
+    "motif": {
+      "type": "string"
+    },
+    "instructions_pre_rdv": {
+      "type": "string",
+      "description": "Consignes avant l'examen (ex: vessie pleine)"
+    },
+    "checklist_complete": {
+      "type": "boolean",
+      "default": false
+    },
+    "rapport_echographie": {
+      "type": "object",
+      "properties": {
+        "rapport_pdf_url": {
+          "type": "string"
+        },
+        "images_urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "age_gestationnel_calcule": {
+          "type": "string"
+        },
+        "biometrie": {
+          "type": "object",
+          "properties": {
+            "BIP": {
+              "type": "number",
+              "description": "Diam\u00e8tre bipari\u00e9tal (mm)"
+            },
+            "PC": {
+              "type": "number",
+              "description": "P\u00e9rim\u00e8tre cr\u00e2nien (mm)"
+            },
+            "LF": {
+              "type": "number",
+              "description": "Longueur f\u00e9morale (mm)"
+            },
+            "PA": {
+              "type": "number",
+              "description": "P\u00e9rim\u00e8tre abdominal (mm)"
+            },
+            "EPF": {
+              "type": "number",
+              "description": "Estimation poids f\u0153tal (g)"
+            }
+          }
+        },
+        "anomalies_detectees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conclusion": {
+          "type": "string"
+        },
+        "recommendations": {
+          "type": "string"
+        },
+        "redige_par": {
+          "type": "string"
+        },
+        "valide_par_gynecologue": {
+          "type": "boolean",
+          "default": false
+        },
+        "date_rapport": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "notes_sage_femme": {
+      "type": "string"
+    },
+    "qualite_images": {
+      "type": "string",
+      "enum": [
+        "excellente",
+        "bonne",
+        "moyenne",
+        "mauvaise"
+      ]
+    },
+    "duree_examen_minutes": {
+      "type": "integer"
+    },
+    "satisfaction_maman": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "commentaire_maman": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "maman_email",
+    "grossesse_id",
+    "centre_id",
+    "type_echographie",
+    "date_rdv"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "maman_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "maman_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

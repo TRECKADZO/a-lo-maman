@@ -1,0 +1,48 @@
+{
+  "name": "ArticleLu",
+  "type": "object",
+  "properties": {
+    "article_id": {
+      "type": "string",
+      "description": "ID de l'article lu"
+    },
+    "date_lecture": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "favoris": {
+      "type": "boolean",
+      "default": false
+    },
+    "categorie": {
+      "type": "string",
+      "description": "Cat\u00e9gorie de l'article lu"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags de l'article lu"
+    },
+    "temps_lecture_secondes": {
+      "type": "integer",
+      "description": "Temps pass\u00e9 sur l'article en secondes"
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant concern\u00e9 si applicable"
+    }
+  },
+  "required": [
+    "article_id"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

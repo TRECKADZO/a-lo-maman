@@ -1,0 +1,244 @@
+{
+  "name": "ProduitMarketplace",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "description": "Nom du produit"
+    },
+    "description": {
+      "type": "string"
+    },
+    "description_courte": {
+      "type": "string"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "allaitement",
+        "puericulture",
+        "vetements_maman",
+        "vetements_bebe",
+        "hygiene_bebe",
+        "alimentation_bebe",
+        "jouets_eveil",
+        "mobilier_bebe",
+        "securite",
+        "sortie_transport",
+        "sante_bien_etre"
+      ]
+    },
+    "sous_categorie": {
+      "type": "string"
+    },
+    "prix": {
+      "type": "number",
+      "description": "Prix en FCFA"
+    },
+    "prix_promo": {
+      "type": "number",
+      "description": "Prix promotionnel si applicable"
+    },
+    "devise": {
+      "type": "string",
+      "default": "FCFA"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs des images"
+    },
+    "image_principale": {
+      "type": "string"
+    },
+    "vendeur": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "telephone": {
+          "type": "string"
+        },
+        "ville": {
+          "type": "string"
+        },
+        "note_moyenne": {
+          "type": "number"
+        },
+        "nombre_ventes": {
+          "type": "integer"
+        },
+        "verifie": {
+          "type": "boolean"
+        }
+      }
+    },
+    "stock": {
+      "type": "integer",
+      "default": 1
+    },
+    "etat": {
+      "type": "string",
+      "enum": [
+        "neuf",
+        "comme_neuf",
+        "tres_bon",
+        "bon",
+        "acceptable"
+      ],
+      "default": "neuf"
+    },
+    "marque": {
+      "type": "string"
+    },
+    "caracteristiques": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cle": {
+            "type": "string"
+          },
+          "valeur": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "age_recommande": {
+      "type": "object",
+      "properties": {
+        "min_mois": {
+          "type": "integer"
+        },
+        "max_mois": {
+          "type": "integer"
+        }
+      }
+    },
+    "trimestre_grossesse": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Trimestres de grossesse recommand\u00e9s"
+    },
+    "livraison": {
+      "type": "object",
+      "properties": {
+        "disponible": {
+          "type": "boolean",
+          "default": true
+        },
+        "gratuite": {
+          "type": "boolean",
+          "default": false
+        },
+        "frais": {
+          "type": "number"
+        },
+        "delai_jours": {
+          "type": "integer"
+        },
+        "zones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "retrait_en_main": {
+      "type": "boolean",
+      "default": true
+    },
+    "paiement_livraison": {
+      "type": "boolean",
+      "default": true,
+      "description": "Paiement \u00e0 la livraison accept\u00e9"
+    },
+    "moyens_paiement": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "especes",
+        "wave",
+        "orange_money",
+        "mtn_money"
+      ]
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "brouillon",
+        "actif",
+        "vendu",
+        "reserve",
+        "expire",
+        "supprime"
+      ],
+      "default": "actif"
+    },
+    "vues": {
+      "type": "integer",
+      "default": 0
+    },
+    "favoris_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "certifie_securite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Produit certifi\u00e9 conforme aux normes de s\u00e9curit\u00e9"
+    },
+    "eco_responsable": {
+      "type": "boolean",
+      "default": false
+    },
+    "date_expiration": {
+      "type": "string",
+      "format": "date",
+      "description": "Date d'expiration de l'annonce"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "note_moyenne": {
+      "type": "number"
+    },
+    "nombre_avis": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "nom",
+    "categorie",
+    "prix"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

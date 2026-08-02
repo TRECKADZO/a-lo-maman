@@ -1,0 +1,111 @@
+{
+  "name": "UserFeedback",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "feedback_type": {
+      "type": "string",
+      "enum": [
+        "bug",
+        "feature_request",
+        "improvement",
+        "compliment",
+        "other"
+      ]
+    },
+    "page": {
+      "type": "string",
+      "description": "Page o\u00f9 le feedback a \u00e9t\u00e9 donn\u00e9"
+    },
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note de satisfaction"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "screenshot_url": {
+      "type": "string",
+      "description": "Capture d'\u00e9cran du bug/suggestion"
+    },
+    "device_info": {
+      "type": "object",
+      "properties": {
+        "user_agent": {
+          "type": "string"
+        },
+        "screen_width": {
+          "type": "number"
+        },
+        "screen_height": {
+          "type": "number"
+        },
+        "platform": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "in_review",
+        "planned",
+        "in_progress",
+        "completed",
+        "wont_fix"
+      ],
+      "default": "new"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "admin_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "feedback_type"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

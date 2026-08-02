@@ -1,0 +1,87 @@
+{
+  "name": "ActiviteStimulation",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Instructions d\u00e9taill\u00e9es en markdown"
+    },
+    "domaine": {
+      "type": "string",
+      "enum": [
+        "moteur",
+        "cognitif",
+        "langage",
+        "social",
+        "sensoriel",
+        "creativite"
+      ],
+      "description": "Domaine de d\u00e9veloppement cibl\u00e9"
+    },
+    "age_min_mois": {
+      "type": "integer"
+    },
+    "age_max_mois": {
+      "type": "integer"
+    },
+    "duree_minutes": {
+      "type": "integer",
+      "description": "Dur\u00e9e estim\u00e9e de l'activit\u00e9"
+    },
+    "materiel": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Mat\u00e9riel n\u00e9cessaire"
+    },
+    "benefices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "difficulte": {
+      "type": "string",
+      "enum": [
+        "facile",
+        "moyen",
+        "avance"
+      ],
+      "default": "facile"
+    },
+    "interieur_exterieur": {
+      "type": "string",
+      "enum": [
+        "interieur",
+        "exterieur",
+        "les_deux"
+      ],
+      "default": "les_deux"
+    }
+  },
+  "required": [
+    "titre",
+    "description",
+    "domaine",
+    "age_min_mois",
+    "age_max_mois"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

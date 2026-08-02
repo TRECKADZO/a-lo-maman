@@ -1,0 +1,161 @@
+{
+  "name": "DocumentFamille",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string",
+      "description": "Titre du document"
+    },
+    "type_document": {
+      "type": "string",
+      "enum": [
+        "ordonnance",
+        "resultat_labo",
+        "certificat_medical",
+        "certificat_vaccination",
+        "radio_imagerie",
+        "echographie",
+        "compte_rendu",
+        "courrier_specialiste",
+        "carnet_sante",
+        "facture",
+        "autre"
+      ]
+    },
+    "membre_type": {
+      "type": "string",
+      "enum": [
+        "maman",
+        "enfant",
+        "famille"
+      ],
+      "description": "Type de membre concern\u00e9"
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant si membre_type = enfant"
+    },
+    "enfant_prenom": {
+      "type": "string",
+      "description": "Pr\u00e9nom de l'enfant pour affichage rapide"
+    },
+    "date_document": {
+      "type": "string",
+      "format": "date",
+      "description": "Date du document"
+    },
+    "professionnel": {
+      "type": "string",
+      "description": "Nom du professionnel de sant\u00e9"
+    },
+    "etablissement": {
+      "type": "string",
+      "description": "\u00c9tablissement de sant\u00e9"
+    },
+    "description": {
+      "type": "string"
+    },
+    "mots_cles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Mots-cl\u00e9s pour la recherche"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "URI du fichier priv\u00e9"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_type": {
+      "type": "string",
+      "description": "Type MIME du fichier"
+    },
+    "file_size": {
+      "type": "number",
+      "description": "Taille en octets"
+    },
+    "partages": {
+      "type": "array",
+      "description": "Personnes avec qui le document est partag\u00e9",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "professionnel",
+              "famille"
+            ]
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "lecture",
+                "telechargement",
+                "partage"
+              ]
+            }
+          },
+          "date_partage": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expire_le": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "favori": {
+      "type": "boolean",
+      "default": false
+    },
+    "archive": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "titre",
+    "type_document",
+    "membre_type",
+    "file_uri"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "partages": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "JalonDeveloppementReference",
+  "type": "object",
+  "properties": {
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "moteur_global",
+        "moteur_fin",
+        "langage_receptif",
+        "langage_expressif",
+        "cognitif",
+        "social_emotionnel",
+        "autonomie"
+      ],
+      "description": "Cat\u00e9gorie du jalon"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre court du jalon"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e du jalon"
+    },
+    "age_min_mois": {
+      "type": "integer",
+      "description": "\u00c2ge minimum attendu en mois"
+    },
+    "age_max_mois": {
+      "type": "integer",
+      "description": "\u00c2ge maximum normal en mois"
+    },
+    "age_alerte_mois": {
+      "type": "integer",
+      "description": "\u00c2ge \u00e0 partir duquel consulter si non atteint"
+    },
+    "indicateurs_observation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ce qu'il faut observer chez l'enfant"
+    },
+    "activites_stimulation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titre": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "materiel": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Activit\u00e9s pour stimuler ce jalon"
+    },
+    "conseils_parents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Conseils pratiques pour les parents"
+    },
+    "signes_alerte": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Signes qui doivent alerter"
+    },
+    "icone": {
+      "type": "string",
+      "description": "Nom de l'ic\u00f4ne Lucide"
+    },
+    "couleur": {
+      "type": "string",
+      "description": "Couleur associ\u00e9e (classe Tailwind)"
+    },
+    "ordre": {
+      "type": "integer",
+      "description": "Ordre d'affichage"
+    }
+  },
+  "required": [
+    "categorie",
+    "titre",
+    "age_min_mois",
+    "age_max_mois"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

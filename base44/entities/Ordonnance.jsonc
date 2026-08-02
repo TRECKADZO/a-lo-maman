@@ -1,0 +1,72 @@
+{
+  "name": "Ordonnance",
+  "type": "object",
+  "properties": {
+    "numero": {
+      "type": "string"
+    },
+    "date_emission": {
+      "type": "string",
+      "format": "date"
+    },
+    "patient_email": {
+      "type": "string"
+    },
+    "professionnel_id": {
+      "type": "string"
+    },
+    "professionnel_nom": {
+      "type": "string"
+    },
+    "medicaments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string"
+          },
+          "posologie": {
+            "type": "string"
+          },
+          "duree": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "fichier_pdf": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date_emission",
+    "patient_email",
+    "professionnel_id"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "created_by": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "name": "PreferencesDashboard",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "widgets_actifs": {
+      "type": "array",
+      "description": "Liste des widgets affich\u00e9s sur le dashboard",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "grossesse",
+        "prochains_rdv",
+        "documents_recents",
+        "alertes_ia",
+        "enfants",
+        "rappels"
+      ]
+    },
+    "ordre_widgets": {
+      "type": "array",
+      "description": "Ordre d'affichage des widgets",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "navigation_personnalisee": {
+      "type": "array",
+      "description": "Ordre personnalis\u00e9 des items de navigation",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string"
+          },
+          "ordre": {
+            "type": "integer"
+          },
+          "visible": {
+            "type": "boolean",
+            "default": true
+          },
+          "favori": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "default": []
+    },
+    "theme_dashboard": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "spacieux",
+        "minimal"
+      ],
+      "default": "compact"
+    }
+  },
+  "required": [
+    "user_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_email": "{{user.email}}"
+    },
+    "update": {
+      "user_email": "{{user.email}}"
+    },
+    "delete": {
+      "user_email": "{{user.email}}"
+    }
+  }
+}

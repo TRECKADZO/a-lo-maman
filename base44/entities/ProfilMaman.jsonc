@@ -1,0 +1,229 @@
+{
+  "name": "ProfilMaman",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "description": "Nom d'affichage personnalis\u00e9"
+    },
+    "telephone": {
+      "type": "string",
+      "description": "Num\u00e9ro de t\u00e9l\u00e9phone"
+    },
+    "date_naissance": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de naissance"
+    },
+    "numero_cmu": {
+      "type": "string",
+      "description": "Num\u00e9ro CMU unique"
+    },
+    "groupe_sanguin": {
+      "type": "string",
+      "enum": [
+        "A+",
+        "A-",
+        "B+",
+        "B-",
+        "AB+",
+        "AB-",
+        "O+",
+        "O-"
+      ],
+      "description": "Groupe sanguin"
+    },
+    "allergies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des allergies",
+      "default": []
+    },
+    "maladies_chroniques": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des maladies chroniques",
+      "default": []
+    },
+    "photo_profil": {
+      "type": "string",
+      "description": "URL de la photo de profil"
+    },
+    "langue_preferee": {
+      "type": "string",
+      "enum": [
+        "francais",
+        "anglais"
+      ],
+      "default": "francais"
+    },
+    "theme_prefere": {
+      "type": "string",
+      "enum": [
+        "clair",
+        "sombre"
+      ],
+      "default": "clair",
+      "description": "Th\u00e8me d'affichage pr\u00e9f\u00e9r\u00e9"
+    },
+    "ville": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "situation_familiale": {
+      "type": "string",
+      "enum": [
+        "celibataire",
+        "mariee",
+        "autre"
+      ]
+    },
+    "nombre_enfants": {
+      "type": "integer",
+      "default": 0
+    },
+    "notifications_activees": {
+      "type": "boolean",
+      "default": true
+    },
+    "preferences_notifications": {
+      "type": "object",
+      "description": "Pr\u00e9f\u00e9rences d\u00e9taill\u00e9es pour les notifications",
+      "properties": {
+        "rendez_vous": {
+          "type": "boolean",
+          "default": true
+        },
+        "rappel_rendez_vous_24h": {
+          "type": "boolean",
+          "default": true
+        },
+        "rappel_rendez_vous_1h": {
+          "type": "boolean",
+          "default": true
+        },
+        "messages": {
+          "type": "boolean",
+          "default": true
+        },
+        "communaute": {
+          "type": "boolean",
+          "default": true
+        },
+        "communaute_reponses": {
+          "type": "boolean",
+          "default": true
+        },
+        "communaute_mentions": {
+          "type": "boolean",
+          "default": true
+        },
+        "sante": {
+          "type": "boolean",
+          "default": true
+        },
+        "assistant_ia": {
+          "type": "boolean",
+          "default": true
+        },
+        "rappels_vaccins": {
+          "type": "boolean",
+          "default": true
+        },
+        "rappels_medicaments": {
+          "type": "boolean",
+          "default": true
+        },
+        "jalons_grossesse": {
+          "type": "boolean",
+          "default": true
+        },
+        "jalons_enfant": {
+          "type": "boolean",
+          "default": true
+        },
+        "notifications_push": {
+          "type": "boolean",
+          "default": true
+        },
+        "notifications_email": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "default": {
+        "rendez_vous": true,
+        "rappel_rendez_vous_24h": true,
+        "rappel_rendez_vous_1h": true,
+        "messages": true,
+        "communaute": true,
+        "communaute_reponses": true,
+        "communaute_mentions": true,
+        "sante": true,
+        "assistant_ia": true,
+        "rappels_vaccins": true,
+        "rappels_medicaments": true,
+        "jalons_grossesse": true,
+        "jalons_enfant": true,
+        "notifications_push": true,
+        "notifications_email": false
+      }
+    },
+    "banned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Utilisateur banni de la communaut\u00e9"
+    },
+    "ban_reason": {
+      "type": "string",
+      "description": "Raison du bannissement"
+    },
+    "banned_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du bannissement"
+    },
+    "banned_by": {
+      "type": "string",
+      "description": "Mod\u00e9rateur ayant banni l'utilisateur"
+    },
+    "unbanned_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du d\u00e9bannissement"
+    },
+    "warnings_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre d'avertissements re\u00e7us"
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

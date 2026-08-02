@@ -1,0 +1,92 @@
+{
+  "name": "PartageDocument",
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "ID du document partag\u00e9"
+    },
+    "document_titre": {
+      "type": "string",
+      "description": "Titre du document"
+    },
+    "proprietaire_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du propri\u00e9taire du document"
+    },
+    "partage_avec_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du professionnel avec qui partager"
+    },
+    "partage_avec_nom": {
+      "type": "string",
+      "description": "Nom du professionnel"
+    },
+    "type_acces": {
+      "type": "string",
+      "enum": [
+        "lecture",
+        "lecture_ecriture"
+      ],
+      "default": "lecture",
+      "description": "Type d'acc\u00e8s accord\u00e9"
+    },
+    "date_partage": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_expiration": {
+      "type": "string",
+      "format": "date",
+      "description": "Date d'expiration du partage (optionnel)"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "actif",
+        "expire",
+        "revoque"
+      ],
+      "default": "actif"
+    },
+    "message_accompagnement": {
+      "type": "string",
+      "description": "Message pour le professionnel"
+    },
+    "consultation_par_pro": {
+      "type": "boolean",
+      "default": false,
+      "description": "Le professionnel a consult\u00e9 le document"
+    },
+    "date_consultation": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "document_id",
+    "proprietaire_email",
+    "partage_avec_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "proprietaire_email": "{{user.email}}"
+        },
+        {
+          "partage_avec_email": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "proprietaire_email": "{{user.email}}"
+    },
+    "delete": {
+      "proprietaire_email": "{{user.email}}"
+    }
+  }
+}

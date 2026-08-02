@@ -1,0 +1,136 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation"
+    },
+    "auteur_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "auteur_nom": {
+      "type": "string"
+    },
+    "contenu": {
+      "type": "string",
+      "description": "Contenu du message (chiffr\u00e9)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "texte",
+        "image",
+        "document",
+        "ordonnance"
+      ],
+      "default": "texte"
+    },
+    "documents": {
+      "type": "array",
+      "description": "Fichiers attach\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "taille": {
+            "type": "integer"
+          }
+        }
+      },
+      "default": []
+    },
+    "lu": {
+      "type": "boolean",
+      "default": false
+    },
+    "date_lecture": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reactions": {
+      "type": "array",
+      "description": "R\u00e9actions emoji",
+      "items": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "type": "string"
+          },
+          "utilisateurs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default": []
+    },
+    "reponse_a": {
+      "type": "string",
+      "description": "ID du message auquel on r\u00e9pond"
+    },
+    "message_original": {
+      "type": "string",
+      "description": "Contenu du message original (pour les r\u00e9ponses)"
+    },
+    "securise": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "conversation_id",
+    "auteur_email",
+    "contenu"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "auteur_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "auteur_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "auteur_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

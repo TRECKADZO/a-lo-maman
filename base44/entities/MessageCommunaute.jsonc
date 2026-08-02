@@ -1,0 +1,323 @@
+{
+  "name": "MessageCommunaute",
+  "type": "object",
+  "properties": {
+    "sujet": {
+      "type": "string"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "grossesse_1er_trimestre",
+        "grossesse_2eme_trimestre",
+        "grossesse_3eme_trimestre",
+        "accouchement",
+        "post_partum",
+        "allaitement",
+        "contraception",
+        "fertilite",
+        "sante_nouveau_ne",
+        "sante_nourrisson",
+        "sante_bambin",
+        "sante_enfant",
+        "nutrition_grossesse",
+        "nutrition_enfant",
+        "developpement_enfant",
+        "questions_specialistes",
+        "temoignages",
+        "general"
+      ]
+    },
+    "sous_forum": {
+      "type": "string",
+      "enum": [
+        "soins_nouveau_ne",
+        "nutrition_grossesse",
+        "soutien_post_partum",
+        "questions_specialistes",
+        "developpement_moteur",
+        "allaitement_biberon",
+        "sommeil_bebe",
+        "vaccination_sante",
+        "retour_travail",
+        "vie_famille"
+      ],
+      "description": "Sous-forum th\u00e9matique pour mieux organiser les discussions"
+    },
+    "contenu": {
+      "type": "string"
+    },
+    "auteur_nom": {
+      "type": "string"
+    },
+    "auteur_specialite": {
+      "type": "string",
+      "description": "Sp\u00e9cialit\u00e9 du professionnel de sant\u00e9, si applicable"
+    },
+    "auteur_type": {
+      "type": "string",
+      "enum": [
+        "maman",
+        "specialiste"
+      ],
+      "description": "Type d'utilisateur (maman ou sp\u00e9cialiste)"
+    },
+    "auteur_badge": {
+      "type": "string",
+      "enum": [
+        "nouveau",
+        "actif",
+        "expert",
+        "specialiste_verifie"
+      ],
+      "description": "Badge de l'auteur bas\u00e9 sur son activit\u00e9"
+    },
+    "auteur_anonyme": {
+      "type": "boolean",
+      "default": false
+    },
+    "nombre_vues": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre de fois que le message a \u00e9t\u00e9 consult\u00e9"
+    },
+    "reponses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "auteur_nom": {
+            "type": "string"
+          },
+          "auteur_email": {
+            "type": "string",
+            "description": "Email de l'auteur pour les votes"
+          },
+          "auteur_specialite": {
+            "type": "string",
+            "description": "Sp\u00e9cialit\u00e9 du professionnel de sant\u00e9, si applicable"
+          },
+          "auteur_type": {
+            "type": "string",
+            "enum": [
+              "maman",
+              "specialiste"
+            ]
+          },
+          "auteur_badge": {
+            "type": "string"
+          },
+          "contenu": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reactions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "default": {}
+          },
+          "upvotes": {
+            "type": "array",
+            "description": "Liste des emails des utilisateurs qui ont vot\u00e9 pour cette r\u00e9ponse",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "score_upvotes": {
+            "type": "integer",
+            "default": 0,
+            "description": "Score calcul\u00e9 des upvotes pour le tri"
+          },
+          "est_utile": {
+            "type": "boolean",
+            "default": false,
+            "description": "Marqu\u00e9 comme utile par l'auteur du post"
+          },
+          "est_verifie": {
+            "type": "boolean",
+            "default": false,
+            "description": "R\u00e9ponse v\u00e9rifi\u00e9e par un sp\u00e9cialiste ou mod\u00e9rateur"
+          },
+          "verifie_par": {
+            "type": "string",
+            "description": "Email du sp\u00e9cialiste/mod\u00e9rateur qui a v\u00e9rifi\u00e9"
+          },
+          "modere": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "reactions": {
+      "type": "object",
+      "description": "Stocke les utilisateurs qui ont r\u00e9agi avec un \u00e9moji",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "default": {}
+    },
+    "upvotes": {
+      "type": "array",
+      "description": "Liste des emails des utilisateurs qui ont vot\u00e9 pour ce message",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "score_upvotes": {
+      "type": "integer",
+      "default": 0,
+      "description": "Score calcul\u00e9 des upvotes pour le tri"
+    },
+    "epingle": {
+      "type": "boolean",
+      "default": false
+    },
+    "resolu": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique si la question a \u00e9t\u00e9 r\u00e9solue"
+    },
+    "statut_moderation": {
+      "type": "string",
+      "enum": [
+        "en_attente",
+        "approuve",
+        "rejete",
+        "signale"
+      ],
+      "default": "approuve",
+      "description": "Statut de mod\u00e9ration du message"
+    },
+    "signalements": {
+      "type": "array",
+      "description": "Liste des signalements par les utilisateurs",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email_signaleur": {
+            "type": "string"
+          },
+          "raison": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "default": []
+    },
+    "note_moderateur": {
+      "type": "string",
+      "description": "Note priv\u00e9e pour les mod\u00e9rateurs"
+    },
+    "moderated_by": {
+      "type": "string",
+      "description": "Email du mod\u00e9rateur qui a trait\u00e9 le message"
+    },
+    "moderated_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de mod\u00e9ration"
+    },
+    "ai_analysis": {
+      "type": "object",
+      "description": "Analyse IA du contenu",
+      "properties": {
+        "is_appropriate": {
+          "type": "boolean"
+        },
+        "concerns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "recommendation": {
+          "type": "string",
+          "enum": [
+            "approve",
+            "flag",
+            "reject"
+          ]
+        },
+        "explanation": {
+          "type": "string"
+        }
+      }
+    },
+    "ai_analyzed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de l'analyse IA"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags pour faciliter la recherche"
+    }
+  },
+  "required": [
+    "sujet",
+    "contenu",
+    "categorie"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

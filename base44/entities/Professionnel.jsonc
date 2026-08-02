@@ -1,0 +1,373 @@
+{
+  "name": "Professionnel",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "description": "Nom d'affichage personnalis\u00e9"
+    },
+    "nom_complet": {
+      "type": "string"
+    },
+    "specialite": {
+      "type": "string",
+      "enum": [
+        "gynecologie",
+        "pediatrie",
+        "sage_femme",
+        "medecin_generaliste",
+        "infirmier",
+        "nutritionniste",
+        "cardiologie",
+        "oncologie",
+        "psychiatrie"
+      ]
+    },
+    "numero_ordre": {
+      "type": "string"
+    },
+    "telephone": {
+      "type": "string",
+      "description": "T\u00e9l\u00e9phone professionnel"
+    },
+    "code_liaison": {
+      "type": "string",
+      "description": "Code unique de 6 caract\u00e8res pour liaison avec patients"
+    },
+    "patients_lies_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre de patients li\u00e9s via le code"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email professionnel (doit correspondre au user.email)"
+    },
+    "photo": {
+      "type": "string",
+      "description": "Photo professionnelle"
+    },
+    "langue_preferee": {
+      "type": "string",
+      "enum": [
+        "francais",
+        "anglais"
+      ],
+      "default": "francais"
+    },
+    "theme_prefere": {
+      "type": "string",
+      "enum": [
+        "clair",
+        "sombre"
+      ],
+      "default": "clair",
+      "description": "Th\u00e8me d'affichage pr\u00e9f\u00e9r\u00e9"
+    },
+    "ville": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "adresse": {
+      "type": "string",
+      "description": "Adresse du cabinet"
+    },
+    "structure_sante": {
+      "type": "string",
+      "description": "Nom de la structure de sant\u00e9 (clinique, h\u00f4pital, etc.)"
+    },
+    "types_consultation_offerts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "cabinet",
+          "clinique",
+          "hopital",
+          "telephone",
+          "visio"
+        ]
+      },
+      "description": "Types de consultations offertes par le professionnel"
+    },
+    "tarif_consultation": {
+      "type": "number",
+      "description": "Tarif par d\u00e9faut (obsol\u00e8te, utiliser tarifs_par_type)"
+    },
+    "tarifs_par_type": {
+      "type": "object",
+      "description": "Tarifs sp\u00e9cifiques pour chaque type de consultation",
+      "properties": {
+        "cabinet": {
+          "type": "number"
+        },
+        "clinique": {
+          "type": "number"
+        },
+        "hopital": {
+          "type": "number"
+        },
+        "telephone": {
+          "type": "number"
+        },
+        "visio": {
+          "type": "number"
+        }
+      }
+    },
+    "accepte_cmu": {
+      "type": "boolean",
+      "default": true
+    },
+    "assurances_acceptees": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des assurances accept\u00e9es par le professionnel"
+    },
+    "annees_experience": {
+      "type": "integer",
+      "description": "Nombre d'ann\u00e9es d'exp\u00e9rience professionnelle"
+    },
+    "formation": {
+      "type": "array",
+      "description": "Dipl\u00f4mes et formations",
+      "items": {
+        "type": "object",
+        "properties": {
+          "diplome": {
+            "type": "string"
+          },
+          "etablissement": {
+            "type": "string"
+          },
+          "annee": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "description": "Certifications et sp\u00e9cialisations suppl\u00e9mentaires / domaines d'expertise",
+      "items": {
+        "type": "string"
+      }
+    },
+    "langues": {
+      "type": "array",
+      "description": "Langues parl\u00e9es par le professionnel",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Fran\u00e7ais",
+          "Anglais",
+          "Arabe",
+          "Espagnol",
+          "Baoul\u00e9",
+          "Dioula",
+          "B\u00e9t\u00e9",
+          "Senoufo",
+          "Malink\u00e9",
+          "Agni",
+          "Gouro",
+          "Yacouba",
+          "Atti\u00e9"
+        ]
+      }
+    },
+    "biographie": {
+      "type": "string",
+      "description": "Description professionnelle et pr\u00e9sentation du sp\u00e9cialiste"
+    },
+    "disponibilites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "jour": {
+            "type": "string"
+          },
+          "heure_debut": {
+            "type": "string"
+          },
+          "heure_fin": {
+            "type": "string"
+          },
+          "types_consultation": {
+            "type": "array",
+            "description": "Types de consultation pour ce cr\u00e9neau",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "exceptions_agenda": {
+      "type": "array",
+      "description": "Exceptions et cong\u00e9s dans l'agenda",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fermeture",
+              "conges",
+              "modification"
+            ]
+          },
+          "horaires": {
+            "type": "array",
+            "description": "Horaires modifi\u00e9s pour ce jour si type=modification",
+            "items": {
+              "type": "object",
+              "properties": {
+                "heure_debut": {
+                  "type": "string"
+                },
+                "heure_fin": {
+                  "type": "string"
+                },
+                "types_consultation": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "default": []
+    },
+    "documents_professionnels": {
+      "type": "array",
+      "description": "Documents professionnels upload\u00e9s (dipl\u00f4mes, licences)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Description du document"
+          },
+          "file_url": {
+            "type": "string",
+            "description": "URL du fichier upload\u00e9"
+          },
+          "file_name": {
+            "type": "string",
+            "description": "Nom original du fichier"
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date d'upload"
+          }
+        }
+      }
+    },
+    "preferences_notifications": {
+      "type": "object",
+      "description": "Pr\u00e9f\u00e9rences d\u00e9taill\u00e9es pour les notifications",
+      "properties": {
+        "nouveaux_rdv": {
+          "type": "boolean",
+          "default": true,
+          "description": "Nouveaux rendez-vous"
+        },
+        "rappel_rdv_24h": {
+          "type": "boolean",
+          "default": true,
+          "description": "Rappel 24h avant RDV"
+        },
+        "rappel_rdv_1h": {
+          "type": "boolean",
+          "default": true,
+          "description": "Rappel 1h avant RDV"
+        },
+        "annulation_rdv": {
+          "type": "boolean",
+          "default": true,
+          "description": "Annulation de RDV"
+        },
+        "messages_patients": {
+          "type": "boolean",
+          "default": true,
+          "description": "Nouveaux messages patients"
+        },
+        "urgences": {
+          "type": "boolean",
+          "default": true,
+          "description": "Alertes urgentes"
+        },
+        "communaute": {
+          "type": "boolean",
+          "default": true,
+          "description": "Questions communaut\u00e9"
+        },
+        "notifications_push": {
+          "type": "boolean",
+          "default": true
+        },
+        "notifications_email": {
+          "type": "boolean",
+          "default": false
+        },
+        "notifications_sms": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "default": {
+        "nouveaux_rdv": true,
+        "rappel_rdv_24h": true,
+        "rappel_rdv_1h": true,
+        "annulation_rdv": true,
+        "messages_patients": true,
+        "urgences": true,
+        "communaute": true,
+        "notifications_push": true,
+        "notifications_email": false,
+        "notifications_sms": false
+      }
+    },
+    "note_moyenne": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note moyenne calcul\u00e9e \u00e0 partir des avis"
+    },
+    "nombre_avis": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre total d'avis re\u00e7us"
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique si l'onboarding est compl\u00e9t\u00e9"
+    },
+    "compte_verifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Compte v\u00e9rifi\u00e9 par l'administration"
+    },
+    "date_verification": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de v\u00e9rification du compte"
+    }
+  },
+  "required": [],
+  "rls": {}
+}

@@ -1,0 +1,135 @@
+{
+  "name": "SupportChat",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
+          },
+          "sender_name": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "attachment": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "image",
+                  "document"
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "read": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "default": []
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "active",
+        "resolved",
+        "closed"
+      ],
+      "default": "waiting"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Email de l'admin assign\u00e9"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "technique",
+        "compte",
+        "paiement",
+        "general"
+      ],
+      "default": "general"
+    },
+    "priority": {
+      "type": "number",
+      "description": "Priorit\u00e9 dans la file d'attente",
+      "default": 0
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "user_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

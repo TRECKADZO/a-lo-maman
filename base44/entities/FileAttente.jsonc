@@ -1,0 +1,138 @@
+{
+  "name": "FileAttente",
+  "type": "object",
+  "properties": {
+    "rendez_vous_id": {
+      "type": "string",
+      "description": "ID du rendez-vous associ\u00e9"
+    },
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "patient_nom": {
+      "type": "string",
+      "description": "Nom du patient"
+    },
+    "type_consultation": {
+      "type": "string",
+      "enum": [
+        "teleconsultation",
+        "telephone"
+      ],
+      "description": "Type de consultation"
+    },
+    "motif": {
+      "type": "string",
+      "description": "Motif de consultation"
+    },
+    "urgence": {
+      "type": "string",
+      "enum": [
+        "normale",
+        "moderee",
+        "urgente"
+      ],
+      "default": "normale",
+      "description": "Niveau d'urgence"
+    },
+    "symptomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des sympt\u00f4mes",
+      "default": []
+    },
+    "temperature": {
+      "type": "number",
+      "description": "Temp\u00e9rature corporelle du patient"
+    },
+    "notes_patient": {
+      "type": "string",
+      "description": "Notes compl\u00e9mentaires du patient"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "en_attente",
+        "en_consultation",
+        "termine",
+        "annule"
+      ],
+      "default": "en_attente",
+      "description": "Statut dans la file"
+    },
+    "heure_arrivee": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Heure d'arriv\u00e9e dans la file"
+    },
+    "heure_debut_consultation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Heure de d\u00e9but de la consultation"
+    },
+    "heure_fin_consultation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Heure de fin de la consultation"
+    },
+    "duree_consultation": {
+      "type": "integer",
+      "description": "Dur\u00e9e de la consultation en minutes"
+    },
+    "position_initiale": {
+      "type": "integer",
+      "description": "Position initiale dans la file"
+    }
+  },
+  "required": [
+    "professionnel_id",
+    "patient_email",
+    "type_consultation",
+    "heure_arrivee"
+  ],
+  "rls": {
+    "create": {
+      "patient_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_linked": true
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_linked": true
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

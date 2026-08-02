@@ -1,0 +1,76 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'utilisateur qui effectue l'action"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "R\u00f4le de l'utilisateur"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "read",
+        "create",
+        "update",
+        "delete",
+        "export",
+        "share"
+      ],
+      "description": "Type d'action effectu\u00e9e"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Type d'entit\u00e9 acc\u00e9d\u00e9e (EnfantCarnet, SuiviGrossesse, etc.)"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID de l'entit\u00e9 acc\u00e9d\u00e9e"
+    },
+    "details": {
+      "type": "object",
+      "description": "D\u00e9tails suppl\u00e9mentaires de l'action",
+      "additionalProperties": true
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Adresse IP de l'utilisateur"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent du navigateur"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure de l'action"
+    }
+  },
+  "required": [
+    "user_email",
+    "action",
+    "entity_type"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

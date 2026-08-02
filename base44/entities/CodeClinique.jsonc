@@ -1,0 +1,105 @@
+{
+  "name": "CodeClinique",
+  "type": "object",
+  "properties": {
+    "standard": {
+      "type": "string",
+      "enum": [
+        "ICD10",
+        "ICD11",
+        "LOINC",
+        "SNOMED_CT",
+        "ATC",
+        "IDMP"
+      ],
+      "description": "Standard de codage utilis\u00e9"
+    },
+    "code": {
+      "type": "string",
+      "description": "Code du standard (ex: O14.0, 718-7, 387207008)"
+    },
+    "display": {
+      "type": "string",
+      "description": "Libell\u00e9 du code en fran\u00e7ais"
+    },
+    "display_en": {
+      "type": "string",
+      "description": "Libell\u00e9 du code en anglais"
+    },
+    "system_uri": {
+      "type": "string",
+      "description": "URI du syst\u00e8me de codage"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "diagnostic",
+        "procedure",
+        "laboratoire",
+        "medicament",
+        "observation",
+        "symptome"
+      ],
+      "description": "Cat\u00e9gorie du code"
+    },
+    "contexte": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "pediatrie",
+        "general",
+        "contraception"
+      ],
+      "description": "Contexte d'utilisation"
+    },
+    "parent_code": {
+      "type": "string",
+      "description": "Code parent dans la hi\u00e9rarchie"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "M\u00e9tadonn\u00e9es additionnelles",
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "age_range": {
+          "type": "string"
+        },
+        "pregnancy_safe": {
+          "type": "boolean"
+        },
+        "breastfeeding_safe": {
+          "type": "boolean"
+        },
+        "cmu_coverage": {
+          "type": "boolean"
+        }
+      }
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Code actif ou obsol\u00e8te"
+    }
+  },
+  "required": [
+    "standard",
+    "code",
+    "display"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

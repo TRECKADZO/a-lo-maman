@@ -1,0 +1,159 @@
+{
+  "name": "IdentifiantPatient",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient (identifiant AloMaman)"
+    },
+    "identifiants": {
+      "type": "array",
+      "description": "Liste des identifiants selon standard PIX/PDQ",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "description": "Domaine identifiant (ex: urn:oid:1.2.250.1.213)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Valeur de l'identifiant"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MR",
+              "SS",
+              "NI",
+              "PI",
+              "DL"
+            ],
+            "description": "Type identifiant (MR=Medical Record, SS=Social Security, NI=National ID)"
+          },
+          "assigner": {
+            "type": "string",
+            "description": "Organisation \u00e9mettrice"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "master_patient_index": {
+      "type": "string",
+      "description": "Identifiant unique master patient index (MPI)"
+    },
+    "demographics": {
+      "type": "object",
+      "description": "Donn\u00e9es d\u00e9mographiques PDQ",
+      "properties": {
+        "given_name": {
+          "type": "string"
+        },
+        "family_name": {
+          "type": "string"
+        },
+        "birth_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "M",
+            "F",
+            "O",
+            "U"
+          ]
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "line": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "district": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string",
+              "default": "CI"
+            }
+          }
+        },
+        "telecom": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "merged_with": {
+      "type": "string",
+      "description": "ID patient fusionn\u00e9 (si doublon d\u00e9tect\u00e9)"
+    },
+    "link_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "merged",
+        "replaced",
+        "refer"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "patient_email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "name": "AnalyticsEvent",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "ID de session utilisateur"
+    },
+    "event_name": {
+      "type": "string",
+      "description": "Nom de l'\u00e9v\u00e9nement (page_view, button_click, etc.)"
+    },
+    "event_category": {
+      "type": "string",
+      "enum": [
+        "navigation",
+        "interaction",
+        "conversion",
+        "engagement",
+        "error"
+      ]
+    },
+    "page": {
+      "type": "string"
+    },
+    "properties": {
+      "type": "object",
+      "description": "Propri\u00e9t\u00e9s de l'\u00e9v\u00e9nement",
+      "additionalProperties": true
+    },
+    "ab_test_variant": {
+      "type": "string",
+      "description": "Variante A/B test active"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "number",
+      "description": "Dur\u00e9e de l'action en ms"
+    },
+    "device_info": {
+      "type": "object",
+      "properties": {
+        "user_agent": {
+          "type": "string"
+        },
+        "screen_width": {
+          "type": "number"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "connection_type": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "event_name",
+    "event_category"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

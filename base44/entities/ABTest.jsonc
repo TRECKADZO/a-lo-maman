@@ -1,0 +1,123 @@
+{
+  "name": "ABTest",
+  "type": "object",
+  "properties": {
+    "test_name": {
+      "type": "string",
+      "description": "Nom du test A/B"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "draft"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "variants": {
+      "type": "array",
+      "description": "Variantes du test",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "traffic_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "target_audience": {
+      "type": "object",
+      "description": "Crit\u00e8res de ciblage",
+      "properties": {
+        "user_type": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "maman",
+              "professionnel",
+              "all"
+            ]
+          }
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "new_users_only": {
+          "type": "boolean"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "M\u00e9triques \u00e0 suivre",
+      "properties": {
+        "primary_metric": {
+          "type": "string",
+          "enum": [
+            "conversion",
+            "retention",
+            "engagement",
+            "revenue"
+          ]
+        },
+        "secondary_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "results": {
+      "type": "object",
+      "description": "R\u00e9sultats du test",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "test_name",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "name": "RessourceFHIR",
+  "type": "object",
+  "properties": {
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "Patient",
+        "Observation",
+        "Appointment",
+        "DiagnosticReport",
+        "MedicationRequest",
+        "Immunization",
+        "Condition",
+        "Procedure",
+        "DocumentReference",
+        "CarePlan"
+      ],
+      "description": "Type de ressource FHIR (R4/R5)"
+    },
+    "fhir_id": {
+      "type": "string",
+      "description": "Identifiant FHIR unique"
+    },
+    "version": {
+      "type": "string",
+      "enum": [
+        "R4",
+        "R5"
+      ],
+      "default": "R4",
+      "description": "Version FHIR"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient concern\u00e9"
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant si applicable"
+    },
+    "grossesse_id": {
+      "type": "string",
+      "description": "ID du suivi grossesse si applicable"
+    },
+    "resource_json": {
+      "type": "object",
+      "description": "Contenu complet de la ressource FHIR en JSON",
+      "additionalProperties": true
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Syst\u00e8me source (AloMaman, CHU_Cocody, etc.)"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date derni\u00e8re mise \u00e0 jour FHIR"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "entered-in-error",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": [
+        "synced",
+        "pending",
+        "error",
+        "conflict"
+      ],
+      "default": "synced",
+      "description": "Statut synchronisation avec syst\u00e8mes externes"
+    },
+    "external_references": {
+      "type": "array",
+      "description": "R\u00e9f\u00e9rences vers syst\u00e8mes externes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string"
+          },
+          "identifier": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "resource_type",
+    "fhir_id",
+    "resource_json"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

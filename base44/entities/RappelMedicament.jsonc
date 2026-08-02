@@ -1,0 +1,115 @@
+{
+  "name": "RappelMedicament",
+  "type": "object",
+  "properties": {
+    "nom_medicament": {
+      "type": "string",
+      "description": "Nom du m\u00e9dicament"
+    },
+    "dosage": {
+      "type": "string",
+      "description": "Dosage (ex: 500mg)"
+    },
+    "forme": {
+      "type": "string",
+      "enum": [
+        "comprime",
+        "sirop",
+        "gelule",
+        "injection",
+        "creme",
+        "suppositoire",
+        "autre"
+      ],
+      "description": "Forme du m\u00e9dicament"
+    },
+    "frequence": {
+      "type": "string",
+      "enum": [
+        "une_fois",
+        "quotidien",
+        "deux_fois",
+        "trois_fois",
+        "quatre_fois",
+        "personnalise"
+      ],
+      "description": "Fr\u00e9quence de prise"
+    },
+    "heures_prise": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Heures de prise (format HH:mm)",
+      "default": []
+    },
+    "date_debut": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de d\u00e9but du traitement"
+    },
+    "date_fin": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de fin du traitement"
+    },
+    "duree_jours": {
+      "type": "integer",
+      "description": "Dur\u00e9e du traitement en jours"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Instructions particuli\u00e8res (avant/apr\u00e8s repas, etc.)"
+    },
+    "prescrit_par": {
+      "type": "string",
+      "description": "Nom du m\u00e9decin prescripteur"
+    },
+    "actif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indique si le rappel est actif"
+    },
+    "historique_prises": {
+      "type": "array",
+      "description": "Historique des prises",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date_heure_prevue": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_heure_reelle": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pris": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "enfant_id": {
+      "type": "string",
+      "description": "ID de l'enfant concern\u00e9 (si applicable)"
+    }
+  },
+  "required": [
+    "nom_medicament",
+    "frequence",
+    "date_debut"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "name": "SuiviContraception",
+  "type": "object",
+  "properties": {
+    "methode_id": {
+      "type": "string",
+      "description": "ID de la m\u00e9thode contraceptive"
+    },
+    "date_debut": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_fin": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de fin du suivi (si applicable)"
+    },
+    "date_rappel_renouvellement": {
+      "type": "string",
+      "format": "date",
+      "description": "Date pour un rappel de renouvellement (ex: avant la fin d'un implant)."
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "heure_prise": {
+      "type": "string",
+      "description": "Heure habituelle de prise (format HH:mm)"
+    },
+    "rappels_actives": {
+      "type": "boolean",
+      "default": true
+    },
+    "prises": {
+      "type": "array",
+      "description": "Historique des prises",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "prise": {
+            "type": "boolean"
+          },
+          "retard_minutes": {
+            "type": "integer"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "effets_secondaires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string"
+          },
+          "severite": {
+            "type": "string",
+            "enum": [
+              "leger",
+              "modere",
+              "severe"
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "methode_id"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

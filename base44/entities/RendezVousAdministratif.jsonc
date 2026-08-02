@@ -1,0 +1,152 @@
+{
+  "name": "RendezVousAdministratif",
+  "type": "object",
+  "properties": {
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre de sant\u00e9"
+    },
+    "centre_nom": {
+      "type": "string",
+      "description": "Nom du centre"
+    },
+    "patient_nom": {
+      "type": "string",
+      "description": "Nom du patient"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "patient_telephone": {
+      "type": "string"
+    },
+    "date_rdv": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure du rendez-vous"
+    },
+    "type_consultation": {
+      "type": "string",
+      "enum": [
+        "consultation_prenatale",
+        "echographie",
+        "pediatrie",
+        "urgences",
+        "suivi_grossesse",
+        "planning_familial",
+        "autre"
+      ]
+    },
+    "duree_minutes": {
+      "type": "integer",
+      "default": 30
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "planifie",
+        "confirme",
+        "en_cours",
+        "termine",
+        "annule",
+        "no_show"
+      ],
+      "default": "planifie"
+    },
+    "professionnel_id": {
+      "type": "string",
+      "description": "ID du professionnel assign\u00e9"
+    },
+    "professionnel_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du professionnel assign\u00e9"
+    },
+    "professionnel_nom": {
+      "type": "string"
+    },
+    "notes_patient": {
+      "type": "string",
+      "description": "Notes/motif de consultation"
+    },
+    "notes_professionnel": {
+      "type": "string"
+    },
+    "rappel_envoye": {
+      "type": "boolean",
+      "default": false
+    },
+    "facture_id": {
+      "type": "string",
+      "description": "Lien vers la facture g\u00e9n\u00e9r\u00e9e"
+    },
+    "montant": {
+      "type": "number",
+      "description": "Montant du RDV"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "plateforme",
+        "widget_externe",
+        "telephone",
+        "direct"
+      ],
+      "default": "plateforme"
+    }
+  },
+  "required": [
+    "centre_id",
+    "patient_nom",
+    "patient_email",
+    "date_rdv",
+    "type_consultation"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnel_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "professionnel_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

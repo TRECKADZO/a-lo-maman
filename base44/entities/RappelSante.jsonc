@@ -1,0 +1,169 @@
+{
+  "name": "RappelSante",
+  "type": "object",
+  "properties": {
+    "type_rappel": {
+      "type": "string",
+      "enum": [
+        "rendez_vous",
+        "metrique_sante",
+        "medicament",
+        "vaccination",
+        "renouvellement_prescription"
+      ],
+      "description": "Type de rappel"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre du rappel"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e"
+    },
+    "date_heure_rappel": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date et heure du rappel"
+    },
+    "frequence": {
+      "type": "string",
+      "enum": [
+        "unique",
+        "quotidien",
+        "hebdomadaire",
+        "mensuel",
+        "personnalise"
+      ],
+      "default": "unique",
+      "description": "Fr\u00e9quence de r\u00e9currence"
+    },
+    "jours_semaine": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 6
+      },
+      "description": "Jours de la semaine pour rappels hebdomadaires (0=Dimanche, 6=Samedi)"
+    },
+    "heure_rappel": {
+      "type": "string",
+      "description": "Heure du rappel (format HH:mm)"
+    },
+    "actif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Rappel actif ou d\u00e9sactiv\u00e9"
+    },
+    "rendez_vous_id": {
+      "type": "string",
+      "description": "ID du rendez-vous associ\u00e9 si applicable"
+    },
+    "medicament_nom": {
+      "type": "string",
+      "description": "Nom du m\u00e9dicament"
+    },
+    "medicament_dosage": {
+      "type": "string",
+      "description": "Dosage du m\u00e9dicament"
+    },
+    "medicament_instructions": {
+      "type": "string",
+      "description": "Instructions de prise"
+    },
+    "metrique_type": {
+      "type": "string",
+      "enum": [
+        "poids",
+        "tension_arterielle",
+        "glycemie",
+        "temperature",
+        "frequence_cardiaque"
+      ],
+      "description": "Type de m\u00e9trique \u00e0 mesurer"
+    },
+    "priorite": {
+      "type": "string",
+      "enum": [
+        "basse",
+        "normale",
+        "haute",
+        "urgente"
+      ],
+      "default": "normale"
+    },
+    "notification_avant": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Minutes avant l'\u00e9v\u00e9nement pour notifier (ex: [60, 15] pour 1h et 15min avant)",
+      "default": [
+        60
+      ]
+    },
+    "son_actif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Activer le son de notification"
+    },
+    "vibration_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Activer la vibration"
+    },
+    "historique_notifications": {
+      "type": "array",
+      "description": "Historique des notifications envoy\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date_envoi": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statut": {
+            "type": "string",
+            "enum": [
+              "envoye",
+              "lu",
+              "action_effectuee",
+              "ignore"
+            ]
+          }
+        }
+      },
+      "default": []
+    },
+    "date_fin_recurrence": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de fin pour rappels r\u00e9currents"
+    },
+    "termine": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rappel termin\u00e9 ou compl\u00e9t\u00e9"
+    }
+  },
+  "required": [
+    "type_rappel",
+    "titre",
+    "date_heure_rappel"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "name": "OfflineQueue",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Nom de l'entit\u00e9 concern\u00e9e"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID de l'entit\u00e9 (si update/delete)"
+    },
+    "data": {
+      "type": "object",
+      "description": "Donn\u00e9es de l'op\u00e9ration",
+      "additionalProperties": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "syncing",
+        "synced",
+        "error"
+      ],
+      "default": "pending"
+    },
+    "retry_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "max_retries": {
+      "type": "integer",
+      "default": 3
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "created_offline_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "synced_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "user_email",
+    "operation_type",
+    "entity_name",
+    "data"
+  ],
+  "rls": {
+    "read": {
+      "user_email": "{{user.email}}"
+    },
+    "write": {
+      "user_email": "{{user.email}}"
+    }
+  }
+}

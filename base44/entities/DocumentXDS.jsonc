@@ -1,0 +1,185 @@
+{
+  "name": "DocumentXDS",
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "Identifiant unique XDS"
+    },
+    "patient_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "enfant_id": {
+      "type": "string"
+    },
+    "grossesse_id": {
+      "type": "string"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "analyse_biologique",
+        "compte_rendu",
+        "ordonnance",
+        "imagerie",
+        "certificat",
+        "vaccination",
+        "consultation",
+        "autre"
+      ],
+      "description": "Cat\u00e9gorie du document pour faciliter l'organisation"
+    },
+    "mots_cles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Mots-cl\u00e9s pour la recherche"
+    },
+    "class_code": {
+      "type": "string",
+      "description": "Code classe document XDS (ex: 11369-6 pour historique)"
+    },
+    "type_code": {
+      "type": "string",
+      "description": "Code type document LOINC"
+    },
+    "format_code": {
+      "type": "string",
+      "description": "Format document (PDF, DICOM, HL7-CDA)"
+    },
+    "practice_setting_code": {
+      "type": "string",
+      "description": "Contexte pratique (Obstetrics, Pediatrics)"
+    },
+    "healthcare_facility_type": {
+      "type": "string",
+      "description": "Type \u00e9tablissement (Hospital, Clinic)"
+    },
+    "confidentiality": {
+      "type": "string",
+      "enum": [
+        "N",
+        "R",
+        "V"
+      ],
+      "default": "N",
+      "description": "Niveau confidentialit\u00e9 (N=Normal, R=Restricted, V=Very Restricted)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre du document"
+    },
+    "creation_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "service_start_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "D\u00e9but p\u00e9riode service m\u00e9dical"
+    },
+    "service_stop_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "institution": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        }
+      }
+    },
+    "mime_type": {
+      "type": "string"
+    },
+    "size": {
+      "type": "number",
+      "description": "Taille en bytes"
+    },
+    "hash": {
+      "type": "string",
+      "description": "SHA-256 hash du document"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "URI du fichier stock\u00e9"
+    },
+    "repository_unique_id": {
+      "type": "string",
+      "description": "ID du repository XDS"
+    },
+    "availability_status": {
+      "type": "string",
+      "enum": [
+        "Approved",
+        "Deprecated"
+      ],
+      "default": "Approved"
+    },
+    "related_documents": {
+      "type": "array",
+      "description": "Documents li\u00e9s (remplace, transforme)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "relationship": {
+            "type": "string",
+            "enum": [
+              "RPLC",
+              "XFRM",
+              "APND"
+            ]
+          },
+          "document_id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "document_id",
+    "patient_email",
+    "class_code",
+    "type_code",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

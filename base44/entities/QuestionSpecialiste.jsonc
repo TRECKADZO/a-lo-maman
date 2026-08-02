@@ -1,0 +1,85 @@
+{
+  "name": "QuestionSpecialiste",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "grossesse",
+        "accouchement",
+        "post_partum",
+        "pediatrie",
+        "contraception",
+        "autre"
+      ]
+    },
+    "patient_email": {
+      "type": "string"
+    },
+    "reponses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "professionnel_id": {
+            "type": "string"
+          },
+          "professionnel_nom": {
+            "type": "string"
+          },
+          "contenu": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "default": []
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "ouverte",
+        "repondue",
+        "fermee"
+      ],
+      "default": "ouverte"
+    },
+    "anonyme": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "titre",
+    "question",
+    "categorie"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

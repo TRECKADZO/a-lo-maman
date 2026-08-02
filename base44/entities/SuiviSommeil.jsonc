@@ -1,0 +1,100 @@
+{
+  "name": "SuiviSommeil",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de la nuit"
+    },
+    "heure_coucher": {
+      "type": "string",
+      "description": "Heure de coucher (HH:MM)"
+    },
+    "heure_lever": {
+      "type": "string",
+      "description": "Heure de lever (HH:MM)"
+    },
+    "duree_heures": {
+      "type": "number",
+      "description": "Dur\u00e9e totale en heures"
+    },
+    "qualite": {
+      "type": "string",
+      "enum": [
+        "tr\u00e8s_mauvaise",
+        "mauvaise",
+        "moyenne",
+        "bonne",
+        "excellente"
+      ],
+      "description": "Qualit\u00e9 per\u00e7ue du sommeil"
+    },
+    "nombre_reveils": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre de r\u00e9veils nocturnes"
+    },
+    "difficulte_endormissement": {
+      "type": "boolean",
+      "default": false,
+      "description": "Difficult\u00e9 \u00e0 s'endormir"
+    },
+    "facteurs_perturbateurs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "stress",
+          "douleurs",
+          "bebe",
+          "chaleur",
+          "bruit",
+          "ecrans",
+          "cafe",
+          "repas_lourd",
+          "autre"
+        ]
+      },
+      "default": []
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes personnelles"
+    },
+    "humeur_matin": {
+      "type": "string",
+      "enum": [
+        "fatiguee",
+        "normale",
+        "reposee",
+        "energique"
+      ],
+      "description": "Humeur au r\u00e9veil"
+    },
+    "sieste": {
+      "type": "boolean",
+      "default": false
+    },
+    "duree_sieste_minutes": {
+      "type": "integer",
+      "description": "Dur\u00e9e de la sieste en minutes"
+    }
+  },
+  "required": [
+    "date",
+    "duree_heures",
+    "qualite"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "name": "SuiviPostPartum",
+  "type": "object",
+  "properties": {
+    "date_accouchement": {
+      "type": "string",
+      "format": "date"
+    },
+    "type_accouchement": {
+      "type": "string",
+      "enum": [
+        "voie_basse",
+        "cesarienne"
+      ]
+    },
+    "complications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "allaitement": {
+      "type": "string",
+      "enum": [
+        "maternel",
+        "artificiel",
+        "mixte"
+      ]
+    },
+    "professionnel_suivi_email": {
+      "type": "string"
+    },
+    "professionnels_suivi": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "date_accouchement"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "professionnels_suivi": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

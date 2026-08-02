@@ -1,0 +1,380 @@
+{
+  "name": "DossierMedicalComplet",
+  "type": "object",
+  "properties": {
+    "patient_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email du patient"
+    },
+    "patient_nom": {
+      "type": "string"
+    },
+    "patient_prenom": {
+      "type": "string"
+    },
+    "date_naissance": {
+      "type": "string",
+      "format": "date"
+    },
+    "numero_ins": {
+      "type": "string",
+      "description": "Identit\u00e9 Nationale de Sant\u00e9 (simul\u00e9)"
+    },
+    "antecedents_medicaux": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "libelle": {
+            "type": "string"
+          },
+          "date_diagnostic": {
+            "type": "string",
+            "format": "date"
+          },
+          "statut": {
+            "type": "string",
+            "enum": [
+              "actif",
+              "resolu",
+              "chronique"
+            ]
+          },
+          "specialite_liee": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "observations_vitales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "tension",
+              "poids",
+              "temperature",
+              "glycemie",
+              "frequence_cardiaque",
+              "saturation_oxygene",
+              "ecg",
+              "score_douleur"
+            ]
+          },
+          "valeur": {
+            "type": "string"
+          },
+          "unite": {
+            "type": "string"
+          },
+          "date_mesure": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "professionnel_id": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "traitements_en_cours": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "medicament": {
+            "type": "string"
+          },
+          "posologie": {
+            "type": "string"
+          },
+          "date_debut": {
+            "type": "string",
+            "format": "date"
+          },
+          "date_fin": {
+            "type": "string",
+            "format": "date"
+          },
+          "prescripteur_id": {
+            "type": "string"
+          },
+          "indication": {
+            "type": "string"
+          },
+          "famille_therapeutique": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "donnees_cardiologie": {
+      "type": "object",
+      "properties": {
+        "score_cha2ds2_vasc": {
+          "type": "integer"
+        },
+        "ecg_recents": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "echographie_cardiaque": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "anticoagulants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fraction_ejection": {
+          "type": "number"
+        },
+        "derniere_maj": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "donnees_oncologie": {
+      "type": "object",
+      "properties": {
+        "stade_tnm": {
+          "type": "string"
+        },
+        "type_cancer": {
+          "type": "string"
+        },
+        "date_diagnostic": {
+          "type": "string",
+          "format": "date"
+        },
+        "histologie": {
+          "type": "string"
+        },
+        "chimiotherapie_en_cours": {
+          "type": "boolean"
+        },
+        "protocole_actuel": {
+          "type": "string"
+        },
+        "marqueurs_tumoraux": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "derniere_maj": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "donnees_psychiatrie": {
+      "type": "object",
+      "properties": {
+        "score_madrs": {
+          "type": "integer"
+        },
+        "score_gad7": {
+          "type": "integer"
+        },
+        "score_ymrs": {
+          "type": "integer"
+        },
+        "antecedents_suicidaires": {
+          "type": "boolean"
+        },
+        "psychotropes_actuels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hospitalisations_psy": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "derniere_maj": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "donnees_rhumatologie": {
+      "type": "object",
+      "properties": {
+        "score_das28": {
+          "type": "number"
+        },
+        "biotherapie": {
+          "type": "string"
+        },
+        "irm_articulaires": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "derniere_maj": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "alertes_actives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "interaction_medicamenteuse",
+              "valeur_critique",
+              "suivi_manquant",
+              "risque_eleve"
+            ]
+          },
+          "severite": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "critique"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "specialites_concernees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lue": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "default": []
+    },
+    "consentements_partage": {
+      "type": "object",
+      "properties": {
+        "cardiologie": {
+          "type": "boolean",
+          "default": true
+        },
+        "oncologie": {
+          "type": "boolean",
+          "default": true
+        },
+        "psychiatrie": {
+          "type": "boolean",
+          "default": true
+        },
+        "rhumatologie": {
+          "type": "boolean",
+          "default": true
+        },
+        "medecine_generale": {
+          "type": "boolean",
+          "default": true
+        },
+        "kinesitherapie": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "default": {}
+    },
+    "professionnels_autorises": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des professionnels autoris\u00e9s",
+      "default": []
+    },
+    "derniere_synchronisation": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "patient_email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnels_autorises": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "patient_email": "{{user.email}}"
+        },
+        {
+          "professionnels_autorises": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

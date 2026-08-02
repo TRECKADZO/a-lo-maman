@@ -1,0 +1,103 @@
+{
+  "name": "ConsentementGDPR",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'utilisateur"
+    },
+    "type_donnee": {
+      "type": "string",
+      "enum": [
+        "donnees_medicales",
+        "donnees_personnelles",
+        "donnees_enfants",
+        "donnees_grossesse",
+        "partage_professionnel",
+        "partage_famille",
+        "marketing",
+        "recherche_medicale",
+        "analytics",
+        "donnees_vitales"
+      ],
+      "description": "Type de donn\u00e9es concern\u00e9es"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e du consentement"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "accepte",
+        "refuse",
+        "revoque"
+      ],
+      "description": "Statut du consentement"
+    },
+    "date_consentement": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du consentement ou refus"
+    },
+    "date_expiration": {
+      "type": "string",
+      "format": "date",
+      "description": "Date d'expiration du consentement (optionnel)"
+    },
+    "version_politique": {
+      "type": "string",
+      "description": "Version de la politique accept\u00e9e"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Adresse IP au moment du consentement"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent du navigateur"
+    },
+    "revoque_le": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de r\u00e9vocation si applicable"
+    },
+    "raison_revocation": {
+      "type": "string",
+      "description": "Raison de la r\u00e9vocation"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes internes"
+    }
+  },
+  "required": [
+    "user_email",
+    "type_donnee",
+    "statut"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_email": "{{user.email}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

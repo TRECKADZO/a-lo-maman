@@ -1,0 +1,129 @@
+{
+  "name": "JournalAlimentaire",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de l'entr\u00e9e"
+    },
+    "type_repas": {
+      "type": "string",
+      "enum": [
+        "petit_dejeuner",
+        "dejeuner",
+        "diner",
+        "collation"
+      ],
+      "description": "Type de repas"
+    },
+    "aliments": {
+      "type": "array",
+      "description": "Liste des aliments consomm\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string"
+          },
+          "quantite": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "proteines": {
+            "type": "number"
+          },
+          "glucides": {
+            "type": "number"
+          },
+          "lipides": {
+            "type": "number"
+          },
+          "fer": {
+            "type": "number"
+          },
+          "calcium": {
+            "type": "number"
+          },
+          "acide_folique": {
+            "type": "number"
+          },
+          "code_barre": {
+            "type": "string"
+          },
+          "adapte_grossesse": {
+            "type": "boolean"
+          },
+          "alertes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Photo du repas"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "humeur": {
+      "type": "string",
+      "enum": [
+        "tres_bien",
+        "bien",
+        "moyen",
+        "mal"
+      ],
+      "description": "Comment vous sentez-vous apr\u00e8s ce repas"
+    },
+    "nausees": {
+      "type": "boolean",
+      "default": false,
+      "description": "Naus\u00e9es apr\u00e8s le repas"
+    },
+    "totaux": {
+      "type": "object",
+      "properties": {
+        "calories": {
+          "type": "number"
+        },
+        "proteines": {
+          "type": "number"
+        },
+        "glucides": {
+          "type": "number"
+        },
+        "lipides": {
+          "type": "number"
+        },
+        "fer": {
+          "type": "number"
+        },
+        "calcium": {
+          "type": "number"
+        },
+        "acide_folique": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "date",
+    "type_repas"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

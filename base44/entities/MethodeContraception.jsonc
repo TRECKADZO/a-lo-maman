@@ -1,0 +1,95 @@
+{
+  "name": "MethodeContraception",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "description": "Nom de la m\u00e9thode"
+    },
+    "categorie": {
+      "type": "string",
+      "enum": [
+        "hormonale",
+        "barriere",
+        "naturelle",
+        "permanente",
+        "urgence"
+      ]
+    },
+    "efficacite_theorique": {
+      "type": "number",
+      "description": "Efficacit\u00e9 th\u00e9orique en pourcentage"
+    },
+    "efficacite_reelle": {
+      "type": "number",
+      "description": "Efficacit\u00e9 r\u00e9elle en pourcentage"
+    },
+    "description": {
+      "type": "string"
+    },
+    "mode_usage": {
+      "type": "string"
+    },
+    "avantages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inconvenients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contre_indications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prise_charge_cmu": {
+      "type": "string",
+      "description": "Pourcentage de prise en charge CMU"
+    },
+    "cout_mensuel": {
+      "type": "string"
+    },
+    "sans_hormones": {
+      "type": "boolean"
+    },
+    "protection_ist": {
+      "type": "boolean"
+    },
+    "duree_action": {
+      "type": "string"
+    },
+    "frequence_utilisation": {
+      "type": "string",
+      "enum": [
+        "quotidienne",
+        "hebdomadaire",
+        "mensuelle",
+        "trimestrielle",
+        "annuelle",
+        "pluriannuelle",
+        "par_rapport"
+      ]
+    },
+    "icone": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "nom",
+    "categorie"
+  ],
+  "rls": {
+    "read": {},
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

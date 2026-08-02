@@ -1,0 +1,48 @@
+{
+  "name": "QuickReply",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string",
+      "description": "Libell\u00e9 court du message"
+    },
+    "message": {
+      "type": "string",
+      "description": "Contenu du message"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "greeting",
+        "faq",
+        "technical",
+        "closing"
+      ],
+      "default": "faq"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "label",
+    "message"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

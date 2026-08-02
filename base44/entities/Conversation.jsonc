@@ -1,0 +1,131 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "direct",
+        "groupe",
+        "patient"
+      ],
+      "description": "Type de conversation"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre de la conversation"
+    },
+    "participants": {
+      "type": "array",
+      "description": "Emails des participants",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "professionnel",
+              "patient",
+              "admin"
+            ]
+          },
+          "date_ajout": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "patient_id": {
+      "type": "string",
+      "description": "ID du patient si conversation li\u00e9e \u00e0 un patient"
+    },
+    "centre_id": {
+      "type": "string",
+      "description": "ID du centre si applicable"
+    },
+    "dernier_message": {
+      "type": "string",
+      "description": "Contenu du dernier message"
+    },
+    "dernier_message_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dernier_message_auteur": {
+      "type": "string"
+    },
+    "non_lus": {
+      "type": "object",
+      "description": "Compte des messages non lus par utilisateur",
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "default": {}
+    },
+    "archivee": {
+      "type": "boolean",
+      "default": false
+    },
+    "chiffree": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si les messages sont chiffr\u00e9s"
+    },
+    "cle_chiffrement": {
+      "type": "string",
+      "description": "Cl\u00e9 de chiffrement (hash\u00e9e)"
+    }
+  },
+  "required": [
+    "type",
+    "participants"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "participants": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "participants": {
+            "$elemMatch": {
+              "email": "{{user.email}}"
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

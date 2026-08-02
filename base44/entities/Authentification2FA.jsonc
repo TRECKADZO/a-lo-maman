@@ -1,0 +1,89 @@
+{
+  "name": "Authentification2FA",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email de l'utilisateur"
+    },
+    "methode": {
+      "type": "string",
+      "enum": [
+        "totp",
+        "sms",
+        "email"
+      ],
+      "description": "M\u00e9thode 2FA utilis\u00e9e"
+    },
+    "secret_totp": {
+      "type": "string",
+      "description": "Secret TOTP encod\u00e9 en base32 pour Google Authenticator"
+    },
+    "telephone": {
+      "type": "string",
+      "description": "Num\u00e9ro de t\u00e9l\u00e9phone pour SMS"
+    },
+    "active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si 2FA est activ\u00e9"
+    },
+    "codes_secours": {
+      "type": "array",
+      "description": "Codes de secours en cas de perte d'acc\u00e8s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "utilise": {
+            "type": "boolean",
+            "default": false
+          },
+          "date_utilisation": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "default": []
+    },
+    "date_activation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'activation du 2FA"
+    },
+    "derniere_verification": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de la derni\u00e8re v\u00e9rification r\u00e9ussie"
+    }
+  },
+  "required": [
+    "user_email",
+    "methode"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_email": "{{user.email}}"
+    },
+    "delete": {
+      "user_email": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "AdminAvailability",
+  "type": "object",
+  "properties": {
+    "admin_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "admin_name": {
+      "type": "string"
+    },
+    "is_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "max_concurrent_chats": {
+      "type": "integer",
+      "default": 5
+    },
+    "current_chat_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "admin_email"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

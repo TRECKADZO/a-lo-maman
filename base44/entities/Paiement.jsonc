@@ -1,0 +1,71 @@
+{
+  "name": "Paiement",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "montant": {
+      "type": "number"
+    },
+    "formule": {
+      "type": "string",
+      "enum": [
+        "mensuel",
+        "annuel"
+      ]
+    },
+    "methode_paiement": {
+      "type": "string",
+      "default": "Wave"
+    },
+    "reference_transaction": {
+      "type": "string",
+      "description": "ID de la transaction fournie par l'utilisateur"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "en_attente_verification",
+        "verifie",
+        "rejete"
+      ],
+      "default": "en_attente_verification"
+    }
+  },
+  "required": [
+    "user_email",
+    "montant",
+    "formule"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

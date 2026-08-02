@@ -1,0 +1,65 @@
+{
+  "name": "DashboardWidget",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "prochains_rdv",
+        "notifications",
+        "patients_critiques",
+        "stats_activite",
+        "revenus",
+        "messages",
+        "tache_rapides"
+      ]
+    },
+    "position": {
+      "type": "integer",
+      "description": "Ordre d'affichage"
+    },
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "taille": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "normal",
+        "large"
+      ],
+      "default": "normal"
+    },
+    "parametres": {
+      "type": "object",
+      "description": "Param\u00e8tres sp\u00e9cifiques du widget",
+      "additionalProperties": true,
+      "default": {}
+    },
+    "dernier_rafraichissement": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "user_email",
+    "type"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_email": "{{user.email}}"
+    },
+    "update": {
+      "user_email": "{{user.email}}"
+    },
+    "delete": {
+      "user_email": "{{user.email}}"
+    }
+  }
+}

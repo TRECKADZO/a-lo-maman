@@ -1,0 +1,89 @@
+{
+  "name": "AlerteFHIR",
+  "type": "object",
+  "properties": {
+    "centre_id": {
+      "type": "string"
+    },
+    "centre_nom": {
+      "type": "string"
+    },
+    "type_alerte": {
+      "type": "string",
+      "enum": [
+        "acces_refuse",
+        "echec_authentification",
+        "taux_erreur_eleve",
+        "cle_api_expiree",
+        "tentative_brute_force",
+        "acces_non_autorise",
+        "configuration_invalide",
+        "synchronisation_echouee"
+      ]
+    },
+    "severite": {
+      "type": "string",
+      "enum": [
+        "basse",
+        "moyenne",
+        "haute",
+        "critique"
+      ],
+      "default": "moyenne"
+    },
+    "description": {
+      "type": "string"
+    },
+    "ip_adresse": {
+      "type": "string"
+    },
+    "utilisateur_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "tentatives": {
+      "type": "integer",
+      "default": 1,
+      "description": "Nombre de tentatives suspectes"
+    },
+    "dernier_incident": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "active",
+        "resolue",
+        "ignoree"
+      ],
+      "default": "active"
+    },
+    "actions_recommandees": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes_admin": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "centre_id",
+    "type_alerte",
+    "severite"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

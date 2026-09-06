@@ -1,0 +1,44 @@
+{
+  "name": "Rappels \u00c9chographies Recommand\u00e9es",
+  "description": "Envoie des notifications aux mamans enceintes pour les inciter \u00e0 prendre RDV pour leurs \u00e9chographies aux moments cl\u00e9s (12, 20, 32 semaines)",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 14 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "rappels_chographies_recommand_es",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "rappelEchographieRecommandee",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "rappelEchographieRecommandee"
+  }
+}

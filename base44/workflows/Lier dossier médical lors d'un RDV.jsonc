@@ -1,0 +1,37 @@
+{
+  "name": "Lier dossier m\u00e9dical lors d'un RDV",
+  "description": "Ajoute automatiquement le professionnel aux dossiers m\u00e9dicaux du patient quand un RDV est cr\u00e9\u00e9",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "RendezVous"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "lier_dossier_m_dical_lors_d_un_rdv",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "lierDossierRdv",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "lierDossierRdv"
+  }
+}
